@@ -1,11 +1,19 @@
 ({
-    startPing: function() {
-        const interval = 10 * 60 * 1000; // 10 minutes
+    startPing: function(component) {
+        const interval = 10 * 60 * 1000;
 
         const ping = () => {
-            const action = $A.get("c.ping");
+            console.log('[KeepAlive] Pinging server to keep session alive…');
+
+            const action = component.get("c.ping");
             action.setCallback(this, function(response) {
-                // You can add debug logs here if needed
+                const state = response.getState();
+                if (state === "SUCCESS") {
+                    console.log('[KeepAlive] Ping response: SUCCESS');
+                } else {
+                    const errors = response.getError();
+                    console.error('[KeepAlive] Ping response: ERROR', errors);
+                }
             });
             $A.enqueueAction(action);
         };
