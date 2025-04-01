@@ -1,0 +1,134 @@
+.custom-calendar {
+  font-family: "Salesforce Sans", Arial, sans-serif;
+  background: white;
+  border-radius: 0.25rem;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16);
+  padding: 1rem;
+}
+
+.calendar-sidebar {
+  padding: 1rem;
+  background-color: #f3f3f3;
+  border-radius: 0.25rem;
+  height: 100%;
+}
+
+.calendar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.calendar-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.calendar-color {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  margin-left: 0.5rem;
+}
+
+.calendar-main {
+  padding: 1rem;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.month-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.weekday-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-weight: 600;
+  color: #706e6b;
+  border-bottom: 1px solid #dddbda;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.weekday {
+  padding: 0.5rem 0;
+}
+
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  gap: 2px;
+}
+
+.day {
+  min-height: 5rem;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.day:hover {
+  background-color: #f3f3f3;
+}
+
+.current-month {
+  color: #3e3e3c;
+}
+
+.other-month {
+  color: #706e6b;
+}
+
+.today {
+  background-color: #f3f3f3;
+}
+
+.today .day-number {
+  background-color: #0070d2;
+  color: white;
+  border-radius: 50%;
+  width: 1.75rem;
+  height: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.day-number {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  display: inline-block;
+  width: 1.75rem;
+  height: 1.75rem;
+  text-align: center;
+  line-height: 1.75rem;
+}
+
+.event-marker {
+  border-radius: 0.125rem;
+  padding: 0.125rem 0.25rem;
+  margin-bottom: 0.125rem;
+  font-size: 0.75rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.event-title {
+  font-size: 0.75rem;
+}
+

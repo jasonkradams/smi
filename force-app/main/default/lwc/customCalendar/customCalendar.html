@@ -1,0 +1,140 @@
+<template>
+    <div class="custom-calendar">
+        <!-- Loading spinner -->
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </template>
+        
+        <div class="slds-grid slds-gutters">
+            <!-- Calendar sidebar -->
+            <div class="slds-col slds-size_1-of-4">
+                <div class="calendar-sidebar">
+                    <h2 class="slds-text-heading_medium slds-m-bottom_medium">Calendars</h2>
+                    
+                    <ul class="calendar-list">
+                        <template for:each={calendars} for:item="calendar">
+                            <li key={calendar.id} class="calendar-item">
+                                <lightning-input 
+                                    type="checkbox" 
+                                    label={calendar.name}
+                                    checked
+                                    data-id={calendar.id}
+                                    onchange={handleCalendarToggle}>
+                                </lightning-input>
+                                <span class="calendar-color" style={calendar.style}></span>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Calendar main area -->
+            <div class="slds-col slds-size_3-of-4">
+                <div class="calendar-main">
+                    <div class="calendar-header">
+                        <lightning-button-icon 
+                            icon-name="utility:chevronleft" 
+                            variant="border-filled" 
+                            alternative-text="Previous Month" 
+                            onclick={previousMonth}>
+                        </lightning-button-icon>
+                        
+                        <h2 class="month-title">{currentMonthName} {currentYear}</h2>
+                        
+                        <lightning-button-icon 
+                            icon-name="utility:chevronright" 
+                            variant="border-filled" 
+                            alternative-text="Next Month" 
+                            onclick={nextMonth}>
+                        </lightning-button-icon>
+                    </div>
+                    
+                    <div class="calendar-grid">
+                        <div class="weekday-header">
+                            <template for:each={dayNames} for:item="dayName">
+                                <div key={dayName} class="weekday">{dayName}</div>
+                            </template>
+                        </div>
+                        
+                        <div class="days-grid">
+                            <template for:each={calendarDays} for:item="day" for:index="index">
+                                <div key={day.id} 
+                                     class={day.cssClass}
+                                     data-index={index}
+                                     onclick={handleDayClick}>
+                                    <span class="day-number">{day.day}</span>
+                                    
+                                    <template if:true={day.events}>
+                                        <template for:each={day.events} for:item="event">
+                                            <div key={event.id} class="event-marker" style={event.style}>
+                                                <span class="event-title">{event.title}</span>
+                                            </div>
+                                        </template>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- New Event Modal -->
+        <template if:true={showNewEventModal}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeNewEventModal}>
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">New Event</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <lightning-input 
+                            label="Event Title" 
+                            name="title" 
+                            value={newEvent.title} 
+                            required 
+                            onchange={handleNewEventChange}>
+                        </lightning-input>
+                        
+                        <lightning-input 
+                            type="date" 
+                            label="Start Date" 
+                            name="startDate" 
+                            value={newEvent.startDate} 
+                            required 
+                            onchange={handleNewEventChange}>
+                        </lightning-input>
+                        
+                        <lightning-input 
+                            type="date" 
+                            label="End Date" 
+                            name="endDate" 
+                            value={newEvent.endDate} 
+                            required 
+                            onchange={handleNewEventChange}>
+                        </lightning-input>
+                        
+                        <lightning-combobox
+                            label="Calendar"
+                            name="calendarId"
+                            value={newEvent.calendarId}
+                            placeholder="Select Calendar"
+                            options={calendarOptions}
+                            required
+                            onchange={handleNewEventChange}>
+                        </lightning-combobox>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={closeNewEventModal}>Cancel</button>
+                        <button class="slds-button slds-button_brand" onclick={handleSaveEvent}>Save</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+    </div>
+</template>
+
