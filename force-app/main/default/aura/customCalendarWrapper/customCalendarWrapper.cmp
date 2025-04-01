@@ -1,0 +1,4 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes,lightning:isUrlAddressable" access="global">
+    <aura:attribute name="calendarTitle" type="String" default="Calendar" description="Title for the calendar"/>
+    <c-customCalendarLWC calendar-title="{!v.calendarTitle}" />
+</aura:component>
