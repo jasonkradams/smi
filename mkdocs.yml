@@ -1,12 +1,14 @@
 site_name: Spokane Mountaineers Docs
 site_url: https://jasonkradams.github.io/smi/
+repo_url: https://github.com/jasonkradams/smi
+edit_uri: edit/main/docs/
 nav:
   - Home: index.md
   - How-To Guides:
-      - KeepAlive Sessions: keepalive-sessions.md
-      # Add more how-to pages here as needed
-      # - Editing the Website: website-editing.md
-      # - Updating Member Profiles: user-profile-management.md
+    - how-to-guides/index.md
+    - Customize Favicon: how-to-guides/update-experience-cloud-favicon.md
+    - Preventing Logout With KeepAlives: how-to-guides/keepalive-sessions.md
+    - Website Editing: how-to-guides/website-editing.md
   - About: about.md  # We'll add this page later.
 
 # Custom branding
@@ -14,6 +16,8 @@ theme:
   name: material
   logo: assets/images/logo.png
   favicon: assets/images/favicon.ico
+  icon:
+    repo: fontawesome/brands/github
   palette:
     - scheme: default
       primary: green
@@ -28,12 +32,37 @@ theme:
         icon: material/weather-sunny
         name: Switch to light mode
   features:
+    - announce.dismiss
+    - content.action.edit
+    - content.action.view
+    - content.code.annotate
+    - content.code.copy
+    # - content.code.select
+    # - content.footnote.tooltips
+    # - content.tabs.link
+    - content.tooltips
+    # - header.autohide
+    # - navigation.expand
+    - navigation.footer
+    - navigation.indexes
+    # - navigation.instant
+    # - navigation.instant.prefetch
+    # - navigation.instant.progress
+    # - navigation.prune
+    - navigation.sections
     - navigation.tabs
+    # - navigation.tabs.sticky
     - navigation.top
+    - navigation.tracking
     - search.highlight
     - search.share
-    - content.code.copy
-    - content.code.annotate
+    - search.suggest
+    - toc.follow
+    # - toc.integrate
+  
+  plugins:
+    - git-revision-date-localized:
+      enable_creation_date: true
 
 markdown_extensions:
   - toc:
@@ -50,4 +79,4 @@ markdown_extensions:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/spokanemountaineers
+      link: https://github.com/jasonkradams/smi
