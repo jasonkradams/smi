@@ -1,0 +1,53 @@
+site_name: Spokane Mountaineers Docs
+site_url: https://spokanemountaineers.org/docs
+nav:
+  - Home: index.md
+  - How-To Guides:
+      - KeepAlive Sessions: keepalive-sessions.md
+      # Add more how-to pages here as needed
+      # - Editing the Website: website-editing.md
+      # - Updating Member Profiles: user-profile-management.md
+  - About: about.md  # We'll add this page later.
+
+# Custom branding
+theme:
+  name: material
+  logo: assets/images/logo.png
+  favicon: assets/images/favicon.ico
+  palette:
+    - scheme: default
+      primary: green
+      accent: blue
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: green
+      accent: blue
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.top
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - footnotes
+  - def_list
+  - admonition
+  - codehilite
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/spokanemountaineers
