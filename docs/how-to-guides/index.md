@@ -8,7 +8,7 @@ Whether you're a club admin, event leader, or website contributor, this is your 
 
 - [KeepAlive Sessions](keepalive-sessions.md): Prevent users from being logged out too quickly.
 - [Update Experience Cloud Favicon](update-experience-cloud-favicon.md): Customize the browser tab icon for our public Salesforce site.
-- [Website Editing](website-editing.md): Update content on the Spokane Mountaineers public website, including page editing, image management, and maintaining our Experience Cloud infrastructure.
+- [Website Editing](website-editing.md)
 
 More guides coming soon!
 

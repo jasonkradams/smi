@@ -13,9 +13,9 @@ Welcome to the Spokane Mountaineers documentation portal. This site is a growing
 
 Use the sidebar to explore topics by category. If you're not sure where to begin, here are a few helpful starting points:
 
-- [Editing Our Website](website-editing.md)
-- [Updating User Profiles](user-profile-management.md)
-- [KeepAlive Sessions](keepalive-sessions.md)
+- [Editing Our Website](how-to-guides/website-editing.md)
+- [Customize Favicon](how-to-guides/update-experience-cloud-favicon.md)
+- [KeepAlive Sessions](how-to-guides/keepalive-sessions.md)
 
 ## Contributing
 
