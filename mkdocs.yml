@@ -1,5 +1,5 @@
 site_name: Spokane Mountaineers Docs
-site_url: https://spokanemountaineers.org/docs
+site_url: https://jasonkradams.github.io/smi/
 nav:
   - Home: index.md
   - How-To Guides:
