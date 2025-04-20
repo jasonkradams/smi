@@ -11,6 +11,7 @@ This repository contains:
 - **Custom Lightning Web Components (LWCs)**: Enhance the user experience on Salesforce Experience Cloud.
 - **Apex Classes**: Backend logic for Salesforce customizations.
 - **Documentation**: Step-by-step guides and resources for administrators and contributors.
+- **Issue Tracker**: A list of issues raised by our members to track and resolve website-related problems.
 
 ## Documentation Website
 
