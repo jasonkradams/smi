@@ -9,6 +9,7 @@ Whether you're a club admin, event leader, or website contributor, this is your 
 - [KeepAlive Sessions](keepalive-sessions.md): Prevent users from being logged out too quickly.
 - [Update Experience Cloud Favicon](update-experience-cloud-favicon.md): Customize the browser tab icon for our public Salesforce site.
 - [Website Editing](website-editing.md)
+- [Custom Calendar LWC Guide](custom-calendar-lwc.md): Learn how to deploy, configure, and use the Custom Calendar Lightning Web Component.
 
 More guides coming soon!
 

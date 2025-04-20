@@ -1,6 +1,8 @@
 # About This Documentation
 
-Welcome to the official documentation site for the **Spokane Mountaineers** — a nonprofit community of adventurers, educators, and volunteers dedicated to promoting safe and inclusive outdoor recreation since 1915.
+Welcome to the official documentation site for the **Spokane Mountaineers** —
+a nonprofit community of adventurers, educators, and volunteers dedicated to
+promoting safe and inclusive outdoor recreation since 1915.
 
 This site is maintained by club members to provide:
 
@@ -10,7 +12,8 @@ This site is maintained by club members to provide:
 
 ## 🏔 Who We Are
 
-The Spokane Mountaineers is an all-volunteer organization committed to the responsible enjoyment of the outdoors. We offer year-round activities in:
+The Spokane Mountaineers is an all-volunteer organization committed to the responsible enjoyment of the outdoors.
+We offer year-round activities in:
 
 - Mountaineering
 - Rock climbing
@@ -23,7 +26,9 @@ Our members range from first-time hikers to seasoned climbers, all sharing a pas
 
 ## 📚 How This Site Works
 
-This site is built with [MkDocs](https://www.mkdocs.org/) and the [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) theme. It lives on GitHub and is open to contributions from any club member.
+This site is built with [MkDocs](https://www.mkdocs.org/) and the
+[Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) theme.
+It lives on GitHub and is open to contributions from any club member.
 
 Want to contribute? Start here:
 
@@ -32,6 +37,7 @@ Want to contribute? Start here:
 
 ## 🙏 Thanks
 
-Special thanks to all our volunteers, instructors, and behind-the-scenes helpers who make the Spokane Mountaineers thrive — on the trails and online.
+Special thanks to all our volunteers, instructors, and behind-the-scenes helpers who make the
+Spokane Mountaineers thrive — on the trails and online.
 
 > “The mountains are calling and I must go.” — John Muir

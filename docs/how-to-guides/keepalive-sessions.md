@@ -4,6 +4,12 @@ This page documents how we implemented a session keep-alive strategy for our Sal
 
 ---
 
+## Testing Results
+
+This method has been tested but does not resolve the issue of users being logged out prematurely. Further investigation and alternative solutions may be required.
+
+---
+
 ## Why We Did This
 
 By default, users are logged out of our Experience Cloud site after 24 hours of inactivity. We wanted to improve the user experience by reducing the frequency of session timeouts, especially for members who leave a tab open for long periods.
