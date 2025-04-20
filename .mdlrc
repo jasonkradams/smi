@@ -1,0 +1,6 @@
+all
+  rule 'MD013', :line_length => 120
+
+verbose false
+ignore_front_matter true
+style File.join(File.dirname(__FILE__), 'custom_style.rb')
