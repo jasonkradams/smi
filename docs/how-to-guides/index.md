@@ -11,7 +11,10 @@ Whether you're a club admin, event leader, or website contributor, this is your 
 - [Website Editing](website-editing.md)
 - [Custom Calendar LWC Guide](custom-calendar-lwc.md): Learn how to deploy, configure, and use the Custom Calendar Lightning Web Component.
 - [Google Workspace SAML IdP](how-to-guides/google-workspace-saml-idp.md): Set up Google Workspace as a SAML Identity Provider for Salesforce.
-- [Auto-Generate Federation ID](how-to-guides/auto-generate-federation-id.md): Automatically generate Federation IDs for new user accounts in Salesforce. 
+- [Auto-Generate Federation ID](how-to-guides/auto-generate-federation-id.md): Automatically generate Federation IDs for new user accounts in Salesforce.
+- [Batch Update Federation IDs](how-to-guides/batch-update-federation-id.md): Update existing user Federation IDs in Salesforce to match Google Workspace accounts.
+- [Add Federation ID Logs to the App Launcher](docs/how-to-guides/add-federation-id-logs-to-the-app-launcher.md): Create a custom tab for viewing Federation ID update logs in Salesforce.
+
 
 
 More guides coming soon!
