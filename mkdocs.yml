@@ -11,6 +11,7 @@ nav:
     - Website Editing: how-to-guides/website-editing.md
     - Custom Calendar LWC Guide: how-to-guides/custom-calendar-lwc.md
     - Google Workspace SAML IdP: how-to-guides/google-workspace-saml-idp.md
+    - Auto-Generate Federation ID: how-to-guides/auto-generate-federation-id.md
   - About: about.md  # We'll add this page later.
 
 # Custom branding
