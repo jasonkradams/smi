@@ -10,6 +10,7 @@ Whether you're a club admin, event leader, or website contributor, this is your 
 - [Update Experience Cloud Favicon](update-experience-cloud-favicon.md): Customize the browser tab icon for our public Salesforce site.
 - [Website Editing](website-editing.md)
 - [Custom Calendar LWC Guide](custom-calendar-lwc.md): Learn how to deploy, configure, and use the Custom Calendar Lightning Web Component.
+- [Google Workspace SAML IdP](how-to-guides/google-workspace-saml-idp.md): Set up Google Workspace as a SAML Identity Provider for Salesforce.
 
 More guides coming soon!
 
