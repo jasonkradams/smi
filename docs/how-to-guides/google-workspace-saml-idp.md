@@ -76,7 +76,7 @@ Set up an Organizational Unit (OU) to manage app access:
 ## 📋 Key Admin Reminders
 
 - When a member leaves, **deactivate their Salesforce user** and optionally **suspend their Google Workspace account**.
-- If your organization grows beyond the free Google tier limits (currently ~300 users), monitor your Workspace license usage.
+- If Spokane Mountaineer membership grows beyond the Nonprofit Google tier limits (currently ~2000 users), monitor your Workspace license usage.
 - Keep a consistent naming convention for user emails, e.g., `firstname.lastname@yourorg.org`.
 - Regularly audit your OUs to ensure proper separation of "IdP Only" users.
 
