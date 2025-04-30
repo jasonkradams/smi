@@ -7,7 +7,7 @@ This scheduled Salesforce Flow ensures that all eligible site users (Community U
 
 * Flow: [Scheduled: Add Members To Conservation Group](https://spokanemountaineers.lightning.force.com/lightning/setup/Flows/page?address=%2F300Um00000l9gbFIAQ%3FretUrl%3D%2Flightning%2Fsetup%2FFlows%2Fhome)
 * Logs: [Conservation Group Membership Logs](https://spokanemountaineers.lightning.force.com/lightning/o/Conservation_Group_Membership_Log__c/list?filterName=00BUm000001cEz4MAE)
-* GitHub: [Scheduled_Add_Members_To_Conservation_Group.flow-meta.xml](https://github.com/jasonkradams/smi/force-app/main/default/flows/Scheduled_Add_Members_To_Conservation_Group.flow-meta.xml)
+* GitHub: [Scheduled_Add_Members_To_Conservation_Group.flow-meta.xml](https://github.com/jasonkradams/smi/blob/main/force-app/main/default/flows/Scheduled_Add_Members_To_Conservation_Group.flow-meta.xml)
 
 ---
 
