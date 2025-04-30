@@ -13,9 +13,11 @@ This scheduled Salesforce Flow ensures that all eligible site users (Community U
 
 ## 📆 Schedule
 
-- **Runs Daily** at **04:30 AM UTC** (9:30 PM Pacific the previous evening)
+- **Runs Once** at **04:30 AM Pacific**
 - Type: **Scheduled Flow**
 - Trigger: **Platform-Scheduled**, not user-initiated
+
+> _Note: This flow has been **deactivated** to ensure members who Opt Out of the Conservation group are not put back into teh group the next day._
 
 ---
 
@@ -48,7 +50,9 @@ These users are queried via a Get Records element labeled **Get_User_Records**.
 ----
 
 ## 🧱 Flow Structure
+
 ### 1. Get Existing Group Memberships
+
 * Retrieves all CollaborationGroupMember records for the **Conservation Group**.
 * Group ID is hardcoded as: 0F91N000000m2jESAQ.
 
@@ -63,7 +67,9 @@ These users are queried via a Get Records element labeled **Get_User_Records**.
 ---
 
 ## 🤖 Decision Logic
-### ❌ If the user is not already a group member:
+
+### ❌ If the user is not already a group member
+
 * Assigns:
   * CollaborationGroupId = 0F91N000000m2jESAQ
   * MemberId = User.Id
@@ -80,21 +86,24 @@ These users are queried via a Get Records element labeled **Get_User_Records**.
 ---
 
 ## 📦 Record Creation
+
 At the end of all processing:
+
 * The flow **bulk-creates** all new CollaborationGroupMember records.
 * It also **bulk-creates** all Conservation_Group_Membership_Log__c log entries.
 
 ## 🛠 Key Variables and Resources
-|          **Variable Name**           |                      **Type**                      |               **Description**               |
-| :----------------------------------: | :------------------------------------------------: | :-----------------------------------------: |
-| variable_collaboration_group_members |       Collection of CollaborationGroupMember       |      Holds new group members to create      |
-|   variable_conservation_group_logs   | Collection of Conservation_Group_Membership_Log__c | Holds logs for both added and skipped users |
-| variable_collaboration_group_member  |          Single CollaborationGroupMember           |        Template record used per user        |
-|      variable_conservation_log       |    Single Conservation_Group_Membership_Log__c     |      Template log record used per user      |
+|           **Variable Name**            |                      **Type**                      |               **Description**               |
+| :------------------------------------: | :------------------------------------------------: | :-----------------------------------------: |
+| `variable_collaboration_group_members` |       Collection of CollaborationGroupMember       |      Holds new group members to create      |
+|   `variable_conservation_group_logs`   | Collection of Conservation_Group_Membership_Log__c | Holds logs for both added and skipped users |
+| `variable_collaboration_group_member`  |          Single CollaborationGroupMember           |        Template record used per user        |
+|      `variable_conservation_log`       |    Single Conservation_Group_Membership_Log__c     |      Template log record used per user      |
 
 ---
 
 ## 🧾 Logging Details
+
 Each log record stores:
 * User_ID__c
 * Username__c
@@ -107,15 +116,18 @@ Each log record stores:
 ---
 
 ## ⚠️ Edge Cases Handled
+
 * Users not in the group are added and logged.
-* Users already in the group are skipped and logged.
+* Users already in the group are skipped.
 * The Chatter Group ID is hardcoded to prevent accidental misrouting.
 * Only users who are **eligible site users** are processed.
 
 ---
 
 ## 📈 Monitoring & Auditing
+
 Admins can monitor execution by:
+
 * Querying the Conservation_Group_Membership_Log__c object
 * Filtering by Updated_At__c or Message__c
 * Verifying membership through CollaborationGroupMember records
@@ -123,6 +135,7 @@ Admins can monitor execution by:
 ---
 
 ## 🚀 Future Enhancements
+
 |       **Feature**       |                                 **Notes**                                  |
 | :---------------------: | :------------------------------------------------------------------------: |
 | Dynamic Group Selection | Use custom metadata or Flow input variables instead of hardcoding Group ID |
