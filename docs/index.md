@@ -15,9 +15,9 @@ and technical documentation to support club operations, technology tools, and vo
 
 Use the sidebar to explore topics by category. If you're not sure where to begin, here are a few helpful starting points:
 
-- [Editing Our Website](how-to-guides/website-editing.md)
-- [Customize Favicon](how-to-guides/update-experience-cloud-favicon.md)
-- [KeepAlive Sessions](how-to-guides/keepalive-sessions.md)
+- [How To Guides](how-to-guides/index.md)
+- [Automations](automations/index.md)
+- [About](about.md)
 
 ## Contributing
 
