@@ -25,7 +25,8 @@ This Flow:
 
 - Adds eligible users (active site users) to a specific Chatter Group (CollaborationGroup).
 - Skips users who are already members of the group.
-- Logs each operation (whether added or skipped) into the `Conservation_Group_Membership_Log__c` object.
+- Logs each operation (only added) into the `Conservation_Group_Membership_Log__c` object.
+    Can be viewed here: [Conservation Group Membership Logs](https://spokanemountaineers.lightning.force.com/lightning/o/Conservation_Group_Membership_Log__c/list?filterName=00BUm000001cEz4MAE)
 
 ---
 
