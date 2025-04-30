@@ -14,6 +14,8 @@ nav:
     - Auto-Generate Federation ID: how-to-guides/auto-generate-federation-id.md
     - Batch Update Federation IDs: how-to-guides/batch-update-federation-id.md
     - Add Federation ID Logs to the App Launcher: docs/how-to-guides/add-federation-id-logs-to-the-app-launcher.md
+  - Automation:
+    - Scheduled Add Aembers to Conservation Group: docs/automation/scheduled-add-members-to-conservation-group.md
   - About: about.md  # We'll add this page later.
 
 # Custom branding
