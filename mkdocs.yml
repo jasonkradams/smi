@@ -16,6 +16,14 @@ nav:
     - Add Federation ID Logs to the App Launcher: how-to-guides/add-federation-id-logs-to-the-app-launcher.md
     - Delete Federation ID From Users: how-to-guides/delete-federation-id-from-users.md
   - Automation:
+    - automation/index.md
+    - User Sync:
+        - User Sync Overview: automation/user-sync-google-workspace/index.md
+        - Salesforce to Google Workspace: automation/user-sync-google-workspace/salesforce-flow.md
+        - Google App Script: automation/user-sync-google-workspace/google-apps-script.md
+        - Sync Testing Checklist: automation/user-sync-google-workspace/user-sync-testing-checklist.md
+        - Google App Script:
+          - automation/user-sync-google-workspace/google-app-script/index.md
     - Scheduled Add Aembers to Conservation Group: automation/scheduled-add-members-to-conservation-group.md
   - About: about.md  # We'll add this page later.
 

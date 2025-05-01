@@ -1,0 +1,17 @@
+{
+    "timeZone": "America/Los_Angeles",
+    "exceptionLogging": "STACKDRIVER",
+    "oauthScopes": [
+      "https://www.googleapis.com/auth/admin.directory.user",
+      "https://www.googleapis.com/auth/admin.directory.orgunit",
+      "https://www.googleapis.com/auth/script.external_request",
+      "https://www.googleapis.com/auth/script.scriptapp",
+      "https://www.googleapis.com/auth/gmail.send"
+    ],
+    "webapp": {
+      "access": "DOMAIN",
+      "executeAs": "USER_DEPLOYING"
+    },
+    "deploymentNotes": "Google Workspace user sync web app for Spokane Mountaineers. Accepts a list of active users from Salesforce and creates/updates/deletes accounts accordingly. Includes alert throttling."
+  }
+  

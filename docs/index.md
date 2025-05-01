@@ -16,7 +16,7 @@ and technical documentation to support club operations, technology tools, and vo
 Use the sidebar to explore topics by category. If you're not sure where to begin, here are a few helpful starting points:
 
 - [How To Guides](how-to-guides/index.md)
-- [Automations](automations/index.md)
+- [Automations](automation/index.md)
 - [About](about.md)
 
 ## Contributing

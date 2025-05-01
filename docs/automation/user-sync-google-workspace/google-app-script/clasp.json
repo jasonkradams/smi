@@ -1,0 +1,9 @@
+{
+    "scriptId": "ENTER_YOUR_SCRIPT_ID_HERE",
+    "rootDir": "./",
+    "access": {
+      "type": "group",
+      "group": "webdev@spokanemountaineers.org"
+    }
+  }
+  

@@ -10,6 +10,13 @@ Each automation is designed to reduce manual work, ensure consistency, and suppo
 
 - **[Scheduled: Add Members To Conservation Group](scheduled-add-members-to-conservation-group.md)**  
   Ensures all active site users are part of the Conservation Group and logs changes for audit.
+- [User Sync: Salesforce to Google Workspace](user-sync-google-workspace/index.md)  
+  Automates the synchronization of active Salesforce members to Google Workspace accounts.
+  - **[User Sync Flow](user-sync-google-workspace/salesforce-flow.md)**
+  - **[Google Apps Script](user-sync-google-workspace/google-apps-script.md)**  
+    A script that receives a list of active Salesforce members and synchronizes them to Google Workspace.
+  - **[User Sync Checklist](user-sync-google-workspace/user-sync-testing-checklist.md)**  
+    A checklist to verify the correct operation of the automated sync process.
 
 ---
 
