@@ -50,5 +50,5 @@ You must:
 
 ---
 
-See [`script.gs`](./script.gs) and [`alerts.gs`](./alerts.gs) for implementation details.
+See [`user_sync.js`](./user_sync.js) and [`alerts.js`](./alerts.js) for implementation details.
 

@@ -4,7 +4,7 @@
 
 This script receives a list of **active Salesforce members** and synchronizes them to Google Workspace by:
 
-* Creating accounts in the IdP Users Only OU if they don’t exist
+* Creating accounts in the IdP Only Users OU if they don’t exist
 * Updating user information if needed
 * Suspending accounts not present in the received list
 
@@ -26,7 +26,7 @@ This script receives a list of **active Salesforce members** and synchronizes th
 
 ```javascript
 const ADMIN_EMAIL = "admin@yourdomain.org"; // Must be super admin
-const TARGET_OU = "/IdP Users Only";
+const TARGET_OU = "/IdP Only Users";
 
 function doPost(e) {
 const activeUsers = JSON.parse(e.postData.contents);
