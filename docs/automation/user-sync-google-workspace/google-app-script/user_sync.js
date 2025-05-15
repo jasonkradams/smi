@@ -25,7 +25,7 @@ function doPost(e) {
 
     const directory = AdminDirectory.Users;
     const existingUsers = directory.list({
-      customer: "my_customer",
+      customer: "C01rz4h19",
       maxResults: 500,
       orgUnitPath: TARGET_OU
     }).users || [];
@@ -33,7 +33,7 @@ function doPost(e) {
     const existingEmails = new Set(existingUsers.map(u => u.primaryEmail.toLowerCase()));
 
     if (DEBUG) {
-      const ous = AdminDirectory.Orgunits.list("my_customer", { type: "all" });
+      const ous = AdminDirectory.Orgunits.list("C01rz4h19", { type: "all" });
       if (ous.organizationUnits) {
         for (const ou of ous.organizationUnits) {
           Logger.log(`OU: ${ou.name}, Path: ${ou.orgUnitPath}`);
@@ -103,7 +103,9 @@ function doPost(e) {
     Logger.log(`Deleted: ${deletedCount}`);
     Logger.log(`Skipped: ${skippedDeleteCount}`);
 
-    return ContentService.createTextOutput("OK");
+    return ContentService
+      .createTextOutput("OK")
+      .setMimeType(ContentService.MimeType.TEXT);
   } catch (err) {
     const summary = `Created: ${createdCount}\nUpdated: ${updatedCount}\nDeleted: ${deletedCount}\nSkipped: ${skippedDeleteCount}`;
     const body = `Error:\n${err.message}\n\nStack:\n${err.stack}\n\nSummary:\n${summary}`;
@@ -111,6 +113,12 @@ function doPost(e) {
     sendAlert("[User Sync] Failure Detected", body);
     throw err;
   }
+}
+
+function doGet(e) {
+  return ContentService
+    .createTextOutput("This endpoint only accepts POST requests.")
+    .setMimeType(ContentService.MimeType.TEXT);
 }
 
 function generateRandomPassword() {
