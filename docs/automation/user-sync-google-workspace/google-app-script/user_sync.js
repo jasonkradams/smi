@@ -70,7 +70,7 @@ function doPost(e) {
           primaryEmail: email,
           password: generateRandomPassword()
         };
-        if (DEBUG) Logger.log(`Creating: ${email}`);
+        Logger.log(`Creating: ${email}`);
         if (DEBUG) Logger.log(JSON.stringify(insertPayload));
         if (!DRY_RUN) directory.insert(insertPayload);
         createdCount++;
@@ -87,7 +87,7 @@ function doPost(e) {
           continue;
         }
         if (user.orgUnitPath === TARGET_OU) {
-          if (DEBUG) Logger.log(`Deleting: ${email}`);
+          Logger.log(`Deleting: ${email}`);
           if (!DRY_RUN) directory.remove(email);
           deletedCount++;
         } else {
