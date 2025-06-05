@@ -10,7 +10,7 @@ serve: ## Run Docs Server
 lint: ## Run linters
 	@$(MAKE) lint-docs
 
-.PHONE: lint-docs
+.PHONY: lint-docs
 lint-docs: ## Lint the documentation for issues
 	@echo ➤ linting docs
 	@docker run --platform=linux/amd64 --rm -it -v $(CURDIR):/code -w /code markdownlint/markdownlint **/*.md
