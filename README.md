@@ -17,6 +17,16 @@ This repository contains:
 
 Visit the [documentation website](https://jasonkradams.github.io/smi/) for detailed guides, including how to deploy and use the Custom Calendar LWC and other tools.
 
+## Preview Documentation Locally
+
+The docs are built with [MkDocs](https://www.mkdocs.org/). You can run a local server to preview changes with:
+
+```bash
+make serve
+```
+
+If MkDocs is installed on your machine, `mkdocs serve` works as well. The site will be available at <http://localhost:8000/>.
+
 ## Contributing
 
 We welcome contributions! If you have ideas for improvements or new features, please open an issue or submit a pull request.
