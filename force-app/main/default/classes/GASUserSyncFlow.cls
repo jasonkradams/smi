@@ -6,13 +6,23 @@ public class GASUserSyncFlow {
 
     @InvocableMethod(label='Sync All Users to Google Workspace')
     public static void postToGoogle(List<InputWrapper> input) {
+        System.debug('=== GASUserSyncFlow: Starting user sync ===');
+        System.debug('=== GASUserSyncFlow: Running user: ' + UserInfo.getUserName() + ' ===');
+
         if (input == null || input.isEmpty()) {
-            System.debug('No input provided to GAS sync.');
+            System.debug('=== GASUserSyncFlow: No input provided to GAS sync. ===');
             return;
         }
 
         List<UserSyncInput> users = input[0].users;
-        String payload = JSON.serialize(users);
+        String payload;
+        try {
+            payload = JSON.serialize(users);
+            System.debug('=== GASUserSyncFlow: Payload JSON ===\n' + payload);
+        } catch (Exception e) {
+            System.debug('=== GASUserSyncFlow: JSON serialization failed ===\n' + e.getMessage());
+            return;
+        }
 
         HttpRequest req = new HttpRequest();
         req.setEndpoint('callout:GoogleAppsScript');
@@ -21,11 +31,23 @@ public class GASUserSyncFlow {
         req.setBody(payload);
 
         Http http = new Http();
+        HttpResponse res;
+
         try {
-            HttpResponse res = http.send(req);
-            System.debug('Google Workspace Sync Response: ' + res.getBody());
+            System.debug('=== GASUserSyncFlow: Sending HTTP request to GoogleAppsScript ===');
+            res = http.send(req);
+            System.debug('=== GASUserSyncFlow: Status Code === ' + res.getStatusCode());
+            System.debug('=== GASUserSyncFlow: Response Body ===\n' + res.getBody());
+        } catch (System.CalloutException calloutEx) {
+            System.debug('=== GASUserSyncFlow: Callout Exception occurred ===');
+            System.debug('=== Message === ' + calloutEx.getMessage());
+            System.debug('=== Stack Trace ===\n' + calloutEx.getStackTraceString());
         } catch (Exception ex) {
-            System.debug('Error during Google Apps Script sync: ' + ex.getMessage());
+            System.debug('=== GASUserSyncFlow: General Exception occurred ===');
+            System.debug('=== Message === ' + ex.getMessage());
+            System.debug('=== Stack Trace ===\n' + ex.getStackTraceString());
         }
+
+        System.debug('=== GASUserSyncFlow: Completed ===');
     }
 }

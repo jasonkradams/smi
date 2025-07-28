@@ -10,6 +10,10 @@ private class GASUserSyncFlowTest {
         user.last_name = 'Test';
         user.federation_id = 'sync.test@spokanemountaineers.org';
 
+        System.debug('Running user: ' + UserInfo.getUserName());
+        System.debug('UserId: ' + UserInfo.getUserId());
+        System.debug('ProfileId: ' + [SELECT ProfileId FROM User WHERE Id = :UserInfo.getUserId()].ProfileId);
+
         // Wrap in InputWrapper
         GASUserSyncFlow.InputWrapper wrapper = new GASUserSyncFlow.InputWrapper();
         wrapper.users = new List<UserSyncInput>{ user };
