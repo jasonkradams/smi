@@ -46,3 +46,6 @@ $RECYCLE.BIN/
 
 # Material for MkDocs
 site/
+
+# Temporary
+tmp/
