@@ -15,6 +15,7 @@ nav:
     - Batch Update Federation IDs: how-to-guides/batch-update-federation-id.md
     - Add Federation ID Logs to the App Launcher: how-to-guides/add-federation-id-logs-to-the-app-launcher.md
     - Delete Federation ID From Users: how-to-guides/delete-federation-id-from-users.md
+    - Bulk Delete Events in Salesforce: how-to-guides/bulk-delete-events-in-salesforce.md
   - Automation:
     - automation/index.md
     - User Sync:

@@ -15,6 +15,7 @@ Whether you're a club admin, event leader, or website contributor, this is your 
 - [Batch Update Federation IDs](batch-update-federation-id.md): Update existing user Federation IDs in Salesforce to match Google Workspace accounts.
 - [Add Federation ID Logs to the App Launcher](add-federation-id-logs-to-the-app-launcher.md): Create a custom tab for viewing Federation ID update logs in Salesforce.
 - [Delete Federation ID From Users](delete-federation-id-from-users.md): Remove Federation IDs from users in Salesforce.
+- [Bulk Delete Events in Salesforce](bulk-delete-events-in-salesforce.md): Safely identify and bulk delete unwanted Event records in Salesforce.
 
 More guides coming soon!
 
