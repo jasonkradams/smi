@@ -16,6 +16,7 @@ Whether you're a club admin, event leader, or website contributor, this is your 
 - [Add Federation ID Logs to the App Launcher](add-federation-id-logs-to-the-app-launcher.md): Create a custom tab for viewing Federation ID update logs in Salesforce.
 - [Delete Federation ID From Users](delete-federation-id-from-users.md): Remove Federation IDs from users in Salesforce.
 - [Bulk Delete Events in Salesforce](bulk-delete-events-in-salesforce.md): Safely identify and bulk delete unwanted Event records in Salesforce.
+- [Salesforce Development Console Cheatsheet](salesforce-development-console-cheatsheet.md): A quick reference for using the Salesforce Developer Console, including common tasks and useful tips.
 
 More guides coming soon!
 
