@@ -22,8 +22,8 @@
             <div class="previewMode MEDIUM forceRelatedListPreview">
                 <div>
                     <div class="useHeaderBarFix forceBaseListView forceRelatedListPreviewGrid">
-                        <!-- Loading State -->
-                        <template if:true={showLoading}>
+                        <!-- Loading State - Only show when loading AND no participants -->
+                        <template if:true={showLoadingAndNoParticipants}>
                             <div class="spinnerWrapper forceComponentSpinner">
                                 <div role="alert" aria-hidden="true" class="indicator forceInlineSpinner">
                                     <lightning-spinner alternative-text="Loading participants" size="small"></lightning-spinner>
@@ -31,8 +31,8 @@
                             </div>
                         </template>
 
-                        <!-- Error State -->
-                        <template if:true={showError}>
+                        <!-- Error State - Only show when error AND no participants -->
+                        <template if:true={showErrorAndNoParticipants}>
                             <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
                                 <span class="slds-assistive-text">error</span>
                                 <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small">
@@ -42,7 +42,7 @@
                             </div>
                         </template>
 
-                        <!-- Participants List -->
+                        <!-- Participants List - Show when we have participants -->
                         <template if:true={hasParticipants}>
                             <div class="listViewContent">
                                 <div tabindex="-1" class="scrollable uiScroller scroller-wrapper scroll-bidirectional native">
@@ -92,8 +92,8 @@
                             </div>
                         </template>
 
-                        <!-- No Participants -->
-                        <template if:false={hasParticipants}>
+                        <!-- No Participants - Show when not loading, no error, and no participants -->
+                        <template if:true={showEmptyState}>
                             <div class="emptyContent">
                                 <div class="emptyContentInner">
                                     <p class="slds-text-body_regular slds-text-color_weak">
