@@ -75,12 +75,12 @@
 .forceRecordLayout th {
     font-weight: 700;
     text-align: left;
-    padding: 0.5rem;
+    padding: 4px 8px 4px 16px;
     border-bottom: 1px solid #e5e5e5;
 }
 
 .forceRecordLayout td {
-    padding: 0.5rem;
+    padding: 4px 8px 4px 16px;
     border-bottom: 1px solid #e5e5e5;
 }
 
