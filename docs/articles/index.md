@@ -4,7 +4,8 @@ This section contains in-depth technical articles and solutions we've implemente
 
 ## Recent Articles
 
-- **[Event Participant Privacy Redirect Solution](event-participant-redirect.md)** - How we implemented a privacy-focused redirect system for Event Participants in Experience Cloud
+- **[Protecting Member Privacy in Event Participant Lists](event-participant-privacy-solution.md)** - An overview of our privacy solution for Event Participants, written for a general technical audience
+- **[Event Participant Privacy Redirect Solution (Technical)](event-participant-redirect.md)** - Complete technical implementation guide with deployment instructions, code examples, and troubleshooting
 
 ## Article Categories
 
