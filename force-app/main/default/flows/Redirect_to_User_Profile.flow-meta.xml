@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <assignments>
+        <name>Set_Redirect_URL</name>
+        <label>Set Redirect URL</label>
+        <locationX>264</locationX>
+        <locationY>398</locationY>
+        <assignmentItems>
+            <assignToReference>redirectUrl</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>/s/profile/{!Get_Event_Participant.Contact.User_Lookup__c}</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Redirect_to_User</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>Has_Related_User</name>
+        <label>Has Related User?</label>
+        <locationX>264</locationX>
+        <locationY>290</locationY>
+        <defaultConnector>
+            <targetReference>Show_No_Profile_Message</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No Related User</defaultConnectorLabel>
+        <rules>
+            <name>User_Exists</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Event_Participant.Contact.User_Lookup__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Redirect_URL</targetReference>
+            </connector>
+            <label>User Exists</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>Redirect to User Profile {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Redirect to User Profile</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <recordLookups>
+        <name>Get_Event_Participant</name>
+        <label>Get Event Participant</label>
+        <locationX>264</locationX>
+        <locationY>74</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Has_Related_User</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>EventRelation</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <screens>
+        <name>Redirect_to_User</name>
+        <label>Redirect to User</label>
+        <locationX>264</locationX>
+        <locationY>506</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>redirect_message</name>
+            <fieldText>&lt;p&gt;Redirecting to user profile...&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <nextOrFinishButtonLabel>Continue</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Show_No_Profile_Message</name>
+        <label>Show No Profile Message</label>
+        <locationX>50</locationX>
+        <locationY>398</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>no_profile_message</name>
+            <fieldText>&lt;p&gt;This participant has no public profile available.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <nextOrFinishButtonLabel>Close</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Event_Participant</targetReference>
+        </connector>
+        <triggerType>None</triggerType>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>redirectUrl</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

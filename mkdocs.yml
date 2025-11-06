@@ -4,6 +4,9 @@ repo_url: https://github.com/jasonkradams/smi
 edit_uri: edit/main/docs/
 nav:
   - Home: index.md
+  - Articles:
+    - articles/index.md
+    - Event Participant Privacy Solution: articles/event-participant-redirect.md
   - How-To Guides:
     - how-to-guides/index.md
     - Customize Favicon: how-to-guides/update-experience-cloud-favicon.md

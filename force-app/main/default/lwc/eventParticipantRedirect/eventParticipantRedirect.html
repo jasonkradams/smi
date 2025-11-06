@@ -1,0 +1,24 @@
+<template>
+    <template if:true={showLoading}>
+        <div class="slds-text-align_center slds-p-around_medium">
+            <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            <p class="slds-m-top_small">Checking for user profile...</p>
+        </div>
+    </template>
+    
+    <template if:true={showError}>
+        <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+            <span class="slds-assistive-text">error</span>
+            <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small">
+                <lightning-icon icon-name="utility:error" size="x-small" alternative-text="Error"></lightning-icon>
+            </span>
+            <h2>{errorMessage}</h2>
+        </div>
+    </template>
+    
+    <template if:false={showLoading}>
+        <a href="javascript:void(0);" onclick={handleContactClick} class="slds-text-link_reset">
+            {contactName}
+        </a>
+    </template>
+</template>

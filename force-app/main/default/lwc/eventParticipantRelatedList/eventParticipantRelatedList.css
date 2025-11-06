@@ -1,0 +1,25 @@
+.slds-text-link_reset {
+    color: inherit;
+    text-decoration: none;
+}
+
+.slds-text-link_reset:hover {
+    text-decoration: underline;
+    color: #0176d3;
+}
+
+.slds-text-color_weak {
+    color: #6c7e88;
+}
+
+.slds-m-bottom_small {
+    margin-bottom: 0.5rem;
+}
+
+.slds-m-top_small {
+    margin-top: 0.5rem;
+}
+
+.slds-p-around_medium {
+    padding: 1rem;
+}

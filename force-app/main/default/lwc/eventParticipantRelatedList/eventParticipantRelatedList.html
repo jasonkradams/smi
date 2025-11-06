@@ -1,0 +1,92 @@
+<template>
+    <div class="slds-p-around_medium">
+        <!-- Debug Info -->
+        <div class="slds-box slds-box_xx-small slds-m-bottom_small slds-theme_warning">
+            <pre>{debugInfo}</pre>
+        </div>
+
+        <h3 class="slds-text-heading_small slds-m-bottom_small">
+            Event Participants ({participantCount})
+        </h3>
+
+        <!-- Loading State -->
+        <template if:true={showLoading}>
+            <div class="slds-text-align_center slds-p-around_medium">
+                <lightning-spinner alternative-text="Loading participants" size="small"></lightning-spinner>
+                <p class="slds-m-top_small">Loading event participants...</p>
+            </div>
+        </template>
+
+        <!-- Error State -->
+        <template if:true={showError}>
+            <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+                <span class="slds-assistive-text">error</span>
+                <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small">
+                    <lightning-icon icon-name="utility:error" size="x-small" alternative-text="Error"></lightning-icon>
+                </span>
+                <h2>{error}</h2>
+            </div>
+        </template>
+
+        <!-- Participants List -->
+        <template if:true={hasParticipants}>
+            <div class="slds-box slds-box_x-small">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Participant Name">Participant Name</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Status">Status</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Response">Response</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={participants} for:item="participant">
+                            <tr key={participant.eventRelationId} class="slds-hint-parent">
+                                <td data-label="Participant Name">
+                                    <template if:true={participant.hasUser}>
+                                        <a href="javascript:void(0);" 
+                                           class="slds-text-link_reset"
+                                           onclick={handleParticipantClick}
+                                           data-participant-id={participant.userId}
+                                           data-has-user="true">
+                                            {participant.contactName}
+                                        </a>
+                                    </template>
+                                    <template if:false={participant.hasUser}>
+                                        <span class="slds-text-color_weak">{participant.contactName}</span>
+                                    </template>
+                                </td>
+                                <td data-label="Status">
+                                    <div class="slds-truncate" title={participant.status}>
+                                        {participant.status}
+                                    </div>
+                                </td>
+                                <td data-label="Response">
+                                    <div class="slds-truncate" title={participant.response}>
+                                        {participant.response}
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </template>
+
+        <!-- No Participants -->
+        <template if:false={hasParticipants}>
+            <div class="slds-text-align_center slds-p-around_medium">
+                <lightning-icon icon-name="utility:groups" size="small" class="slds-m-bottom_small"></lightning-icon>
+                <p class="slds-text-body_regular slds-text-color_weak">
+                    No participants have been added to this event yet.
+                </p>
+            </div>
+        </template>
+    </div>
+</template>
