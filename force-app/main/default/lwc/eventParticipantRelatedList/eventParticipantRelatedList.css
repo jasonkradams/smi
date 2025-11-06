@@ -1,0 +1,105 @@
+/* Match Salesforce Related List Styling */
+.forceRelatedListCardDesktop {
+    margin-bottom: 1rem;
+}
+
+.forceRelatedListCardHeader {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.forceEntityIcon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.forceEntityIcon .icon {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.outputLookupContainer {
+    align-items: center;
+}
+
+.outputLookupLink {
+    color: #0176d3;
+    text-decoration: none;
+}
+
+.outputLookupLink:hover {
+    text-decoration: none;
+    color: #014486;
+}
+
+.outputLookupLink.textUnderline {
+    text-decoration: none;
+}
+
+.outputLookupLink.slds-text-color_weak {
+    color: #6c7e88;
+    text-decoration: none;
+    cursor: default;
+}
+
+.outputLookupLink.slds-text-color_weak:hover {
+    text-decoration: none;
+    color: #6c7e88;
+}
+
+.forceBaseListView {
+    position: relative;
+}
+
+.forceRelatedListPreview {
+    min-height: 200px;
+}
+
+.listViewContent {
+    position: relative;
+}
+
+.uiScroller {
+    overflow: auto;
+    max-height: 400px;
+}
+
+.forceRecordLayout {
+    width: 100%;
+}
+
+.forceRecordLayout th {
+    font-weight: 700;
+    text-align: left;
+    padding: 4px 8px 4px 16px;
+    border-bottom: 1px solid #000000;
+}
+
+.forceRecordLayout td {
+    padding: 4px 8px 4px 16px;
+    border-bottom: 1px solid #000000;
+}
+
+.forceRecordLayout th[scope="row"] {
+    font-weight: 400;
+}
+
+.emptyContent {
+    padding: 2rem;
+    text-align: center;
+}
+
+.spinnerWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+}
+
+.hideSpinner {
+    display: none;
+}
