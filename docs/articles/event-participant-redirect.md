@@ -1,6 +1,6 @@
 # Solving Event Participant Privacy in Experience Cloud
 
-*Published: November 4, 2025 | Category: Salesforce Solutions*
+*Published: November 5, 2025 | Category: Salesforce Solutions*
 
 ## The Privacy Puzzle We Faced
 
@@ -36,60 +36,71 @@ Manual data entry wasn't an option - we needed automation. We implemented a thre
 
 **Real-time Sync**: A record-triggered Flow that automatically updates the Contact lookup when Users are created or modified. This catches new users and any changes to existing ones.
 
-**Batch Backfill**: For our existing data, we created a batch Apex class that processes 500 records at a time, matching Contacts to Users based on a prioritized approach: Username first (guaranteed unique), then FederationIdentifier, then Email as last resort. This was crucial for handling our historical data while avoiding duplicate email matches.
+**Batch Backfill**: For our existing data, we created a batch Apex class that processes contacts in batches of 200, matching Contacts to Users based on a prioritized approach:
+1. **Email Match** (most reliable): `Contact.Email = User.Email`
+2. **FederationIdentifier Match**: `Contact.Email` (transformed) = `User.FederationIdentifier`
+   - Transformation: Replace `@` with `_` and append `@spokanemountaineers.org`
+   - Example: `jason@example.com` → `jason_example.com@spokanemountaineers.org`
+3. **Username Match**: `Contact.Email + '.smi' = User.Username`
+   - Example: `jason@example.com` → `jason@example.com.smi`
 
-**Manual Sync**: A utility Flow for administrators to manually trigger syncs when needed.
+This prioritized approach ensures we match the most reliable identifier first, avoiding duplicate email matches while handling various User naming conventions.
 
-### 3. The Smart Redirect Logic
+**Manual Sync**: Apex methods available for administrators to manually trigger syncs when needed (via Anonymous Apex or custom automation).
 
-This is where the magic happens. Since EventRelation doesn't allow custom fields, we created a custom Lightning Web Component that handles the intelligent routing:
+### 3. The Smart Related List Component
 
-- **Custom Related List**: Replaces the standard Event Participants related list
-- **Smart Click Handling**: Participants with linked Users redirect to profiles, others show plain text
-- **Rich Display**: Shows participant status and response information
+Since Event Participants in our org use the custom `Event_Participant__c` object (which links to `Event_Registration__c`), we created a custom Lightning Web Component that replaces the standard related list:
+
+- **Custom Related List**: `eventParticipantRelatedList` component that queries `Event_Participant__c` records
+- **Smart Click Handling**: Participants with linked Users redirect to User profiles, others show plain text
+- **Rich Display**: Shows participant Contact name and response information
 - **Graceful Degradation**: Handles missing User relationships elegantly
+- **Visual Consistency**: Styled to match Salesforce standard related list appearance
 
-The component checks each participant's Contact.User_Lookup__c field and creates conditional links:
-- If a related User exists → Create a clickable link to their profile page
+The component checks each participant's `Contact.User_Lookup__c` field and creates conditional links:
+- If a related User exists → Create a clickable link to their profile page (`/s/profile/{UserId}`)
 - If no User exists → Show plain text (no link, just the name)
 
 ### 4. Enhanced User Experience
 
-We didn't stop at just making the links work. We built a Lightning Web Component that handles the redirect gracefully:
+We built a Lightning Web Component that handles the redirect gracefully:
 
 - Shows a loading state while checking for User profile availability
-- Displays a friendly message if no public profile exists
+- Displays participant names with proper styling matching Salesforce standards
 - Respects Experience Cloud visibility rules automatically
 - Provides smooth navigation without jarring page reloads
+- Matches the visual appearance of standard Salesforce related lists
 
 ## Technical Deep Dive: What We Built
 
 ### Custom Fields
-- **Contact.User_Lookup__c** - The bridge field linking Contacts to Users
+- **Contact.User_Lookup__c** - The bridge field linking Contacts to Users (Lookup relationship)
 
 ### Lightning Web Components
-- **eventParticipantRedirect** - Individual participant redirect component with loading states and error handling
 - **eventParticipantRelatedList** - Custom related list that replaces standard Event Participants list with smart redirect functionality
+  - Queries `Event_Participant__c` records for a given `Event_Registration__c`
+  - Displays Contact names with conditional links to User profiles
+  - Styled to match Salesforce standard related list appearance
 
 ### Flows
 - **Sync_User_to_Contact** - Manual sync operations for administrators
-- **Redirect_to_User_Profile** - Screen flow handling the navigation logic
-- **User_to_Contact_Sync_Trigger** - Automatic real-time sync when Users change
+- **User_to_Contact_Sync_Trigger** - Automatic real-time sync when Users change (Before Save trigger)
 
 ### Apex Classes
 - **EventParticipantRedirectHelper** - Core business logic and utility methods
-- **ContactUserSyncBatch** - Efficient batch processing for existing data
-
-### Lightning Component
-- **eventParticipantRedirect** - The Experience Cloud redirect component with loading states and error handling
+  - `getEventParticipants(String eventId)` - Retrieves participants for an Event or Event_Registration__c
+  - `bulkSyncContactsToUsers(List<String> contactIds)` - Efficient bulk sync method (2 SOQL queries total)
+  - `syncContactToUser(String contactId)` - Single contact sync method
+- **ContactUserSyncBatch** - Efficient batch processing for existing data (processes 200 records per batch)
 
 ## Deployment Strategy: Minimal Disruption
 
 We rolled this out carefully to avoid breaking anything:
 
 1. **Deploy metadata** - All custom fields, classes, and components
-2. **Run batch sync** - Backfill existing Contact-User relationships
-3. **Update layouts** - Replace standard Contact links with our smart redirects
+2. **Run batch sync** - Backfill existing Contact-User relationships (achieved 99.14% sync rate)
+3. **Update layouts** - Replace standard related list with our custom component
 4. **Test thoroughly** - Verify both linked and unlinked scenarios work perfectly
 
 ## The Results: Privacy Preserved, Experience Enhanced
@@ -100,15 +111,19 @@ We rolled this out carefully to avoid breaking anything:
 
 **Data Integrity**: We maintained Salesforce's standard Event data model while adding the necessary intelligence.
 
-**Scalability**: The batch processing and automated sync ensure this works as our organization continues to grow.
+**Scalability**: The batch processing and automated sync ensure this works as our organization continues to grow. Our initial sync processed 1,732 out of 1,747 contacts (99.14% success rate).
+
+**Performance**: The bulk sync method uses only 2-3 SOQL queries regardless of contact count, making it highly efficient for large-scale operations.
 
 ## Lessons from the Trenches
 
-**Think Beyond the Obvious**: Initially, we considered overriding the standard related list entirely. But a formula field approach was cleaner, more maintainable, and less disruptive.
+**Think Beyond the Obvious**: Initially, we considered overriding the standard related list entirely. But a custom LWC approach was cleaner, more maintainable, and less disruptive.
 
 **Multiple Sync Strategies**: Real-time sync is great for new data, but batch processing is essential for existing records. You need both.
 
-**Graceful Degradation**: Not every Contact will have a corresponding User. The solution handles this elegantly with friendly messaging rather than broken links.
+**Prioritized Matching**: Using a prioritized matching approach (Email → FederationIdentifier → Username) ensures we match the most reliable identifier first while handling various User naming conventions.
+
+**Graceful Degradation**: Not every Contact will have a corresponding User. The solution handles this elegantly with plain text display rather than broken links.
 
 **Test Edge Cases**: We discovered scenarios where Users exist but aren't community-enabled, requiring additional validation in our logic.
 
@@ -144,32 +159,14 @@ Here's everything you need to deploy this privacy-enhancing solution to your own
 - **Purpose**: The bridge field linking Contacts to Users
 - **Location**: `/objects/Contact/fields/User_Lookup__c.field-meta.xml`
 
-#### EventRelation.User_Profile_Link__c
-- **Type**: Formula (Text)
-- **Purpose**: Smart redirect formula that makes routing decisions
-- **Formula**: 
-  ```
-  IF(
-    NOT(ISBLANK(Contact.User_Lookup__c)),
-    HYPERLINK("/s/profile/" & TEXT(Contact.User_Lookup__c), Contact.Name),
-    Contact.Name
-  )
-  ```
-- **Location**: `/objects/EventRelation/fields/User_Profile_Link__c.field-meta.xml`
-
 ### Flows for Automation
 
 #### Sync_User_to_Contact
 - **Type**: Autolaunched Flow
-- **Purpose**: Manually sync a Contact to its matching User record
+- **Purpose**: Utility Flow for syncing a Contact to its matching User record
 - **Input**: `recordId` (Contact ID)
+- **Note**: This Flow exists but is not currently configured as a button or action on Contact records. For manual sync, use the Apex methods `syncContactToUser()` or `bulkSyncContactsToUsers()` via Anonymous Apex.
 - **Location**: `/flows/Sync_User_to_Contact.flow-meta.xml`
-
-#### Redirect_to_User_Profile
-- **Type**: Screen Flow
-- **Purpose**: Handles Event Participant clicks with smart routing
-- **Input**: `recordId` (EventRelation ID)
-- **Location**: `/flows/Redirect_to_User_Profile.flow-meta.xml`
 
 #### User_to_Contact_Sync_Trigger
 - **Type**: Record-Triggered Flow (User, Before Save)
@@ -181,37 +178,47 @@ Here's everything you need to deploy this privacy-enhancing solution to your own
 #### EventParticipantRedirectHelper
 - **Purpose**: Provides methods for redirect logic and batch sync operations
 - **Key Methods**:
-  - `getUserRedirectUrl(String eventRelationId)` - Returns User profile URL or null
-  - `syncContactToUser(String contactId)` - Syncs single Contact to User (legacy, use bulk method)
-  - `bulkSyncContactsToUsers(List<String> contactIds)` - **NEW**: Efficient bulk sync method
-  - `syncContactsToUsers(List<SyncRequest>)` - Legacy batch sync method for Flows
-- **Performance**: The new `bulkSyncContactsToUsers` method reduces SOQL queries from ~3 per contact to just 3 total queries
+  - `getEventParticipants(String eventId)` - Returns list of participants for an Event or Event_Registration__c
+  - `bulkSyncContactsToUsers(List<String> contactIds)` - **Recommended**: Efficient bulk sync method (2-3 SOQL queries total)
+  - `syncContactToUser(String contactId)` - Single contact sync method (legacy, use bulk method for multiple contacts)
+- **Performance**: The `bulkSyncContactsToUsers` method reduces SOQL queries from ~3 per contact to just 2-3 total queries regardless of contact count
 - **Location**: `/classes/EventParticipantRedirectHelper.cls`
 
 #### ContactUserSyncBatch
 - **Purpose**: Batch job to backfill existing Contacts with User lookups
-- **Capacity**: Processes 50,000 records per batch execution
-- **Matching Logic**: Prioritized approach - Username first (unique), then FederationIdentifier, then Email as last resort to avoid duplicates
+- **Capacity**: Processes 200 records per batch execution (up to 50,000 contacts per batch job)
+- **Matching Logic**: Prioritized approach:
+  1. `Contact.Email = User.Email` (most reliable)
+  2. `Contact.Email` (transformed) = `User.FederationIdentifier` (replace `@` with `_`, append `@spokanemountaineers.org`)
+  3. `Contact.Email + '.smi' = User.Username` (common pattern)
 - **Location**: `/classes/ContactUserSyncBatch.cls`
 
 ### Lightning Web Component
 
-#### eventParticipantRedirect
-- **Purpose**: LWC for handling Event Participant redirects in Experience Cloud
-- **Features**: Loading states, error handling, automatic navigation
-- **Location**: `/lwc/eventParticipantRedirect/`
+#### eventParticipantRelatedList
+- **Purpose**: Custom related list component for Event Participants in Experience Cloud
+- **Features**: 
+  - Queries `Event_Participant__c` records for `Event_Registration__c`
+  - Displays Contact names with conditional links to User profiles
+  - Styled to match Salesforce standard related list appearance
+  - Handles loading states and errors gracefully
+- **Location**: `/lwc/eventParticipantRelatedList/`
 
 ## Step-by-Step Deployment
 
 ### 1. Deploy Custom Fields
+
 ```bash
 # Deploy Contact custom field
-sf deploy metadata -m CustomField:Contact.User_Lookup__c
+sf project deploy start \
+    --source-dir force-app/main/default/objects/Contact/fields/User_Lookup__c.field-meta.xml \
+    --target-org your-org-alias
 ```
 
 ### 2. Deploy Apex Classes
+
 ```bash
-# Use project deploy start for Apex classes (requires -meta.xml files)
+# Deploy Apex classes with tests
 sf project deploy start \
     --source-dir force-app/main/default/classes/EventParticipantRedirectHelper.cls \
     --source-dir force-app/main/default/classes/EventParticipantRedirectHelperTest.cls \
@@ -219,108 +226,98 @@ sf project deploy start \
     --source-dir force-app/main/default/classes/ContactUserSyncBatchTest.cls \
     --test-level RunSpecifiedTests \
     --tests EventParticipantRedirectHelperTest \
-    --tests ContactUserSyncBatchTest
+    --tests ContactUserSyncBatchTest \
+    --target-org your-org-alias
 ```
 
 ### 3. Deploy Flows
+
 ```bash
 sf project deploy start \
     --source-dir force-app/main/default/flows/Sync_User_to_Contact.flow-meta.xml \
-    --source-dir force-app/main/default/flows/Redirect_to_User_Profile.flow-meta.xml \
-    --source-dir force-app/main/default/flows/User_to_Contact_Sync_Trigger.flow-meta.xml
+    --source-dir force-app/main/default/flows/User_to_Contact_Sync_Trigger.flow-meta.xml \
+    --target-org your-org-alias
 ```
 
 ### 4. Deploy Lightning Web Components
+
 ```bash
 sf project deploy start \
-    --source-dir force-app/main/default/lwc/eventParticipantRedirect \
-    --source-dir force-app/main/default/lwc/eventParticipantRelatedList
+    --source-dir force-app/main/default/lwc/eventParticipantRelatedList \
+    --target-org your-org-alias
 ```
 
-### 5. Alternative: Deploy All Components
+### 5. Alternative: Deploy All Components at Once
+
 ```bash
 # Deploy all Event Participant Redirect components at once
 sf project deploy start \
     --source-dir force-app/main/default/classes \
     --source-dir force-app/main/default/flows \
     --source-dir force-app/main/default/lwc \
+    --source-dir force-app/main/default/objects \
     --test-level RunSpecifiedTests \
     --tests EventParticipantRedirectHelperTest \
-    --tests ContactUserSyncBatchTest
-```
-
-> **Note**: If you encounter "File not found: ...-meta.xml" errors, it means the metadata XML files are missing. You can either:
-> 1. Generate them using `sfdx force:source:retrieve` or recreate the classes
-> 2. Use `sf deploy metadata -m ApexClass:ClassName` for individual classes (if source tracking works)
-> 3. Deploy the entire directory structure with `sf deploy source -p force-app/main/default`
-
-## Deployment Troubleshooting
-
-### Common Issues and Solutions
-
-**"No source-backed components present" Error**
-- This occurs when the CLI can't find the metadata files
-- **Solution**: Use `sf project deploy start` with `--source-dir` instead of `sf deploy metadata`
-
-**"File not found: ...-meta.xml" Error**
-- Missing metadata XML files for Apex classes
-- **Solution**: The `-meta.xml` files have been created above, or use:
-  ```bash
-  # Generate metadata files
-  sfdx force:source:retrieve -m ApexClass:ClassName
-  ```
-
-**"Cannot add custom fields to entity: EventRelation" Error**
-- EventRelation doesn't allow custom fields (Salesforce limitation)
-- **Solution**: This is expected - we use the custom LWC related list instead
-
-**Component Conversion Failed**
-- Usually due to missing metadata or incorrect file structure
-- **Solution**: Ensure all `-meta.xml` files exist and use `sf project deploy start`
-
-### Quick Fix Commands
-
-```bash
-# If metadata deployment fails, try source deployment
-sf deploy source -p force-app/main/default
-
-# Deploy just the working components first
-sf project deploy start --source-dir force-app/main/default/lwc
-
-# Check what's actually in your project
-sf project list --source-dir force-app/main/default
+    --tests ContactUserSyncBatchTest \
+    --target-org your-org-alias
 ```
 
 ## Post-Deployment Setup
 
-### 🚀 NEW: Efficient Bulk Sync Operations
+### 1. Run the Backfill Batch
 
-We've added a high-performance bulk sync method that dramatically reduces SOQL query usage and improves performance for large-scale Contact-User synchronization.
+Execute this in Developer Console or Anonymous Apex to sync existing data:
 
-#### Why Use Bulk Sync?
+```java
+// Run the batch to sync existing Contacts
+Database.executeBatch(new ContactUserSyncBatch(), 200);
+```
+
+The batch job will:
+- Process up to 50,000 contacts in batches of 200
+- Use prioritized matching to link Contacts to Users
+- Send a completion email with statistics
+
+**Expected Results**: In our org, we achieved a 99.14% sync rate (1,732 out of 1,747 contacts successfully synced).
+
+### 2. Update Event Page Layout
+
+1. Navigate to Experience Cloud Builder
+2. Edit the Event Registration page layout
+3. Remove the standard Event Participants related list (if present)
+4. Add the custom `eventParticipantRelatedList` component
+5. Configure the component to show on Event Registration records
+6. Save and publish the layout
+
+### 3. Test Everything
+
+1. Create a test Event Registration with multiple participants
+2. Verify some participants have linked User accounts
+3. Test clicking participant names in Experience Cloud
+4. Confirm redirects work correctly for both linked and unlinked participants
+5. Verify the component styling matches standard Salesforce related lists
+
+## Bulk Sync Operations
+
+### Efficient Bulk Sync Method
+
+We've implemented a high-performance bulk sync method that dramatically reduces SOQL query usage:
 
 **Performance Comparison:**
-- **Legacy Method**: ~3 SOQL queries per contact (1 for Contact + 1 for User lookup + 1 for update)
-- **New Bulk Method**: Only 3 total SOQL queries regardless of contact count
-- **Efficiency Gain**: 10,000 contacts = 30,000 queries → 3 queries (99.99% reduction!)
+- **Legacy Method**: ~3 SOQL queries per contact
+- **New Bulk Method**: Only 2-3 SOQL queries total regardless of contact count
+- **Efficiency Gain**: 1,000 contacts = 3,000 queries → 3 queries (99.9% reduction!)
 
-**When to Use:**
-- ✅ Syncing large numbers of contacts (100+)
-- ✅ Periodic batch synchronization
-- ✅ Initial data backfill
-- ✅ Performance-critical environments
-- ❌ Single contact updates (use legacy method for simplicity)
+### Bulk Sync Examples
 
-#### Bulk Sync Methods
-
-##### 1. Anonymous Apex - Quick Sync
+#### 1. Sync Specific Contacts by ID
 
 ```java
 // Sync specific contacts by ID (most efficient)
 List<String> contactIds = new List<String>{
-    '0031N00001K1hLJQAZ',  // Derrek Daniels
-    '003Um00000jXt3pIAC', // Jordan Randall  
-    '0032G00002sd32kQAA'  // Arika Kuhlmann
+    '0031N00001K1hLJQAZ',  // Contact 1
+    '003Um00000jXt3pIAC',  // Contact 2
+    '0032G00002sd32kQAA'   // Contact 3
 };
 
 List<EventParticipantRedirectHelper.SyncResult> results = 
@@ -332,50 +329,34 @@ for (EventParticipantRedirectHelper.SyncResult result : results) {
 }
 ```
 
-##### 2. Batch Sync All Contacts
+#### 2. Sync Contacts in Batches
 
 ```java
-// Sync ALL contacts without User lookups (use with caution on large orgs)
-System.debug('Starting efficient bulk Contact to User sync...');
-
-// First check if User_Lookup__c field exists
-try {
-    Contact testContact = [SELECT Id, User_Lookup__c FROM Contact LIMIT 1];
-    System.debug('User_Lookup__c field exists on Contact object');
-} catch (Exception e) {
-    System.debug('ERROR: User_Lookup__c field does not exist: ' + e.getMessage());
-    // Exit early if field doesn't exist
-    return;
-}
-
-// Use QueryLocator for unlimited contacts
-Database.QueryLocatorIterator contactsIterator = Database.getQueryLocator([
+// Sync contacts in batches of 50 (optimal for governor limits)
+List<Contact> contactsToSync = [
     SELECT Id, Name, Email, User_Lookup__c 
     FROM Contact 
     WHERE Email != NULL 
     AND User_Lookup__c = NULL
     ORDER BY CreatedDate
-]).iterator();
+    LIMIT 400
+];
+
+Integer totalContacts = contactsToSync.size();
+System.debug('Found ' + totalContacts + ' contacts to sync');
 
 Integer successCount = 0;
 Integer failureCount = 0;
-Integer totalProcessed = 0;
-Integer batchSize = 0;
+Integer batchSize = 50;
 List<String> currentBatch = new List<String>();
 
-System.debug('Starting efficient bulk sync...');
-
-// Process in batches of 50 (optimal for governor limits)
-while (contactsIterator.hasNext()) {
-    Contact contact = (Contact)contactsIterator.next();
+for (Integer i = 0; i < contactsToSync.size(); i++) {
+    Contact contact = contactsToSync[i];
     currentBatch.add(contact.Id);
-    batchSize++;
-    totalProcessed++;
     
-    if (batchSize >= 50) {
-        System.debug('Processing batch of ' + batchSize + ' contacts (total: ' + totalProcessed + ')');
+    if (currentBatch.size() >= batchSize || i == contactsToSync.size() - 1) {
+        System.debug('Processing batch of ' + currentBatch.size() + ' contacts');
         
-        // Use the new efficient bulk sync method
         List<EventParticipantRedirectHelper.SyncResult> batchResults = 
             EventParticipantRedirectHelper.bulkSyncContactsToUsers(currentBatch);
         
@@ -387,53 +368,32 @@ while (contactsIterator.hasNext()) {
             }
         }
         
-        // Reset batch
         currentBatch.clear();
-        batchSize = 0;
     }
 }
 
-// Process final batch
-if (!currentBatch.isEmpty()) {
-    System.debug('Processing final batch of ' + batchSize + ' contacts');
-    
-    List<EventParticipantRedirectHelper.SyncResult> batchResults = 
-        EventParticipantRedirectHelper.bulkSyncContactsToUsers(currentBatch);
-    
-    for (EventParticipantRedirectHelper.SyncResult result : batchResults) {
-        if (result.success) {
-            successCount++;
-        } else {
-            failureCount++;
-        }
-    }
-}
-
-System.debug('Efficient bulk sync completed:');
-System.debug('Total contacts processed: ' + totalProcessed);
-System.debug('Success: ' + successCount);
-System.debug('Failures: ' + failureCount);
-System.debug('Success rate: ' + (totalProcessed > 0 ? (successCount * 100 / totalProcessed) + '%' : '0%'));
+System.debug('Sync completed: ' + successCount + ' successful, ' + failureCount + ' failed');
+System.debug('SOQL queries used: ' + Limits.getQueries() + '/' + Limits.getLimitQueries());
 ```
 
-##### 3. Targeted Sync by Event
+#### 3. Sync All Event Participants for a Specific Event
 
 ```java
-// Sync all participants for a specific Event
-String eventId = 'a0B1N000001XyZ123'; // Replace with your Event ID
+// Sync all participants for a specific Event_Registration__c
+String eventRegistrationId = 'a122G000008VdzJQAS'; // Replace with your Event_Registration__c ID
 
-// Get all EventRelation participants for this Event
-List<EventRelation> participants = [
-    SELECT RelationId 
-    FROM EventRelation 
-    WHERE EventId = :eventId
-    AND Relation.Type = 'Contact'
+// Get all Event_Participant__c records for this Event_Registration__c
+List<Event_Participant__c> participants = [
+    SELECT Contact__c 
+    FROM Event_Participant__c 
+    WHERE Event_Registration__c = :eventRegistrationId
+    AND Contact__c != null
 ];
 
 // Extract Contact IDs
 List<String> contactIds = new List<String>();
-for (EventRelation er : participants) {
-    contactIds.add(er.RelationId);
+for (Event_Participant__c participant : participants) {
+    contactIds.add(participant.Contact__c);
 }
 
 if (!contactIds.isEmpty()) {
@@ -451,50 +411,53 @@ if (!contactIds.isEmpty()) {
 }
 ```
 
-#### Performance Monitoring
+### Performance Monitoring
 
 The bulk sync method includes built-in performance monitoring:
 
 ```java
 // Monitor SOQL usage during bulk sync
 System.debug('SOQL queries used: ' + Limits.getQueries());
-System.debug('SOQL queries remaining: ' + Limits.getLimitQueries() - Limits.getQueries());
+System.debug('SOQL queries remaining: ' + (Limits.getLimitQueries() - Limits.getQueries()));
 ```
 
 **Expected Results:**
 - Small batches (50 contacts): ~3 SOQL queries total
-- Large batches (1000+ contacts): ~3 SOQL queries total
+- Large batches (1,000+ contacts): ~3 SOQL queries total
 - Query limit usage: <5% regardless of contact count
 
-### 1. Run the Backfill Batch (Legacy Method)
+## Matching Logic Details
 
-Execute this in Developer Console or Anonymous Apex to sync existing data:
-```java
-// Run the batch to sync existing Contacts
-Database.executeBatch(new ContactUserSyncBatch(), 200);
-```
+### Prioritized Matching Strategy
 
-> **Recommendation**: Use the new `bulkSyncContactsToUsers` method for better performance and lower SOQL usage. The legacy batch method is still available for compatibility.
+The sync process uses a three-tier matching approach:
 
-### 2. Update Event Page Layout
-1. Navigate to Event page layout in Experience Cloud
-2. Remove the standard Event Participants related list
-3. Add the custom `eventParticipantRelatedList` component
-4. Configure the component to show on Event records
-5. Save the layout
+1. **Email Match** (Highest Priority)
+   - `Contact.Email = User.Email`
+   - Most reliable match, used first
 
-### 3. Test Everything
-1. Create a test Event with multiple participants
-2. Verify some participants have linked User accounts
-3. Test clicking participant names in Experience Cloud
-4. Confirm redirects work correctly for both linked and unlinked participants
+2. **FederationIdentifier Match** (Second Priority)
+   - Transformation: `Contact.Email.replace('@', '_') + '@spokanemountaineers.org'`
+   - Example: `jason@example.com` → `jason_example.com@spokanemountaineers.org`
+   - Matches against `User.FederationIdentifier`
+
+3. **Username Match** (Third Priority)
+   - Pattern: `Contact.Email + '.smi'`
+   - Example: `jason@example.com` → `jason@example.com.smi`
+   - Matches against `User.Username`
+
+This prioritized approach ensures:
+- Most reliable matches are found first
+- Handles various User naming conventions
+- Avoids duplicate matches when multiple Users share the same email
 
 ## Security & Privacy Considerations
 
 - ✅ Respects User privacy settings by redirecting to User profile pages
-- ✅ Shows friendly "no public profile" message when no related User exists
+- ✅ Shows plain text (no link) when no related User exists
 - ✅ Community users only see User profiles that respect Experience Cloud visibility rules
 - ✅ Internal users retain standard Contact access for business operations
+- ✅ No sensitive Contact data exposed to community users
 
 ## Troubleshooting Common Issues
 
@@ -511,43 +474,38 @@ Database.executeBatch(new ContactUserSyncBatch(), 200);
 - Clear collections between batches: `currentBatch.clear();`
 
 **Slow Performance:**
-- The bulk sync method should complete 1000 contacts in <30 seconds
+- The bulk sync method should complete 1,000 contacts in <30 seconds
 - If slower, check for custom triggers on Contact objects
 - Verify User lookup indexes are in place
 
 ### Redirects Not Working?
-- Verify Contact.User_Lookup__c field is populated
+
+- Verify `Contact.User_Lookup__c` field is populated
 - Check that User records are active and have Community licenses
 - Ensure Experience Cloud profile URL format matches `/s/profile/{UserId}`
+- Verify the `eventParticipantRelatedList` component is properly added to the page layout
 
-### Legacy Batch Sync Not Finding Matches?
-- Verify User email addresses match Contact emails exactly
-- Check for FederationIdentifier or Username matches if email sync fails
-- Remember: Username matching takes priority over Email to avoid duplicate matches
+### Batch Sync Not Finding Matches?
+
+- Verify User email addresses match Contact emails exactly (for Email match)
+- Check for FederationIdentifier matches if email sync fails
+- Review the transformation logic: `email.replace('@', '_') + '@spokanemountaineers.org'`
+- Check for Username pattern matches: `email + '.smi'`
 - Review batch job completion email for statistics
 
 ### Flow Trigger Not Firing?
-- Verify User_to_Contact_Sync_Trigger Flow is active
+
+- Verify `User_to_Contact_Sync_Trigger` Flow is active
 - Check that User records have email addresses
 - Ensure Contact records exist with matching emails
+- Review Flow debug logs for any errors
 
-### Bulk Sync Error Messages
+### Component Not Displaying?
 
-**"Contact.User_Lookup__c field does not exist"**
-```bash
-# Deploy the custom field first
-sf deploy metadata -m CustomField:Contact.User_Lookup__c
-```
-
-**"Too many SOQL queries: 101"**
-- You're using the legacy sync method instead of bulk sync
-- Switch to `bulkSyncContactsToUsers()` method
-- Reduce batch size if still hitting limits
-
-**"System.LimitException: Too many DML rows: 151"**
-- Reduce batch size from 50 to 25
-- Process in smaller chunks
-- Check for custom triggers that might be increasing DML usage
+- Verify `eventParticipantRelatedList` component is added to the page layout
+- Check that the component has access to the Event_Registration__c record
+- Review browser console for JavaScript errors
+- Ensure the Event_Registration__c has Event_Participant__c records
 
 ## Monitoring & Maintenance
 
@@ -555,6 +513,7 @@ sf deploy metadata -m CustomField:Contact.User_Lookup__c
 - Check Flow debug logs for any sync errors
 - Review Experience Cloud access logs for redirect patterns
 - Periodically verify Contact-User relationships are staying in sync
+- Monitor SOQL query usage during bulk sync operations
 
 ## Future Enhancement Ideas
 
@@ -562,14 +521,15 @@ sf deploy metadata -m CustomField:Contact.User_Lookup__c
 2. **Multiple User matching**: Add logic for handling multiple matching Users intelligently
 3. **Custom matching rules**: Extend sync logic to include additional matching criteria beyond email
 4. **Audit trail**: Add custom object to track Contact-User sync history and changes
+5. **Admin dashboard**: Create a Lightning component for monitoring sync status and statistics
 
 ---
 
 ## Backout Plan: Rolling Back the Solution
 
-This section provides a comprehensive rollback plan in case the Event Participant Redirect solution needs to be reverted due to issues, performance problems, or changing requirements.
+This section provides a comprehensive rollback plan in case the Event Participant Redirect solution needs to be reverted.
 
-### 🚨 When to Consider Rollback
+### When to Consider Rollback
 
 - **Performance Issues**: Significant slowdown in Event page loads or related list performance
 - **Sync Problems**: Large-scale data corruption or incorrect Contact-User relationships
@@ -577,64 +537,24 @@ This section provides a comprehensive rollback plan in case the Event Participan
 - **Security Concerns**: Unexpected privacy breaches or access control problems
 - **Business Requirements**: Change in privacy policies or Event management approach
 
-### 📋 Pre-Rollback Checklist
-
-**1. Assess Impact**
-- [ ] Document specific issues or reasons for rollback
-- [ ] Identify affected user groups (community vs internal users)
-- [ ] Measure current performance baselines
-- [ ] Backup current state for analysis
-
-**2. Stakeholder Communication**
-- [ ] Notify tech team of planned rollback
-- [ ] Communicate with business stakeholders
-- [ ] Prepare user notification if downtime required
-- [ ] Schedule maintenance window if needed
-
-**3. Data Backup**
-- [ ] Export Contact.User_Lookup__c field data
-- [ ] Backup Event Relations with custom field values
-- [ ] Save current Flow configurations
-- [ ] Document any manual changes made
-
-### 🔄 Step-by-Step Rollback Process
+### Step-by-Step Rollback Process
 
 #### Phase 1: Disable New Functionality
 
 **1. Deactivate Flows**
-```bash
-# Using Salesforce CLI
-sf deploy metadata -m Flow:User_to_Contact_Sync_Trigger -o "Active"="false"
-sf deploy metadata -m Flow:Sync_User_to_Contact -o "Active"="false"
-sf deploy metadata -m Flow:Redirect_to_User_Profile -o "Active"="false"
-```
-
-**Or in Salesforce Setup:**
-- Navigate to Flow Builder
-- Find each Flow: `User_to_Contact_Sync_Trigger`, `Sync_User_to_Contact`, `Redirect_to_User_Profile`
+- Navigate to Setup → Flows
+- Find `User_to_Contact_Sync_Trigger` and `Sync_User_to_Contact`
 - Click "Deactivate" for each Flow
 
 **2. Remove Lightning Component**
-```bash
-# Remove the LWC from pages
-sf deploy metadata -m FlexiPage:Event_Record_Page -o "eventParticipantRedirect"=remove
-```
+- Edit Event Registration page layouts in Experience Cloud Builder
+- Remove the `eventParticipantRelatedList` component
+- Replace with standard related list if needed
+- Save and publish the layout
 
-**Or in Experience Cloud Builder:**
-- Edit Event page layouts
-- Remove the `eventParticipantRedirect` component
-- Replace with standard Contact name field
+#### Phase 2: Revert Data Model Changes (Optional)
 
-#### Phase 2: Revert Data Model Changes
-
-**3. Restore Event Participant Related List**
-1. Navigate to Event page layout in Experience Cloud
-2. Edit the Event Participants related list
-3. Remove the `User_Profile_Link__c` field
-4. Add back the standard `Contact.Name` field
-5. Save the layout
-
-**4. Clear Contact User Lookups (Optional)**
+**3. Clear Contact User Lookups (Optional)**
 ```java
 // Execute in Anonymous Apex to clear all User lookups
 List<Contact> contactsToUpdate = [
@@ -652,39 +572,42 @@ update contactsToUpdate;
 System.debug('Cleared User lookup from ' + contactsToUpdate.size() + ' Contacts');
 ```
 
-#### Phase 3: Remove Custom Components
+#### Phase 3: Remove Custom Components (Optional - Destructive)
 
-**5. Delete Custom Fields**
+**4. Delete Custom Fields**
 ```bash
-# Remove the custom fields (WARNING: This is destructive!)
-sf delete metadata -m CustomField:Contact.User_Lookup__c
-sf delete metadata -m CustomField:EventRelation.User_Profile_Link__c
+# WARNING: This is destructive!
+sf project delete source \
+    --source-dir force-app/main/default/objects/Contact/fields/User_Lookup__c.field-meta.xml \
+    --target-org your-org-alias
 ```
 
-**6. Delete Apex Classes**
+**5. Delete Apex Classes**
 ```bash
-# Remove the Apex classes
-sf delete metadata -m ApexClass:EventParticipantRedirectHelper
-sf delete metadata -m ApexClass:EventParticipantRedirectHelperTest
-sf delete metadata -m ApexClass:ContactUserSyncBatch
-sf delete metadata -m ApexClass:ContactUserSyncBatchTest
+sf project delete source \
+    --source-dir force-app/main/default/classes/EventParticipantRedirectHelper.cls \
+    --source-dir force-app/main/default/classes/EventParticipantRedirectHelperTest.cls \
+    --source-dir force-app/main/default/classes/ContactUserSyncBatch.cls \
+    --source-dir force-app/main/default/classes/ContactUserSyncBatchTest.cls \
+    --target-org your-org-alias
 ```
 
-**7. Delete Flows**
+**6. Delete Flows**
 ```bash
-# Remove the Flows
-sf delete metadata -m Flow:Sync_User_to_Contact
-sf delete metadata -m Flow:Redirect_to_User_Profile
-sf delete metadata -m Flow:User_to_Contact_Sync_Trigger
+sf project delete source \
+    --source-dir force-app/main/default/flows/Sync_User_to_Contact.flow-meta.xml \
+    --source-dir force-app/main/default/flows/User_to_Contact_Sync_Trigger.flow-meta.xml \
+    --target-org your-org-alias
 ```
 
-**8. Delete Lightning Component**
+**7. Delete Lightning Component**
 ```bash
-# Remove the LWC
-sf delete metadata -m LightningComponentBundle:eventParticipantRedirect
+sf project delete source \
+    --source-dir force-app/main/default/lwc/eventParticipantRelatedList \
+    --target-org your-org-alias
 ```
 
-### 📊 Rollback Validation
+### Rollback Validation
 
 **Functionality Testing**
 - [ ] Event pages load normally
@@ -698,107 +621,6 @@ sf delete metadata -m LightningComponentBundle:eventParticipantRedirect
 - [ ] Event relationships remain intact
 - [ ] No orphaned lookup relationships
 - [ ] User data is preserved
-
-**User Access Verification**
-- [ ] Community users can access Events
-- [ ] Internal users maintain Contact access
-- [ ] No permission errors or access denied messages
-
-### 🔄 Alternative: Partial Rollback
-
-If you want to keep some functionality while addressing specific issues:
-
-**Option 1: Keep Sync, Remove Redirects**
-- Keep `Contact.User_Lookup__c` field and sync Flows
-- Remove `User_Profile_Link__c` formula field
-- Restore standard Contact name links in related lists
-
-**Option 2: Keep Manual Sync, Remove Automation**
-- Keep custom fields for future use
-- Deactivate automated sync Flows
-- Use manual sync processes only when needed
-
-**Option 3: Disable for Community Only**
-- Keep functionality for internal users
-- Create separate page layouts for Experience Cloud
-- Use standard Contact links only in community
-
-### 📞 Emergency Rollback (Quick Recovery)
-
-For urgent issues requiring immediate restoration:
-
-**1. Disable All Automation**
-```java
-// Quick disable - run in Anonymous Apex
-List<FlowDefinition> flows = [
-    SELECT Id, LatestVersionId 
-    FROM FlowDefinition 
-    WHERE DeveloperName IN ('Sync_User_to_Contact', 'Redirect_to_User_Profile', 'User_to_Contact_Sync_Trigger')
-];
-
-for (FlowDefinition flow : flows) {
-    FlowDefinitionView fdv = new FlowDefinitionView();
-    fdv.FlowDefinition = flow;
-    fdv.Status = 'Draft';
-    fdv.ActiveVersionId = null;
-    update fdv;
-}
-```
-
-**2. Restore Standard Related List**
-- Edit Event layouts immediately
-- Replace custom fields with standard Contact.Name
-- Save and activate layouts
-
-**3. Monitor Performance**
-- Watch system performance metrics
-- Check for any remaining errors
-- Verify user functionality is restored
-
-### 📝 Post-Rollback Actions
-
-**Documentation**
-- [ ] Document reasons for rollback
-- [ ] Record timeline of rollback process
-- [ ] Save any error logs or performance data
-- [ ] Update project documentation
-
-**Analysis**
-- [ ] Analyze what went wrong with the solution
-- [ ] Identify root causes of issues
-- [ ] Document lessons learned
-- [ ] Plan improvements for future implementations
-
-**Communication**
-- [ ] Notify stakeholders of successful rollback
-- [ ] Communicate with users about restored functionality
-- [ ] Share analysis findings with tech team
-- [ ] Update project status and roadmap
-
-### ⚠️ Important Considerations
-
-**Data Loss Prevention**
-- The `Contact.User_Lookup__c` field contains valuable relationship data
-- Consider backing up this data before deletion
-- You may want to keep the field inactive for a period before deletion
-
-**User Experience Impact**
-- Users will lose the privacy-focused redirect functionality
-- Community users will see Contact records again
-- Consider communicating this change to affected users
-
-**Future Re-implementation**
-- Keep documentation and code for potential future use
-- Address the issues that caused the rollback
-- Consider a phased approach for future deployments
-
-### 🆘 Support Contacts
-
-For rollback assistance:
-- **Technical Lead**: [Contact information]
-- **Salesforce Admin**: [Contact information] 
-- **Experience Cloud Specialist**: [Contact information]
-- **Business Stakeholder**: [Contact information]
 
 ---
 

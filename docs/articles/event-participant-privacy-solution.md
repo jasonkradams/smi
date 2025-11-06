@@ -116,11 +116,34 @@ System.debug('Sync completion rate: ' + (totalContacts > 0 ? ((syncedContacts * 
 
 ### Manual Sync (When Needed)
 
-If you need to sync specific Contacts manually:
+If you need to sync specific Contacts manually, you can use Anonymous Apex in the Developer Console:
 
-1. Navigate to the Contact record
-2. Look for the "Sync to User" button or Flow action
-3. Click to trigger the sync process
+**Sync a Single Contact:**
+```java
+// Replace with the actual Contact ID
+String contactId = '0031N00001K1hLJQAZ';
+Boolean success = EventParticipantRedirectHelper.syncContactToUser(contactId);
+System.debug('Sync result: ' + success);
+```
+
+**Sync Multiple Contacts:**
+```java
+// Replace with actual Contact IDs
+List<String> contactIds = new List<String>{
+    '0031N00001K1hLJQAZ',
+    '003Um00000jXt3pIAC',
+    '0032G00002sd32kQAA'
+};
+
+List<EventParticipantRedirectHelper.SyncResult> results = 
+    EventParticipantRedirectHelper.bulkSyncContactsToUsers(contactIds);
+
+for (EventParticipantRedirectHelper.SyncResult result : results) {
+    System.debug('Contact ' + result.contactId + ': ' + (result.success ? 'Synced' : 'Failed'));
+}
+```
+
+**Note**: The Flow (`Sync_User_to_Contact`) exists but is not currently configured as a button or action on Contact records. For manual sync, use the Apex methods above.
 
 ### Troubleshooting
 
