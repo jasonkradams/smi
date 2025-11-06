@@ -86,6 +86,15 @@
     min-height: 200px;
 }
 
+/* Allow dropdowns to overflow the scroller */
+.scroller {
+    overflow: visible;
+}
+
+.scroller-wrapper {
+    overflow: visible;
+}
+
 .forceRecordLayout {
     width: 100%;
 }
@@ -100,10 +109,21 @@
 .forceRecordLayout td {
     padding: 4px 8px 4px 16px;
     border-bottom: 1px solid #000000;
+    position: relative;
+    overflow: visible;
 }
 
 .forceRecordLayout th[scope="row"] {
     font-weight: 400;
+}
+
+.forceRecordLayout tbody tr {
+    position: relative;
+    z-index: 1;
+}
+
+.forceRecordLayout tbody tr:hover {
+    z-index: 10;
 }
 
 .emptyContent {
@@ -120,4 +140,38 @@
 
 .hideSpinner {
     display: none;
+}
+
+/* Ensure dropdown appears above next row */
+.response-dropdown {
+    position: relative;
+    z-index: 1000;
+}
+
+/* Ensure table allows overflow for dropdowns */
+.forceRecordLayout {
+    overflow: visible;
+}
+
+.forceRecordLayout tbody {
+    overflow: visible;
+}
+
+.forceRecordLayout thead {
+    overflow: visible;
+}
+
+/* Increase z-index of row containing combobox */
+.forceRecordLayout tbody tr {
+    position: relative;
+}
+
+/* When combobox is active, increase z-index of the row */
+.forceRecordLayout tbody tr.combobox-active {
+    z-index: 10000;
+}
+
+/* Ensure cells with dropdowns have proper stacking */
+.forceRecordLayout td:has(.response-dropdown) {
+    position: relative;
 }

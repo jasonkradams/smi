@@ -15,6 +15,16 @@
                         <span class="slds-shrink-none slds-m-right--xx-small" title={participantCountLabel}>({participantCount})</span>
                     </h2>
                 </div>
+                <template if:true={isEventLeader}>
+                    <div class="slds-no-flex">
+                        <lightning-button 
+                            label="Add Participant" 
+                            variant="brand" 
+                            onclick={handleAddParticipantClick}
+                            class="slds-m-left_small">
+                        </lightning-button>
+                    </div>
+                </template>
             </header>
         </div>
 
@@ -56,11 +66,16 @@
                                                     <th scope="col" class="initialSortAsc" title="Response" aria-label="Response">
                                                         Response<span class="assistiveText"></span>
                                                     </th>
+                                                    <template if:true={isEventLeader}>
+                                                        <th scope="col" title="Actions" aria-label="Actions">
+                                                            Actions<span class="assistiveText"></span>
+                                                        </th>
+                                                    </template>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <template for:each={participants} for:item="participant">
-                                                    <tr key={participant.eventRelationId}>
+                                                    <tr key={participant.eventRelationId} class="participant-row">
                                                         <th scope="row">
                                                             <div class="outputLookupContainer slds-grid forceOutputLookupWithPreview">
                                                                 <template if:true={participant.hasUser}>
@@ -81,8 +96,35 @@
                                                             </div>
                                                         </th>
                                                         <td>
-                                                            <span>{participant.response}</span>
+                                                            <template if:true={isEventLeader}>
+                                                                <lightning-combobox
+                                                                    data-participant-id={participant.eventRelationId}
+                                                                    value={participant.response}
+                                                                    options={responseOptions}
+                                                                    onchange={handleResponseChangeForParticipant}
+                                                                    onfocus={handleComboboxFocus}
+                                                                    onblur={handleComboboxBlur}
+                                                                    variant="label-hidden"
+                                                                    class="slds-m-bottom_none response-dropdown">
+                                                                </lightning-combobox>
+                                                            </template>
+                                                            <template if:false={isEventLeader}>
+                                                                <span>{participant.response}</span>
+                                                            </template>
                                                         </td>
+                                                        <template if:true={isEventLeader}>
+                                                            <td>
+                                                                <lightning-button-icon
+                                                                    icon-name="utility:delete"
+                                                                    alternative-text="Remove participant"
+                                                                    title="Remove participant"
+                                                                    data-participant-id={participant.eventRelationId}
+                                                                    onclick={handleRemoveParticipant}
+                                                                    variant="border-filled"
+                                                                    class="slds-m-left_x-small">
+                                                                </lightning-button-icon>
+                                                            </td>
+                                                        </template>
                                                     </tr>
                                                 </template>
                                             </tbody>
@@ -106,5 +148,46 @@
                 </div>
             </div>
         </div>
+
+        <!-- Add Participant Modal -->
+        <template if:true={showAddParticipant}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleCancelAdd}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Add Participant</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div class="slds-m-bottom_medium">
+                            <lightning-record-picker
+                                label="Contact"
+                                placeholder="Search Contacts..."
+                                object-api-name="Contact"
+                                value={selectedContactId}
+                                onchange={handleContactChange}
+                                required>
+                            </lightning-record-picker>
+                        </div>
+                        <div>
+                            <lightning-combobox
+                                name="response"
+                                label="Response"
+                                value={selectedResponse}
+                                options={responseOptions}
+                                onchange={handleResponseChange}>
+                            </lightning-combobox>
+                        </div>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button variant="neutral" label="Cancel" onclick={handleCancelAdd}></lightning-button>
+                        <lightning-button variant="brand" label="Add Participant" onclick={handleSaveParticipant}></lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
     </article>
 </template>

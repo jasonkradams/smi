@@ -2,6 +2,7 @@ public class EventParticipantRedirectHelper {
     @testVisible static Boolean TEST_SIMULATE_EVENT_REG = false;
     @testVisible static String TEST_RELATED_EVENT_ID = null;
     @testVisible static List<Event_Registration__c> TEST_FAKE_REGS = null;
+    @testVisible static Boolean TEST_BYPASS_LEADER_CHECK = false;
     
     @AuraEnabled
     public static String getUserRedirectUrl(String eventRelationId) {
@@ -30,6 +31,175 @@ public class EventParticipantRedirectHelper {
         } catch (Exception e) {
             System.debug('Error getting user redirect URL: ' + e.getMessage());
             return null;
+        }
+    }
+
+    @AuraEnabled
+    public static Boolean isEventLeader(String eventRegistrationId) {
+        try {
+            // Test seam: allow bypassing leader check in test context
+            if (Test.isRunningTest() && TEST_BYPASS_LEADER_CHECK) {
+                return true;
+            }
+            
+            // Get current user ID
+            Id currentUserId = UserInfo.getUserId();
+            
+            // Query Event_Registration__c to check if current user is the leader
+            List<Event_Registration__c> eventRegs = [
+                SELECT Id, Leader__c 
+                FROM Event_Registration__c 
+                WHERE Id = :eventRegistrationId 
+                AND Leader__c = :currentUserId
+                LIMIT 1
+            ];
+            
+            return !eventRegs.isEmpty();
+        } catch (Exception e) {
+            System.debug('Error checking event leader status: ' + e.getMessage());
+            return false;
+        }
+    }
+
+    @AuraEnabled
+    public static ParticipantWrapper addParticipant(String eventRegistrationId, String contactId, String response) {
+        try {
+            // First verify the user is an event leader
+            if (!isEventLeader(eventRegistrationId)) {
+                throw new AuraHandledException('Only event leaders can add participants.');
+            }
+            
+            // Check if participant already exists
+            List<Event_Participant__c> existingParticipants = [
+                SELECT Id 
+                FROM Event_Participant__c 
+                WHERE Event_Registration__c = :eventRegistrationId 
+                AND Contact__c = :contactId
+                LIMIT 1
+            ];
+            
+            if (!existingParticipants.isEmpty()) {
+                throw new AuraHandledException('This contact is already a participant.');
+            }
+            
+            // Create new Event_Participant__c record
+            Event_Participant__c newParticipant = new Event_Participant__c(
+                Event_Registration__c = eventRegistrationId,
+                Contact__c = contactId,
+                Response__c = response != null ? response : 'Attending'
+            );
+            
+            insert newParticipant;
+            
+            // Query the new participant with related data to return
+            List<Event_Participant__c> participants = [
+                SELECT Id, Contact__c, Contact__r.Name, Contact__r.Email, Contact__r.User_Lookup__c, 
+                       Response__c, Event_Registration__c
+                FROM Event_Participant__c 
+                WHERE Id = :newParticipant.Id
+                LIMIT 1
+            ];
+            
+            if (participants.isEmpty()) {
+                throw new AuraHandledException('Failed to retrieve created participant.');
+            }
+            
+            Event_Participant__c participant = participants[0];
+            ParticipantWrapper wrapper = new ParticipantWrapper();
+            wrapper.eventRelationId = participant.Id;
+            wrapper.eventRegistrationId = eventRegistrationId;
+            wrapper.contactId = participant.Contact__c;
+            wrapper.contactName = participant.Contact__r.Name;
+            wrapper.contactEmail = participant.Contact__r.Email;
+            wrapper.userId = participant.Contact__r.User_Lookup__c;
+            wrapper.hasUser = (participant.Contact__r.User_Lookup__c != null);
+            wrapper.status = 'Registered';
+            wrapper.response = participant.Response__c != null ? participant.Response__c : 'Attending';
+            
+            return wrapper;
+        } catch (AuraHandledException e) {
+            throw e;
+        } catch (Exception e) {
+            System.debug('Error adding participant: ' + e.getMessage());
+            throw new AuraHandledException('Unable to add participant: ' + e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static Boolean removeParticipant(String participantId, String eventRegistrationId) {
+        try {
+            // First verify the user is an event leader
+            if (!isEventLeader(eventRegistrationId)) {
+                throw new AuraHandledException('Only event leaders can remove participants.');
+            }
+            
+            // Verify the participant belongs to this event registration
+            List<Event_Participant__c> participants = [
+                SELECT Id 
+                FROM Event_Participant__c 
+                WHERE Id = :participantId 
+                AND Event_Registration__c = :eventRegistrationId
+                LIMIT 1
+            ];
+            
+            if (participants.isEmpty()) {
+                throw new AuraHandledException('Participant not found or does not belong to this event.');
+            }
+            
+            delete participants[0];
+            return true;
+        } catch (AuraHandledException e) {
+            throw e;
+        } catch (Exception e) {
+            System.debug('Error removing participant: ' + e.getMessage());
+            throw new AuraHandledException('Unable to remove participant: ' + e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static ParticipantWrapper updateParticipantResponse(String participantId, String eventRegistrationId, String response) {
+        try {
+            // First verify the user is an event leader
+            if (!isEventLeader(eventRegistrationId)) {
+                throw new AuraHandledException('Only event leaders can update participant responses.');
+            }
+            
+            // Verify the participant belongs to this event registration and update
+            List<Event_Participant__c> participants = [
+                SELECT Id, Contact__c, Contact__r.Name, Contact__r.Email, Contact__r.User_Lookup__c, 
+                       Response__c, Event_Registration__c
+                FROM Event_Participant__c 
+                WHERE Id = :participantId 
+                AND Event_Registration__c = :eventRegistrationId
+                LIMIT 1
+            ];
+            
+            if (participants.isEmpty()) {
+                throw new AuraHandledException('Participant not found or does not belong to this event.');
+            }
+            
+            Event_Participant__c participant = participants[0];
+            participant.Response__c = response;
+            update participant;
+            
+            // Return updated wrapper
+            ParticipantWrapper wrapper = new ParticipantWrapper();
+            wrapper.eventRelationId = participant.Id;
+            wrapper.eventRegistrationId = eventRegistrationId;
+            wrapper.contactId = participant.Contact__c;
+            wrapper.contactName = participant.Contact__r.Name;
+            wrapper.contactEmail = participant.Contact__r.Email;
+            wrapper.userId = participant.Contact__r.User_Lookup__c;
+            wrapper.hasUser = (participant.Contact__r.User_Lookup__c != null);
+            wrapper.status = 'Registered';
+            wrapper.response = participant.Response__c != null ? participant.Response__c : 'Attending';
+            
+            return wrapper;
+        } catch (AuraHandledException e) {
+            throw e;
+        } catch (Exception e) {
+            System.debug('Error updating participant response: ' + e.getMessage());
+            throw new AuraHandledException('Unable to update participant response: ' + e.getMessage());
         }
     }
 
@@ -72,6 +242,7 @@ public class EventParticipantRedirectHelper {
                     for (Event_Participant__c participant : eventParticipants) {
                         ParticipantWrapper wrapper = new ParticipantWrapper();
                         wrapper.eventRelationId = participant.Id;
+                        wrapper.eventRegistrationId = eventId; // Set the Event_Registration__c ID
                         
                         if (participant.Contact__c != null) {
                             wrapper.contactId = participant.Contact__c;
@@ -93,7 +264,10 @@ public class EventParticipantRedirectHelper {
                     // No Event_Participant__c records found - fallback to Event_Registration__c name
                     System.debug('No Event_Participant__c records found, using Event_Registration__c as fallback');
                     ParticipantWrapper wrapper = new ParticipantWrapper();
-                    wrapper.eventRelationId = eventRegs[0].Id;
+                    // Use eventId as fallback for eventRelationId when Id is null (test seam scenario)
+                    // This ensures the LWC template key binding always has a unique non-null value
+                    wrapper.eventRelationId = eventRegs[0].Id != null ? eventRegs[0].Id : eventId;
+                    wrapper.eventRegistrationId = eventId; // Set the Event_Registration__c ID
                     wrapper.contactId = null;
                     wrapper.contactName = eventRegs[0].Name;
                     wrapper.contactEmail = null;
@@ -404,5 +578,8 @@ public class EventParticipantRedirectHelper {
         
         @AuraEnabled
         public String response;
+        
+        @AuraEnabled
+        public String eventRegistrationId;
     }
 }
