@@ -1,10 +1,5 @@
 <template>
     <div class="slds-p-around_medium">
-        <!-- Debug Info -->
-        <div class="slds-box slds-box_xx-small slds-m-bottom_small slds-theme_warning">
-            <pre>{debugInfo}</pre>
-        </div>
-
         <h3 class="slds-text-heading_small slds-m-bottom_small">
             Event Participants ({participantCount})
         </h3>
@@ -51,15 +46,16 @@
                                 <td data-label="Participant Name">
                                     <template if:true={participant.hasUser}>
                                         <a href="javascript:void(0);" 
-                                           class="slds-text-link_reset"
+                                           class="slds-text-link_reset slds-text-link"
                                            onclick={handleParticipantClick}
                                            data-participant-id={participant.userId}
-                                           data-has-user="true">
+                                           data-has-user={participant.hasUser}
+                                           title="View profile">
                                             {participant.contactName}
                                         </a>
                                     </template>
                                     <template if:false={participant.hasUser}>
-                                        <span class="slds-text-color_weak">{participant.contactName}</span>
+                                        <span class="slds-text-color_weak" title="No user profile available">{participant.contactName}</span>
                                     </template>
                                 </td>
                                 <td data-label="Status">

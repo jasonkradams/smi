@@ -55,83 +55,43 @@ public class EventParticipantRedirectHelper {
             if (!eventRegs.isEmpty()) {
                 System.debug('Found Event_Registration__c record: ' + eventRegs[0].Name);
                 
-                // Now try to find the actual field names by querying describe
-                Map<String, Schema.SObjectField> fields = Schema.SObjectType.Event_Registration__c.fields.getMap();
-                System.debug('Available fields on Event_Registration__c:');
-                String eventLookupField = null;
-                String contactLookupField = null;
+                // Query Event_Participant__c records related to this Event_Registration__c
+                // Event_Participant__c has the Contact__c lookup field
+                List<Event_Participant__c> eventParticipants = [
+                    SELECT Id, Contact__c, Contact__r.Name, Contact__r.Email, Contact__r.User_Lookup__c, 
+                           Response__c, Event_Registration__c
+                    FROM Event_Participant__c 
+                    WHERE Event_Registration__c = :eventId
+                    ORDER BY Contact__r.Name
+                ];
                 
-                for (String fieldName : fields.keySet()) {
-                    Schema.DescribeFieldResult fieldDesc = fields.get(fieldName).getDescribe();
-                    if (fieldDesc.getReferenceTo().size() > 0) {
-                        System.debug('Relationship field: ' + fieldName + ' -> ' + fieldDesc.getReferenceTo()[0]);
-                        
-                        // Find the Event and Contact relationship fields
-                        if (fieldDesc.getReferenceTo()[0] == Event.SObjectType) {
-                            eventLookupField = fieldName;
-                            System.debug('Found Event lookup field: ' + fieldName);
-                        } else if (fieldDesc.getReferenceTo()[0] == Contact.SObjectType) {
-                            contactLookupField = fieldName;
-                            System.debug('Found Contact lookup field: ' + fieldName);
-                        }
-                    } else {
-                        System.debug('Field: ' + fieldName + ' (' + fieldDesc.getType() + ')');
-                    }
-                }
+                System.debug('Found ' + eventParticipants.size() + ' Event_Participant__c records');
                 
-                // If we found the Event lookup field, query all registrations for that Event
-                if (eventLookupField != null) {
-                    System.debug('Querying all Event_Registration__c records for the same Event...');
-                    // Test seam: allow injecting a related Event id to exercise dynamic query path
-                    if (Test.isRunningTest() && TEST_SIMULATE_EVENT_REG && TEST_RELATED_EVENT_ID != null) {
-                        eventRegs[0].put(eventLookupField, TEST_RELATED_EVENT_ID);
-                    }
-                    String relatedEventId = (String) eventRegs[0].get(eventLookupField);
-                    System.debug('Related Event ID: ' + relatedEventId);
-                    
-                    if (relatedEventId != null) {
-                        String query = 'SELECT Id, Name, Status__c';
-                        if (contactLookupField != null) {
-                            query += ', ' + contactLookupField + '.Name, ' + contactLookupField + '.Email, ' + contactLookupField + '.User_Lookup__c';
-                        }
-                        query += ' FROM Event_Registration__c WHERE ' + eventLookupField + ' = :relatedEventId ORDER BY CreatedDate';
+                if (!eventParticipants.isEmpty()) {
+                    // Process each participant
+                    for (Event_Participant__c participant : eventParticipants) {
+                        ParticipantWrapper wrapper = new ParticipantWrapper();
+                        wrapper.eventRelationId = participant.Id;
                         
-                        List<Event_Registration__c> allRegistrations;
-                        if (Test.isRunningTest() && TEST_SIMULATE_EVENT_REG && TEST_FAKE_REGS != null) {
-                            allRegistrations = TEST_FAKE_REGS;
-                        } else {
-                            allRegistrations = Database.query(query);
-                        }
-                        System.debug('Found ' + allRegistrations.size() + ' total registrations for this Event');
-                        
-                        for (Event_Registration__c reg : allRegistrations) {
-                            ParticipantWrapper wrapper = new ParticipantWrapper();
-                            wrapper.eventRelationId = reg.Id;
-                            
-                            if (contactLookupField != null && reg.get(contactLookupField) != null) {
-                                Contact contact = (Contact) reg.get(contactLookupField);
-                                wrapper.contactId = contact.Id;
-                                wrapper.contactName = contact.Name;
-                                wrapper.contactEmail = contact.Email;
-                                wrapper.userId = contact.User_Lookup__c;
-                                wrapper.hasUser = (contact.User_Lookup__c != null);
-                            } else {
-                                wrapper.contactId = null;
-                                wrapper.contactName = reg.Name;
-                                wrapper.contactEmail = null;
-                                wrapper.userId = null;
-                                wrapper.hasUser = false;
-                            }
-                            
-                            wrapper.status = reg.Status__c != null ? reg.Status__c : 'Registered';
-                            wrapper.response = 'Event Registration';
+                        if (participant.Contact__c != null) {
+                            wrapper.contactId = participant.Contact__c;
+                            wrapper.contactName = participant.Contact__r.Name;
+                            wrapper.contactEmail = participant.Contact__r.Email;
+                            wrapper.userId = participant.Contact__r.User_Lookup__c;
+                            wrapper.hasUser = (participant.Contact__r.User_Lookup__c != null);
+                            wrapper.status = 'Registered';
+                            wrapper.response = participant.Response__c != null ? participant.Response__c : 'Event Registration';
                             
                             participants.add(wrapper);
-                            System.debug('Added participant: ' + wrapper.contactName + ' (User: ' + wrapper.hasUser + ')');
+                            System.debug('Added participant: ' + wrapper.contactName + ' (User: ' + wrapper.hasUser + ', UserId: ' + wrapper.userId + ')');
+                        } else {
+                            // Participant without Contact - skip or handle differently
+                            System.debug('Skipping participant without Contact: ' + participant.Id);
                         }
                     }
                 } else {
-                    // Fallback: just return the single registration
+                    // No Event_Participant__c records found - fallback to Event_Registration__c name
+                    System.debug('No Event_Participant__c records found, using Event_Registration__c as fallback');
                     ParticipantWrapper wrapper = new ParticipantWrapper();
                     wrapper.eventRelationId = eventRegs[0].Id;
                     wrapper.contactId = null;
@@ -143,7 +103,7 @@ public class EventParticipantRedirectHelper {
                     wrapper.response = 'Event Registration';
                     
                     participants.add(wrapper);
-                    System.debug('Added single participant: ' + wrapper.contactName);
+                    System.debug('Added single participant (Event_Registration__c): ' + wrapper.contactName);
                 }
             } else {
                 System.debug('Not an Event_Registration__c, using original EventRelation logic');

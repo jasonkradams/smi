@@ -11,6 +11,8 @@ export default class EventParticipantRelatedList extends NavigationMixin(Lightni
     error;
     _eventIdFromUrl;
     _pageRef;
+    _isLoadingParticipants = false; // Prevent duplicate calls
+    _foundWorkingId = false; // Track if we found a working ID
 
     // Capture page reference for additional context
     @wire(CurrentPageReference)
@@ -22,7 +24,10 @@ export default class EventParticipantRelatedList extends NavigationMixin(Lightni
         if (pageRef && pageRef.attributes && pageRef.attributes.recordId) {
             console.log('Found recordId in pageRef:', pageRef.attributes.recordId);
             this._eventIdFromUrl = pageRef.attributes.recordId;
-            this.loadParticipants(pageRef.attributes.recordId);
+            // Only load if we don't already have participants
+            if (!this._foundWorkingId) {
+                this.loadParticipants(pageRef.attributes.recordId);
+            }
         }
         
         // Look for other ID fields in page reference
@@ -87,7 +92,7 @@ export default class EventParticipantRelatedList extends NavigationMixin(Lightni
         });
         
         // If we found a real Event ID, use it
-        if (foundRecordId) {
+        if (foundRecordId && !this._foundWorkingId) {
             console.log('Using found Event record ID:', foundRecordId);
             this._eventIdFromUrl = foundRecordId;
             this.loadParticipants(foundRecordId);
@@ -107,12 +112,14 @@ export default class EventParticipantRelatedList extends NavigationMixin(Lightni
             console.log('URL hash:', window.location.hash);
         }
         
-        // As a last resort, try the hardcoded ID you found works
-        console.log('Trying known working Event ID as fallback...');
-        this.loadParticipants('00U2G00001IJHOGUA5');
+        // As a last resort, try the hardcoded ID you found works (only if no participants found)
+        if (!this._foundWorkingId && this.participants.length === 0) {
+            console.log('Trying known working Event ID as fallback...');
+            this.loadParticipants('00U2G00001IJHOGUA5');
+        }
     }
 
-    getEventIdFromUrl() {
+    async getEventIdFromUrl() {
         // Try to get Event ID from URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const urlPath = window.location.pathname;
@@ -162,60 +169,104 @@ export default class EventParticipantRelatedList extends NavigationMixin(Lightni
             this.tryIdVariations(eventId);
         } else if (eventId) {
             this._eventIdFromUrl = eventId;
-            this.loadParticipants(eventId);
+            await this.loadParticipants(eventId);
         } else {
             console.log('No Event ID found in URL');
             this.error = 'Unable to determine Event ID from URL. This component must be placed on an Event record page.';
         }
     }
     
-    tryIdVariations(originalId) {
+    async tryIdVariations(originalId) {
         console.log('Trying ID variations for:', originalId);
         
         // Try the original ID first
-        this.loadParticipants(originalId);
+        await this.loadParticipants(originalId);
         
-        // Try common variations (case sensitivity, prefixes)
-        const variations = [
-            originalId,
-            originalId.toUpperCase(),
-            originalId.toLowerCase(),
-            // Try replacing a1 prefix with 00U (Event prefix)
-            originalId.replace(/^a1/, '00U')
-        ];
-        
-        console.log('Trying variations:', variations);
-        
-        // Try each variation
-        variations.forEach((variation, index) => {
-            if (index === 0) return; // Already tried original
+        // Only try variations if we didn't get participants and haven't found a working ID
+        if (this.participants.length === 0 && !this._foundWorkingId) {
+            // Try common variations (case sensitivity, prefixes)
+            const variations = [
+                originalId.toUpperCase(),
+                originalId.toLowerCase(),
+                // Try replacing a1 prefix with 00U (Event prefix)
+                originalId.replace(/^a1/, '00U')
+            ];
             
-            setTimeout(() => {
+            console.log('No participants found, trying variations:', variations);
+            
+            // Try each variation sequentially
+            for (let i = 0; i < variations.length; i++) {
+                // Stop if we found participants or a working ID
+                if (this._foundWorkingId || this.participants.length > 0) {
+                    console.log('Found working ID, stopping variation attempts');
+                    break;
+                }
+                
+                const variation = variations[i];
                 console.log('Trying variation:', variation);
-                this.loadParticipants(variation);
-            }, index * 1000); // Stagger requests to avoid overwhelming
-        });
+                await this.loadParticipants(variation);
+                
+                // Small delay between attempts (except for last one)
+                if (i < variations.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+            }
+        } else if (this.participants.length > 0) {
+            console.log('Found participants with original ID, skipping variations');
+        }
     }
 
     async loadParticipants(eventId) {
+        // Prevent duplicate calls
+        if (this._isLoadingParticipants) {
+            console.log('Already loading participants, skipping duplicate call for:', eventId);
+            return;
+        }
+        
+        // If we already found a working ID and have participants, don't try again
+        if (this._foundWorkingId && this.participants.length > 0) {
+            console.log('Already have participants from working ID, skipping:', eventId);
+            return;
+        }
+        
         console.log('Loading participants for Event ID:', eventId);
+        this._isLoadingParticipants = true;
         this.isLoading = true;
         this.error = null;
 
         try {
-            this.participants = await getEventParticipants({ eventId: eventId });
-            console.log('Received participants:', this.participants);
+            const participants = await getEventParticipants({ eventId: eventId });
+            console.log('Received participants:', participants);
             
-            // If we got participants, update the working ID
-            if (this.participants.length > 0) {
+            // Only update if we got participants (don't overwrite with empty results)
+            if (participants && participants.length > 0) {
+                this.participants = participants;
                 this._eventIdFromUrl = eventId;
+                this._foundWorkingId = true; // Mark that we found a working ID
                 console.log('Success! Using Event ID:', eventId);
+                console.log('Participants data:', JSON.parse(JSON.stringify(participants)));
+                
+                // Log participant details for debugging
+                participants.forEach((p, idx) => {
+                    console.log(`Participant ${idx + 1}:`, {
+                        name: p.contactName,
+                        hasUser: p.hasUser,
+                        userId: p.userId,
+                        contactId: p.contactId
+                    });
+                });
+            } else if (this.participants.length === 0) {
+                // Only set empty if we don't already have participants
+                this.participants = [];
+                console.log('No participants found for Event ID:', eventId);
             }
         } catch (err) {
             console.error('Error loading event participants:', err);
             this.error = 'Unable to load event participants. Please try again later.';
+            // Don't clear existing participants on error
         } finally {
             this.isLoading = false;
+            this._isLoadingParticipants = false;
         }
     }
 
@@ -252,17 +303,25 @@ export default class EventParticipantRelatedList extends NavigationMixin(Lightni
     }
 
     handleParticipantClick(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        
         const participantId = event.currentTarget.dataset.participantId;
-        const hasUser = event.currentTarget.dataset.hasUser === 'true';
+        const hasUser = event.currentTarget.dataset.hasUser === 'true' || event.currentTarget.dataset.hasUser === true;
+        
+        console.log('Participant clicked:', { participantId, hasUser, dataset: event.currentTarget.dataset });
         
         if (hasUser && participantId) {
-            // Navigate to User profile
+            // Navigate to User profile in Experience Cloud
+            console.log('Navigating to user profile:', participantId);
             this[NavigationMixin.Navigate]({
                 type: 'standard__webPage',
                 attributes: {
                     url: `/s/profile/${participantId}`
                 }
-            });
+            }, false); // false = don't replace current page
+        } else {
+            console.log('No user profile available for this participant');
         }
         // If no user exists, don't navigate - just show the name
     }
