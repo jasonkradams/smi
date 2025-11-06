@@ -1,6 +1,11 @@
 import { LightningElement, api, wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import getEventParticipants from '@salesforce/apex/EventParticipantRedirectHelper.getEventParticipants';
+import isEventLeader from '@salesforce/apex/EventParticipantRedirectHelper.isEventLeader';
+import addParticipant from '@salesforce/apex/EventParticipantRedirectHelper.addParticipant';
+import removeParticipant from '@salesforce/apex/EventParticipantRedirectHelper.removeParticipant';
+import updateParticipantResponse from '@salesforce/apex/EventParticipantRedirectHelper.updateParticipantResponse';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { CurrentPageReference } from 'lightning/navigation';
 
 export default class EventParticipantRelatedList extends NavigationMixin(LightningElement) {
@@ -13,6 +18,15 @@ export default class EventParticipantRelatedList extends NavigationMixin(Lightni
     _pageRef;
     _isLoadingParticipants = false; // Prevent duplicate calls
     _foundWorkingId = false; // Track if we found a working ID
+    isEventLeader = false;
+    eventRegistrationId = null;
+    showAddParticipant = false;
+    selectedContactId = null;
+    selectedResponse = 'Attending';
+    responseOptions = [
+        { label: 'Attending', value: 'Attending' },
+        { label: 'Not Attending', value: 'Not Attending' }
+    ];
 
     // Capture page reference for additional context
     @wire(CurrentPageReference)
@@ -171,6 +185,26 @@ export default class EventParticipantRelatedList extends NavigationMixin(Lightni
         try {
             const participants = await getEventParticipants({ eventId: eventId });
             
+            // Check if this is an Event_Registration__c by looking at the first participant's eventRegistrationId
+            if (participants && participants.length > 0 && participants[0].eventRegistrationId) {
+                this.eventRegistrationId = participants[0].eventRegistrationId;
+                try {
+                    this.isEventLeader = await isEventLeader({ eventRegistrationId: this.eventRegistrationId });
+                } catch (leaderErr) {
+                    console.error('Error checking leader status:', leaderErr);
+                    this.isEventLeader = false;
+                }
+            } else if (eventId && eventId.startsWith('a1')) {
+                // If no participants but ID looks like Event_Registration__c, still check leader status
+                this.eventRegistrationId = eventId;
+                try {
+                    this.isEventLeader = await isEventLeader({ eventRegistrationId: eventId });
+                } catch (leaderErr) {
+                    console.error('Error checking leader status:', leaderErr);
+                    this.isEventLeader = false;
+                }
+            }
+            
             // Only update if we got participants (don't overwrite with empty results)
             if (participants && participants.length > 0) {
                 // Set loading to false first to ensure template updates correctly
@@ -214,7 +248,7 @@ export default class EventParticipantRelatedList extends NavigationMixin(Lightni
         }
     }
 
-    wiredParticipantsHandler({ error, data }) {
+    async wiredParticipantsHandler({ error, data }) {
         // If we already have participants from another source, don't overwrite
         if (this._foundWorkingId && this.participants.length > 0) {
             return;
@@ -225,6 +259,17 @@ export default class EventParticipantRelatedList extends NavigationMixin(Lightni
             this.participants = [...data];
             this._foundWorkingId = true;
             this.error = undefined;
+            
+            // Check if this is an Event_Registration__c and check leader status
+            if (this.recordId) {
+                this.eventRegistrationId = this.recordId;
+                try {
+                    this.isEventLeader = await isEventLeader({ eventRegistrationId: this.recordId });
+                } catch (leaderErr) {
+                    console.error('Error checking leader status:', leaderErr);
+                    this.isEventLeader = false;
+                }
+            }
         } else if (error) {
             if (this.participants.length === 0) {
                 this.error = error.body?.message || 'Unable to load event participants';
@@ -285,6 +330,152 @@ export default class EventParticipantRelatedList extends NavigationMixin(Lightni
 
     get participantCountLabel() {
         return `(${this.participants.length})`;
+    }
+
+    handleAddParticipantClick() {
+        this.showAddParticipant = true;
+        this.selectedContactId = null;
+        this.selectedResponse = 'Attending';
+    }
+
+    handleCancelAdd() {
+        this.showAddParticipant = false;
+        this.selectedContactId = null;
+    }
+
+    handleContactChange(event) {
+        this.selectedContactId = event.detail.recordId;
+    }
+
+    handleResponseChange(event) {
+        this.selectedResponse = event.detail.value;
+    }
+
+    async handleSaveParticipant() {
+        if (!this.selectedContactId) {
+            this.showToast('Error', 'Please select a contact to add.', 'error');
+            return;
+        }
+
+        if (!this.eventRegistrationId) {
+            this.showToast('Error', 'Event registration ID not found.', 'error');
+            return;
+        }
+
+        try {
+            this.isLoading = true;
+            const newParticipant = await addParticipant({
+                eventRegistrationId: this.eventRegistrationId,
+                contactId: this.selectedContactId,
+                response: this.selectedResponse
+            });
+
+            // Add the new participant to the list
+            this.participants = [...this.participants, newParticipant];
+            this.showAddParticipant = false;
+            this.selectedContactId = null;
+            this.showToast('Success', 'Participant added successfully.', 'success');
+        } catch (error) {
+            console.error('Error adding participant:', error);
+            this.showToast('Error', error.body?.message || 'Unable to add participant.', 'error');
+        } finally {
+            this.isLoading = false;
+        }
+    }
+
+    async handleRemoveParticipant(event) {
+        const participantId = event.currentTarget.dataset.participantId;
+        if (!participantId || !this.eventRegistrationId) {
+            return;
+        }
+
+        if (!confirm('Are you sure you want to remove this participant?')) {
+            return;
+        }
+
+        try {
+            this.isLoading = true;
+            await removeParticipant({
+                participantId: participantId,
+                eventRegistrationId: this.eventRegistrationId
+            });
+
+            // Remove the participant from the list
+            this.participants = this.participants.filter(
+                p => p.eventRelationId !== participantId
+            );
+            this.showToast('Success', 'Participant removed successfully.', 'success');
+        } catch (error) {
+            console.error('Error removing participant:', error);
+            this.showToast('Error', error.body?.message || 'Unable to remove participant.', 'error');
+        } finally {
+            this.isLoading = false;
+        }
+    }
+
+    async handleResponseChangeForParticipant(event) {
+        const participantId = event.currentTarget.dataset.participantId;
+        const newResponse = event.detail.value;
+        
+        if (!participantId) {
+            this.showToast('Error', 'Participant ID is missing.', 'error');
+            return;
+        }
+        
+        if (!this.eventRegistrationId) {
+            this.showToast('Error', 'Event Registration ID is missing. Please refresh the page.', 'error');
+            return;
+        }
+
+        try {
+            this.isLoading = true;
+            const updatedParticipant = await updateParticipantResponse({
+                participantId: participantId,
+                eventRegistrationId: this.eventRegistrationId,
+                response: newResponse
+            });
+
+            // Update the participant in the list
+            this.participants = this.participants.map(p => 
+                p.eventRelationId === participantId ? updatedParticipant : p
+            );
+            this.showToast('Success', 'Participant response updated successfully.', 'success');
+        } catch (error) {
+            console.error('Error updating participant response:', error);
+            this.showToast('Error', error.body?.message || error.message || 'Unable to update participant response.', 'error');
+        } finally {
+            this.isLoading = false;
+        }
+    }
+
+    showToast(title, message, variant) {
+        const evt = new ShowToastEvent({
+            title: title,
+            message: message,
+            variant: variant
+        });
+        this.dispatchEvent(evt);
+    }
+
+    handleComboboxFocus(event) {
+        // Find the parent row and add a class to increase z-index
+        const combobox = event.currentTarget;
+        const row = combobox.closest('.participant-row');
+        if (row) {
+            row.classList.add('combobox-active');
+        }
+    }
+
+    handleComboboxBlur(event) {
+        // Remove the class when combobox loses focus
+        // Use setTimeout to allow dropdown click to register first
+        setTimeout(() => {
+            const combobox = event.currentTarget;
+            const row = combobox.closest('.participant-row');
+            if (row) {
+                row.classList.remove('combobox-active');
+            }
+        }, 200);
     }
 }
 
