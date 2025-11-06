@@ -1,25 +1,105 @@
-.slds-text-link_reset {
-    color: inherit;
+/* Match Salesforce Related List Styling */
+.forceRelatedListCardDesktop {
+    margin-bottom: 1rem;
+}
+
+.forceRelatedListCardHeader {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.forceEntityIcon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.forceEntityIcon .icon {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.outputLookupContainer {
+    align-items: center;
+}
+
+.outputLookupLink {
+    color: #0176d3;
     text-decoration: none;
 }
 
-.slds-text-link_reset:hover {
+.outputLookupLink:hover {
     text-decoration: underline;
-    color: #0176d3;
+    color: #014486;
 }
 
-.slds-text-color_weak {
+.outputLookupLink.textUnderline {
+    text-decoration: underline;
+}
+
+.outputLookupLink.slds-text-color_weak {
+    color: #6c7e88;
+    text-decoration: none;
+    cursor: default;
+}
+
+.outputLookupLink.slds-text-color_weak:hover {
+    text-decoration: none;
     color: #6c7e88;
 }
 
-.slds-m-bottom_small {
-    margin-bottom: 0.5rem;
+.forceBaseListView {
+    position: relative;
 }
 
-.slds-m-top_small {
-    margin-top: 0.5rem;
+.forceRelatedListPreview {
+    min-height: 200px;
 }
 
-.slds-p-around_medium {
-    padding: 1rem;
+.listViewContent {
+    position: relative;
+}
+
+.uiScroller {
+    overflow: auto;
+    max-height: 400px;
+}
+
+.forceRecordLayout {
+    width: 100%;
+}
+
+.forceRecordLayout th {
+    font-weight: 700;
+    text-align: left;
+    padding: 0.5rem;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.forceRecordLayout td {
+    padding: 0.5rem;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.forceRecordLayout th[scope="row"] {
+    font-weight: 400;
+}
+
+.emptyContent {
+    padding: 2rem;
+    text-align: center;
+}
+
+.spinnerWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+}
+
+.hideSpinner {
+    display: none;
 }

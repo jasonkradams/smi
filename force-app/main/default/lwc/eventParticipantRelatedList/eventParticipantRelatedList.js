@@ -342,6 +342,10 @@ export default class EventParticipantRelatedList extends NavigationMixin(Lightni
         return this.participants.length;
     }
 
+    get participantCountLabel() {
+        return `(${this.participants.length})`;
+    }
+
     // Debug getters
     get debugInfo() {
         return `Object: ${this.objectApiName}, RecordId: ${this.recordId}, UrlEventId: ${this._eventIdFromUrl}, PageRef: ${this._pageRef ? 'YES' : 'NO'}, Participants: ${this.participants.length}, Loading: ${this.isLoading}, Error: ${this.error || 'none'}`;
