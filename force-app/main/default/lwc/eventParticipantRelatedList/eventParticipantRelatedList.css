@@ -32,12 +32,12 @@
 }
 
 .outputLookupLink:hover {
-    text-decoration: underline;
+    text-decoration: none;
     color: #014486;
 }
 
 .outputLookupLink.textUnderline {
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 .outputLookupLink.slds-text-color_weak {
@@ -76,12 +76,12 @@
     font-weight: 700;
     text-align: left;
     padding: 4px 8px 4px 16px;
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #000000;
 }
 
 .forceRecordLayout td {
     padding: 4px 8px 4px 16px;
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #000000;
 }
 
 .forceRecordLayout th[scope="row"] {
