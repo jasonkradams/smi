@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>Event_Registration_Confirmed</fullName>
+        <description>Event Registration Confirmed</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Contact__c</field>
+            <type>contactLookup</type>
+        </recipients>
+        <senderAddress>admin@spokanemountaineers.org</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>unfiled$public/Event_Registration_Confirmation</template>
+    </alerts>
+    <alerts>
+        <fullName>Event_Unregistration_Confirmed</fullName>
+        <description>Event Unregistration Confirmed</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Contact__c</field>
+            <type>contactLookup</type>
+        </recipients>
+        <senderAddress>admin@spokanemountaineers.org</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>unfiled$public/Event_Unregistration_Confirmation</template>
+    </alerts>
+</Workflow>

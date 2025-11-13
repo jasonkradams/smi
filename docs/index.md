@@ -17,6 +17,7 @@ and technical documentation to support club operations, technology tools, and vo
 Use the sidebar to explore topics by category. If you're not sure where to begin, here are a few helpful starting points:
 
 - [Technical Articles](articles/index.md)
+- [Latest Update: Event Participant Follow Handler Deployment Recap](articles/event-participant-follow-handler-update.md)
 - [How To Guides](how-to-guides/index.md)
 - [Automations](automation/index.md)
 - [About](about.md)
