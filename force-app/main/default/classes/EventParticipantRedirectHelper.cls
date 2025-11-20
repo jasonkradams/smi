@@ -203,7 +203,7 @@ public class EventParticipantRedirectHelper {
         }
     }
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static List<ParticipantWrapper> getEventParticipants(String eventId) {
         try {
             System.debug('EventParticipantRedirectHelper.getEventParticipants called with eventId: ' + eventId);

@@ -28,9 +28,9 @@
             </header>
         </div>
 
-        <div>
+        <div class="slds-card__body">
             <div class="previewMode MEDIUM forceRelatedListPreview">
-                <div>
+                <div class="forceRelatedListPreviewInner">
                     <div class="useHeaderBarFix forceBaseListView forceRelatedListPreviewGrid">
                         <!-- Loading State - Only show when loading AND no participants -->
                         <template if:true={showLoadingAndNoParticipants}>
@@ -55,7 +55,7 @@
                         <!-- Participants List - Show when we have participants -->
                         <template if:true={hasParticipants}>
                             <div class="listViewContent">
-                                <div tabindex="-1" class="scrollable uiScroller scroller-wrapper scroll-bidirectional native">
+                                <div tabindex="-1" class="scrollable uiScroller scroller-wrapper scroll-bidirectional native" style={scrollerStyle}>
                                     <div class="scroller actionBarPlugin fixedHeaderPlugin">
                                         <table class="forceRecordLayout slds-table slds-no-row-hover slds-table_cell-buffer slds-table_fixed-layout uiVirtualDataGrid--default uiVirtualDataGrid" aria-label="Event Participants">
                                             <thead>
