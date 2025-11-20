@@ -31,10 +31,26 @@ export default class EventParticipantRelatedList extends NavigationMixin(Lightni
     // Capture page reference for additional context
     @wire(CurrentPageReference)
     getPageReference(pageRef) {
-        if (!pageRef || !pageRef.attributes || !pageRef.attributes.recordId) return;
+        if (!pageRef || !pageRef.attributes || !pageRef.attributes.recordId) {
+            // If no recordId from pageRef, try URL parsing as fallback
+            if (!this.recordId && !this._eventIdFromUrl && !this._isLoadingParticipants && !this._foundWorkingId) {
+                // Small delay to let wire services initialize
+                setTimeout(() => {
+                    if (!this.recordId && !this._foundWorkingId) {
+                        this.getEventIdFromUrl();
+                    }
+                }, 100);
+            }
+            return;
+        }
         
         this._pageRef = pageRef;
         const recordId = pageRef.attributes.recordId;
+        
+        // Set recordId so the @wire(getEventParticipants) can react to it
+        if (!this.recordId) {
+            this.recordId = recordId;
+        }
         
         // Check if this is the same recordId we already processed
         const isNewRecordId = this._eventIdFromUrl !== recordId;
@@ -48,31 +64,39 @@ export default class EventParticipantRelatedList extends NavigationMixin(Lightni
         // Set the eventId for the new event
         this._eventIdFromUrl = recordId;
         
-        // Only load if we're not already loading
-        if (!this._isLoadingParticipants) {
-            this.loadParticipants(recordId);
-        }
+        // Don't manually load here - let the @wire(getEventParticipants) handle it
+        // The wire service will react to this.recordId being set
     }
 
     connectedCallback() {
-        // If we already have participants or are loading, don't try to load again
+        // If we already have participants, don't try to load again
         if (this._foundWorkingId && this.participants.length > 0) {
             return;
         }
         
-        if (this._isLoadingParticipants) {
-            return;
-        }
-        
-        // If we have a recordId from page context, use it immediately
+        // If we have a recordId from @api, the wire service will handle loading
+        // Give wire services a chance to fire first
         if (this.recordId) {
-            this.loadParticipants(this.recordId);
+            // Wire service should handle this, but add a longer delay fallback
+            // to give wire service time to complete
+            setTimeout(() => {
+                // Only fallback if wire service hasn't loaded data AND we're not currently loading
+                if (!this._foundWorkingId && !this._isLoadingParticipants && this.recordId && this.participants.length === 0) {
+                    // Fallback: if wire service didn't fire, load manually
+                    this.loadParticipants(this.recordId);
+                }
+            }, 500);
             return;
         }
         
-        // Only try URL if we don't have a pageRef recordId already
+        // If no recordId, try URL parsing as fallback
         if (!this._eventIdFromUrl && !this._isLoadingParticipants) {
-            this.getEventIdFromUrl();
+            // Small delay to let wire services initialize
+            setTimeout(() => {
+                if (!this.recordId && !this._foundWorkingId && this.participants.length === 0) {
+                    this.getEventIdFromUrl();
+                }
+            }, 100);
         }
     }
 
@@ -169,13 +193,19 @@ export default class EventParticipantRelatedList extends NavigationMixin(Lightni
 
     async loadParticipants(eventId) {
         // Validate eventId
-        if (!eventId) return;
+        if (!eventId) {
+            return;
+        }
         
         // Prevent duplicate calls
-        if (this._isLoadingParticipants) return;
+        if (this._isLoadingParticipants) {
+            return;
+        }
         
-        // If we already have participants, don't try again
-        if (this._foundWorkingId && this.participants.length > 0) return;
+        // If we already have participants from wire service, don't overwrite with manual load
+        if (this._foundWorkingId && this.participants.length > 0) {
+            return;
+        }
         
         // Set loading flag immediately to prevent race conditions
         this._isLoadingParticipants = true;
@@ -241,23 +271,30 @@ export default class EventParticipantRelatedList extends NavigationMixin(Lightni
     // Keep wire service for when recordId is available (for standard pages)
     @wire(getEventParticipants, { eventId: '$recordId' })
     wiredParticipants({ error, data }) {
-        // Only use wire service if we have recordId AND haven't already loaded participants
-        // AND we're not currently loading (prevents race conditions with manual loads)
-        if (this.recordId && !this._foundWorkingId && !this._isLoadingParticipants) {
+        // Use wire service when recordId is available
+        // Only skip if we're manually loading from URL parsing (to avoid duplicate calls)
+        if (this.recordId) {
+            // Allow wire service to fire even if we're loading manually, as it's more reliable
             this.wiredParticipantsHandler({ error, data });
         }
     }
 
     async wiredParticipantsHandler({ error, data }) {
         // If we already have participants from another source, don't overwrite
-        if (this._foundWorkingId && this.participants.length > 0) {
+        // But allow updates if this is the same recordId (wire service refresh)
+        if (this._foundWorkingId && this.participants.length > 0 && this._eventIdFromUrl !== this.recordId) {
             return;
         }
         
         if (data && data.length > 0) {
+            // Stop any manual loading in progress
+            this._isLoadingParticipants = false;
+            this.isLoading = false;
+            
             // Create a new array reference to ensure LWC reactivity triggers
             this.participants = [...data];
             this._foundWorkingId = true;
+            this._eventIdFromUrl = this.recordId;
             this.error = undefined;
             
             // Check if this is an Event_Registration__c and check leader status
@@ -271,15 +308,20 @@ export default class EventParticipantRelatedList extends NavigationMixin(Lightni
                 }
             }
         } else if (error) {
+            this._isLoadingParticipants = false;
             if (this.participants.length === 0) {
                 this.error = error.body?.message || 'Unable to load event participants';
             }
-        } else {
+            this.isLoading = false;
+        } else if (data !== undefined) {
+            // Explicitly empty result (data is [] not undefined)
+            this._isLoadingParticipants = false;
             if (this.participants.length === 0) {
                 this.participants = [];
             }
+            this.isLoading = false;
         }
-        this.isLoading = false;
+        // If data is undefined, wire service is still loading - don't do anything
     }
 
     handleParticipantClick(event) {
@@ -330,6 +372,31 @@ export default class EventParticipantRelatedList extends NavigationMixin(Lightni
 
     get participantCountLabel() {
         return `(${this.participants.length})`;
+    }
+
+    get scrollerMaxHeight() {
+        // Calculate max-height based on participant count
+        // ~40px per row (header ~40px + rows ~40px each)
+        // Auto-size up to 20 participants, then apply max-height with scroll
+        const participantCount = this.participants ? this.participants.length : 0;
+        
+        if (participantCount === 0) {
+            // No participants - use min-height
+            return '200px';
+        } else if (participantCount <= 20) {
+            // Up to 20 participants - auto-size to fit all (no scroll)
+            // Header: ~40px, each row: ~40px
+            const calculatedHeight = 40 + (participantCount * 40);
+            return `${calculatedHeight}px`;
+        } else {
+            // More than 20 participants - max height for 20 rows, then scroll
+            // 40px header + 20 rows * 40px = 840px
+            return '840px';
+        }
+    }
+
+    get scrollerStyle() {
+        return `max-height: ${this.scrollerMaxHeight};`;
     }
 
     handleAddParticipantClick() {
