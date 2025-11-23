@@ -1,0 +1,137 @@
+<template>
+    <lightning-card title="My Tickets" icon-name="standard:case">
+        <div class="slds-p-around_medium">
+            <template if:true={isLoading}>
+                <div class="slds-text-align_center slds-p-around_large">
+                    <lightning-spinner alternative-text="Loading tickets" size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <template if:true={error}>
+                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+                    <span class="slds-assistive-text">error</span>
+                    <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small">
+                        <lightning-icon icon-name="utility:error" size="x-small" alternative-text="Error"></lightning-icon>
+                    </span>
+                    <h2>{error}</h2>
+                </div>
+            </template>
+
+            <template if:false={isLoading}>
+                <div class="slds-grid slds-gutters slds-m-bottom_medium">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-combobox
+                            label="Filter by Status"
+                            value={selectedStatusFilter}
+                            options={statusFilterOptions}
+                            onchange={handleStatusFilterChange}
+                            class="slds-m-right_x-small">
+                        </lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-combobox
+                            label="Filter by Type"
+                            value={selectedRecordTypeFilter}
+                            options={recordTypeFilterOptions}
+                            onchange={handleRecordTypeFilterChange}>
+                        </lightning-combobox>
+                    </div>
+                </div>
+
+                <div class="slds-m-bottom_medium">
+                    <lightning-button
+                        variant="neutral"
+                        icon-name="utility:refresh"
+                        label="Refresh"
+                        title="Refresh"
+                        onclick={handleRefresh}
+                        class="slds-m-right_small">
+                    </lightning-button>
+                    <span class="slds-text-body_regular">
+                        Showing {ticketCount} ticket{ticketCountLabel}
+                    </span>
+                </div>
+
+                <template if:true={hasTickets}>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Case Number">Case Number</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Subject">Subject</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Type">Type</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Status">Status</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Priority">Priority</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Created">Created</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Last Updated">Last Updated</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={filteredTickets} for:item="ticket">
+                                <tr key={ticket.Id} class="slds-hint-parent ticket-row" data-case-id={ticket.Id} onclick={handleTicketClick}>
+                                    <td data-label="Case Number">
+                                        <div class="slds-truncate">
+                                            <a href="javascript:void(0);" class="slds-text-link">{ticket.CaseNumber}</a>
+                                        </div>
+                                    </td>
+                                    <td data-label="Subject">
+                                        <div class="slds-truncate" title={ticket.Subject}>{ticket.Subject}</div>
+                                    </td>
+                                    <td data-label="Type">
+                                        <div class="slds-truncate">{ticket.RecordType.Name}</div>
+                                    </td>
+                                    <td data-label="Status">
+                                        <lightning-badge label={ticket.Status} variant={ticket.statusBadgeVariant}></lightning-badge>
+                                    </td>
+                                    <td data-label="Priority">
+                                        <template if:true={ticket.Priority}>
+                                            <lightning-badge label={ticket.Priority} variant={ticket.priorityBadgeVariant}></lightning-badge>
+                                        </template>
+                                        <template if:false={ticket.Priority}>
+                                            <span class="slds-text-color_weak">—</span>
+                                        </template>
+                                    </td>
+                                    <td data-label="Created">
+                                        <div class="slds-truncate">{ticket.formattedCreatedDate}</div>
+                                    </td>
+                                    <td data-label="Last Updated">
+                                        <div class="slds-truncate">{ticket.formattedLastModifiedDate}</div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </template>
+
+                <template if:false={hasTickets}>
+                    <div class="slds-text-align_center slds-p-around_large">
+                        <lightning-icon icon-name="standard:case" size="large" alternative-text="No tickets"></lightning-icon>
+                        <p class="slds-text-heading_small slds-m-top_medium">No tickets found</p>
+                        <p class="slds-text-body_regular slds-m-top_small">
+                            <template if:true={tickets}>
+                                No tickets match your filters. Try adjusting your filters.
+                            </template>
+                            <template if:false={tickets}>
+                                You haven't submitted any tickets yet.
+                            </template>
+                        </p>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+</template>
+

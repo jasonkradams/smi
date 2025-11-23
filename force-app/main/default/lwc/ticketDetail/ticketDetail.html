@@ -1,0 +1,187 @@
+<template>
+    <lightning-card title="Ticket Details" icon-name="standard:case">
+        <div class="slds-p-around_medium">
+            <template if:true={isLoading}>
+                <div class="slds-text-align_center slds-p-around_large">
+                    <lightning-spinner alternative-text="Loading ticket" size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <template if:true={error}>
+                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+                    <span class="slds-assistive-text">error</span>
+                    <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small">
+                        <lightning-icon icon-name="utility:error" size="x-small" alternative-text="Error"></lightning-icon>
+                    </span>
+                    <h2>{error}</h2>
+                </div>
+                <div class="slds-m-top_medium">
+                    <lightning-button
+                        variant="neutral"
+                        label="Back to My Tickets"
+                        title="Back to My Tickets"
+                        onclick={handleBack}>
+                    </lightning-button>
+                </div>
+            </template>
+
+            <template if:true={ticket}>
+                <div class="slds-m-bottom_medium">
+                    <lightning-button
+                        variant="neutral"
+                        icon-name="utility:back"
+                        label="Back to My Tickets"
+                        title="Back to My Tickets"
+                        onclick={handleBack}
+                        class="slds-m-right_small">
+                    </lightning-button>
+                    <lightning-button
+                        variant="neutral"
+                        icon-name="utility:refresh"
+                        label="Refresh"
+                        title="Refresh"
+                        onclick={handleRefresh}>
+                    </lightning-button>
+                </div>
+
+                <!-- Ticket Header -->
+                <div class="slds-card slds-m-bottom_medium">
+                    <div class="slds-card__header">
+                        <h2 class="slds-card__header-title">
+                            <span>{ticket.CaseNumber}</span>
+                        </h2>
+                    </div>
+                    <div class="slds-card__body slds-card__body_inner">
+                        <dl class="slds-list_horizontal slds-wrap">
+                            <dt class="slds-item_label slds-text-color_weak slds-truncate" title="Subject">Subject:</dt>
+                            <dd class="slds-item_detail slds-truncate">
+                                <strong>{ticket.Subject}</strong>
+                            </dd>
+                            <dt class="slds-item_label slds-text-color_weak slds-truncate" title="Type">Type:</dt>
+                            <dd class="slds-item_detail slds-truncate">{ticket.RecordType.Name}</dd>
+                            <dt class="slds-item_label slds-text-color_weak slds-truncate" title="Status">Status:</dt>
+                            <dd class="slds-item_detail slds-truncate">
+                                <lightning-badge label={ticket.Status} variant={ticket.statusBadgeVariant}></lightning-badge>
+                            </dd>
+                            <template if:true={ticket.Priority}>
+                                <dt class="slds-item_label slds-text-color_weak slds-truncate" title="Priority">Priority:</dt>
+                                <dd class="slds-item_detail slds-truncate">
+                                    <lightning-badge label={ticket.Priority} variant={ticket.priorityBadgeVariant}></lightning-badge>
+                                </dd>
+                            </template>
+                            <dt class="slds-item_label slds-text-color_weak slds-truncate" title="Created">Created:</dt>
+                            <dd class="slds-item_detail slds-truncate">{ticket.formattedCreatedDate}</dd>
+                            <dt class="slds-item_label slds-text-color_weak slds-truncate" title="Last Updated">Last Updated:</dt>
+                            <dd class="slds-item_detail slds-truncate">{ticket.formattedLastModifiedDate}</dd>
+                            <template if:true={ticket.Owner}>
+                                <dt class="slds-item_label slds-text-color_weak slds-truncate" title="Assigned To">Assigned To:</dt>
+                                <dd class="slds-item_detail slds-truncate">{ticket.Owner.Name}</dd>
+                            </template>
+                        </dl>
+                    </div>
+                </div>
+
+                <!-- Ticket Description -->
+                <div class="slds-card slds-m-bottom_medium">
+                    <div class="slds-card__header">
+                        <h2 class="slds-card__header-title">Description</h2>
+                    </div>
+                    <div class="slds-card__body slds-card__body_inner">
+                        <div class="slds-text-longform">
+                            <p>{ticket.Description}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="slds-card slds-m-bottom_medium">
+                    <div class="slds-card__header">
+                        <h2 class="slds-card__header-title">
+                            Comments ({commentCount})
+                        </h2>
+                    </div>
+                    <div class="slds-card__body slds-card__body_inner">
+                        <template if:true={hasComments}>
+                            <template for:each={comments} for:item="comment">
+                                <div key={comment.Id} class="slds-comment slds-m-bottom_medium">
+                                    <div class="slds-media">
+                                        <div class="slds-media__body">
+                                            <div class="slds-grid slds-grid_align-spread slds-m-bottom_x-small">
+                                                <p class="slds-text-heading_small">{comment.CreatedBy.Name}</p>
+                                                <p class="slds-text-body_small slds-text-color_weak">
+                                                    {comment.formattedCreatedDate}
+                                                </p>
+                                            </div>
+                                            <div class="slds-text-longform">
+                                                <p>{comment.CommentBody}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </template>
+                        <template if:false={hasComments}>
+                            <p class="slds-text-body_regular slds-text-color_weak">No comments yet.</p>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Add Comment Section -->
+                <template if:false={isTicketClosed}>
+                    <div class="slds-card">
+                        <div class="slds-card__header">
+                            <h2 class="slds-card__header-title">Add Comment</h2>
+                        </div>
+                        <div class="slds-card__body slds-card__body_inner">
+                            <template if:true={error}>
+                                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error slds-m-bottom_medium" role="alert">
+                                    <span class="slds-assistive-text">error</span>
+                                    <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small">
+                                        <lightning-icon icon-name="utility:error" size="x-small" alternative-text="Error"></lightning-icon>
+                                    </span>
+                                    <h2>{error}</h2>
+                                </div>
+                            </template>
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="comment">Your Comment</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-textarea
+                                        name="comment"
+                                        label="Comment"
+                                        value={newComment}
+                                        placeholder="Enter your comment here..."
+                                        onchange={handleCommentChange}
+                                        class="slds-m-bottom_medium">
+                                    </lightning-textarea>
+                                </div>
+                            </div>
+                            <div class="slds-form-element">
+                                <lightning-button
+                                    variant="brand"
+                                    label="Add Comment"
+                                    title="Add Comment"
+                                    onclick={handleAddComment}
+                                    disabled={isAddCommentDisabled}
+                                    class="slds-m-right_small">
+                                </lightning-button>
+                                <template if:true={isAddingComment}>
+                                    <lightning-spinner alternative-text="Adding comment" size="small"></lightning-spinner>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <template if:true={isTicketClosed}>
+                    <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_info" role="alert">
+                        <span class="slds-assistive-text">info</span>
+                        <span class="slds-icon_container slds-icon-utility-info slds-m-right_x-small">
+                            <lightning-icon icon-name="utility:info" size="x-small" alternative-text="Info"></lightning-icon>
+                        </span>
+                        <h2>This ticket is {ticket.Status}. Comments are no longer accepted.</h2>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+</template>
+

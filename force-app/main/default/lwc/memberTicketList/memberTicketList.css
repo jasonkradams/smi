@@ -1,0 +1,8 @@
+.ticket-row {
+    cursor: pointer;
+}
+
+.ticket-row:hover {
+    background-color: #f3f3f3;
+}
+
