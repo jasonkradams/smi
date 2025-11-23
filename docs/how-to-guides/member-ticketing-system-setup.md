@@ -140,15 +140,15 @@ Queues cannot be deployed via metadata and must be created manually in the Sales
    - **All other fields**: Use default settings (typically Read only or No access)
 3. Click **Save**
 
-#### 4. Configure Case Comment Permissions
+#### 4. Note on Case Comment Permissions
 
-1. Click **Object Settings** → **Case Comment**
-2. Click **Edit**
-3. Set permissions:
-   - **Read**: ✅ Own Records
-   - **Create**: ✅
-   - All other permissions: ❌
-4. Click **Save**
+CaseComment is a standard Salesforce object, but it does **not** appear separately in Permission Sets. Case Comment access is automatically controlled through the parent **Case** object permissions:
+
+- If a user has **Read** access to a Case, they can see published Case Comments for that Case
+- If a user has **Create** access to a Case, they can create new Case Comments on that Case
+- Only published comments (`IsPublished = true`) are visible to Experience Cloud members
+
+**No separate CaseComment object permissions are needed** - access is inherited from Case permissions.
 
 #### 5. Assign Permission Set to Experience Cloud Profiles
 
