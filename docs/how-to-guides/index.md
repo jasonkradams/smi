@@ -12,6 +12,7 @@ Whether you're a club admin, event leader, or website contributor, this is your 
 - [Bulk Delete Events in Salesforce](bulk-delete-events-in-salesforce.md): Safely identify and bulk delete unwanted Event records in Salesforce.
 - [Salesforce Development Console Cheatsheet](salesforce-development-console-cheatsheet.md): A quick reference for using the Salesforce Developer Console, including common tasks and useful tips.
 - [Setup Staging Sandbox](setup-staging-sandbox.md): Set up a staging sandbox with Activity Group pages, Chatter groups, and test data for Experience Builder.
+- [Member Ticketing System Setup](member-ticketing-system-setup.md): Complete deployment and configuration guide for the member ticketing system.
 
 More guides coming soon!
 
