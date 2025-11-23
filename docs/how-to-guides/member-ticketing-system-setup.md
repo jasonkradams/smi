@@ -322,21 +322,112 @@ Technical Team
 
 #### 2. Create Email Template: Ticket Updated
 
-1. Create new template: `Ticket Updated`
-2. Subject: `Update on your support ticket #[CaseNumber]`
-3. Body: Include ticket details and status update information
+1. Navigate to **Setup** → **Email Templates** → **Classic Email Templates**
+2. Click **New Template**
+3. Select **Text** format
+4. Configure:
+   - **Folder**: Select the same folder as above
+   - **Template Name**: `Ticket Updated`
+   - **Subject**: `Update on your support ticket #[CaseNumber]`
+   - **Body**: (See template below)
+5. Click **Save**
+
+**Email Template Body:**
+```
+Hello {!Case.Contact.Name},
+
+We have an update on your support ticket.
+
+Ticket Details:
+- Case Number: {!Case.CaseNumber}
+- Subject: {!Case.Subject}
+- Type: {!Case.RecordType.Name}
+- Status: {!Case.Status}
+- Priority: {!Case.Priority}
+
+The status of your ticket has been updated. You can view the latest information and add updates at:
+https://your-site-url/support/ticket/{!Case.Id}
+
+If you have any questions, please don't hesitate to contact us.
+
+Best regards,
+Technical Team
+```
 
 #### 3. Create Email Template: Ticket Comment Added
 
-1. Create new template: `Ticket Comment Added`
-2. Subject: `New response on your support ticket #[CaseNumber]`
-3. Body: Include comment content and ticket link
+1. Navigate to **Setup** → **Email Templates** → **Classic Email Templates**
+2. Click **New Template**
+3. Select **Text** format
+4. Configure:
+   - **Folder**: Select the same folder as above
+   - **Template Name**: `Ticket Comment Added`
+   - **Subject**: `New response on your support ticket #[Case.Parent.CaseNumber]`
+   - **Body**: (See template below)
+5. Click **Save**
+
+**Email Template Body:**
+```
+Hello {!Case.Contact.Name},
+
+A new response has been added to your support ticket.
+
+Ticket Details:
+- Case Number: {!Case.CaseNumber}
+- Subject: {!Case.Subject}
+- Status: {!Case.Status}
+
+{!CaseComment.CommentBody}
+
+You can view all comments and add your own response at:
+https://your-site-url/support/ticket/{!Case.Id}
+
+Best regards,
+Technical Team
+```
+
+**Important Notes**:
+- When creating the Email Alert for Case Comments, configure it with **Case** as the primary object (not CaseComment)
+- The CaseComment fields may not be directly accessible in Email Templates. Consider:
+  - Option 1: Store the comment body in a formula field on Case that references the latest comment
+  - Option 2: Use an Apex-triggered email to access CaseComment fields
+  - Option 3: Simplify the template to not include the comment body, just notify that a comment was added
 
 #### 4. Create Email Template: Ticket Resolved
 
-1. Create new template: `Ticket Resolved`
-2. Subject: `Your support ticket #[CaseNumber] has been resolved`
-3. Body: Include resolution details
+1. Navigate to **Setup** → **Email Templates** → **Classic Email Templates**
+2. Click **New Template**
+3. Select **Text** format
+4. Configure:
+   - **Folder**: Select the same folder as above
+   - **Template Name**: `Ticket Resolved`
+   - **Subject**: `Your support ticket #[CaseNumber] has been resolved`
+   - **Body**: (See template below)
+5. Click **Save**
+
+**Email Template Body:**
+```
+Hello {!Case.Contact.Name},
+
+Great news! Your support ticket has been resolved.
+
+Ticket Details:
+- Case Number: {!Case.CaseNumber}
+- Subject: {!Case.Subject}
+- Type: {!Case.RecordType.Name}
+- Status: {!Case.Status}
+- Resolved: {!Case.ClosedDate}
+
+You can view the full ticket details and any final comments at:
+https://your-site-url/support/ticket/{!Case.Id}
+
+If you have any additional questions or concerns, please feel free to submit a new ticket.
+
+Thank you for your patience!
+
+Best regards,
+Technical Team
+```
 
 ### Phase 7: Create Flow for Email Notifications
 
@@ -345,57 +436,123 @@ Technical Team
 1. Navigate to **Setup** → **Flows** → **New Flow**
 2. Select **Record-Triggered Flow**
 3. Configure:
-   - **Object**: Case
-   - **Trigger**: After Save
+   - **Object**: `Case`
+   - **Trigger the Flow When**: `A record is created`
    - **Entry Conditions**: 
      - `{!$Record.Origin} equals "Web"`
    - **Optimize for**: Actions and Related Records
-4. Add elements:
-   - **Action**: Send Email Alert
-   - **Email Alert**: Create new email alert
-     - **Description**: `Notify member when ticket is created`
-     - **Email Template**: Select "Ticket Created Confirmation"
-     - **Recipient Type**: Related Contact
-     - **Recipient**: `{!$Record.ContactId}`
-5. **Save** and **Activate**
+4. Add **Action** element:
+   - Drag **Action** element from palette
+   - Select **Apex** → **Send Email Alert** (or use **Action** → **Send Email Alert**)
+5. Configure Email Alert:
+   - Click **New Email Alert** (or select existing)
+   - **Name**: `Ticket Created Notification`
+   - **Unique Name**: `Ticket_Created_Notification`
+   - **Description**: `Notify member when ticket is created via Experience Cloud`
+   - **Email Template**: Select "Ticket Created Confirmation"
+   - **From Email Address**: Select a valid email address (Org-Wide or specific user)
+   - **Recipients**: 
+     - Click **Add Recipient**
+     - **Recipient Type**: `Related Contact`
+     - **Related Contact**: Select `Case Contact`
+     - **Email Field**: `Email`
+6. Configure Action in Flow:
+   - **Email Alert**: Select the alert you just created
+   - **Alert**: `{!$Record}`
+7. **Save** the Flow
+8. **Activate** the Flow
+
+> **Important**: Make sure the Email Alert is saved and active before activating the Flow. Email Alerts are separate from Flows and need to be created first.
 
 #### 2. Create Flow: Case Status Update Notification
 
-1. Create new **Record-Triggered Flow**
-2. Configure:
-   - **Object**: Case
-   - **Trigger**: After Save
+1. Navigate to **Setup** → **Flows** → **New Flow**
+2. Select **Record-Triggered Flow**
+3. Configure:
+   - **Object**: `Case`
+   - **Trigger the Flow When**: `A record is updated`
    - **Entry Conditions**: 
      - `{!$Record.Origin} equals "Web"`
-     - `{!$Record.PRIORVALUE(Status)} not equals {!$Record.Status}`
-3. Add decision element:
-   - **Outcome 1**: Status = "Resolved" or "Closed"
-     - Action: Send Email Alert (Ticket Resolved template)
-   - **Default Outcome**: 
-     - Action: Send Email Alert (Ticket Updated template)
-4. **Save** and **Activate**
+   - **Optimize for**: Actions and Related Records
+4. Add **Decision** element:
+   - Drag **Decision** element from palette
+   - **Label**: `Check Status Change`
+   - **Outcome 1**: `Status Changed and Resolved`
+     - **Condition**: 
+       - `{!$Record.Status} equals "Closed" OR {!$Record.Status} equals "Resolved"`
+       - AND `{!$Record.PRIORVALUE(Status)} not equals {!$Record.Status}`
+     - **Outcome Label**: `Resolved`
+   - **Outcome 2**: `Status Changed (Not Resolved)`
+     - **Condition**: 
+       - `{!$Record.PRIORVALUE(Status)} not equals {!$Record.Status}`
+       - AND `{!$Record.Status} not equals "Closed"`
+       - AND `{!$Record.Status} not equals "Resolved"`
+     - **Outcome Label**: `Updated`
+5. Create Email Alert for Resolved (if not already created):
+   - **Name**: `Ticket Resolved Notification`
+   - **Email Template**: "Ticket Resolved"
+   - **Recipients**: Case Contact
+6. Create Email Alert for Updated (if not already created):
+   - **Name**: `Ticket Updated Notification`
+   - **Email Template**: "Ticket Updated"
+   - **Recipients**: Case Contact
+7. Add **Action** elements:
+   - **Action 1** (from Resolved outcome):
+     - **Action**: Send Email Alert
+     - **Email Alert**: "Ticket Resolved Notification"
+     - **Alert**: `{!$Record}`
+   - **Action 2** (from Updated outcome):
+     - **Action**: Send Email Alert
+     - **Email Alert**: "Ticket Updated Notification"
+     - **Alert**: `{!$Record}`
+8. **Save** the Flow
+9. **Activate** the Flow
 
-#### 3. Create Process Builder: Case Comment Notification
+#### 3. Create Flow: Case Comment Notification
 
-Since Case Comment triggers are complex, use Process Builder:
+> **Note**: Process Builder is deprecated. Use Flow instead for Case Comment notifications.
 
-1. Navigate to **Setup** → **Process Builder** → **New**
-2. Configure:
-   - **Name**: `Notify Member on Case Comment`
-   - **API Name**: `Notify_Member_on_Case_Comment`
-   - **Description**: `Send email notification when agent adds public comment`
-3. **Object**: Case Comment
-4. **Trigger**: A record changes
-5. **Start Process**: Only when a record is created
-6. **Criteria**: 
-   - `[CaseComment].IsPublished equals True`
-7. **Immediate Actions**:
+1. Navigate to **Setup** → **Flows** → **New Flow**
+2. Select **Record-Triggered Flow**
+3. Configure:
+   - **Object**: `CaseComment`
+   - **Trigger the Flow When**: `A record is created`
+   - **Entry Conditions**: 
+     - `{!$Record.IsPublished} equals true`
+   - **Optimize for**: Actions and Related Records
+4. Add **Get Records** element (to get Case and Contact info):
+   - Drag **Get Records** element from palette
+   - **Label**: `Get Case Details`
+   - **Object**: `Case`
+   - **Filter Case Records**:
+     - `{!$Record.ParentId} equals {!Case.Id}`
+   - **How Many Records to Store**: `Only the first record`
+   - **How to Store Record Data**: `Automatically store all fields`
+   - Store output in: `CaseRecord` variable
+5. Create Email Alert:
+   - **Name**: `Ticket Comment Added Notification`
+   - **Unique Name**: `Ticket_Comment_Added_Notification`
+   - **Description**: `Notify member when agent adds public comment`
+   - **Email Template**: "Ticket Comment Added"
+   - **Recipients**: 
+     - **Recipient Type**: `Related Contact`
+     - **Related Contact**: Select `Case Contact` (from CaseRecord variable)
+     - **Email Field**: `Email`
+6. Add **Action** element:
+   - Drag **Action** element from palette
    - **Action**: Send Email Alert
-   - **Email Alert**: (Create new for "Ticket Comment Added" template)
-   - **Recipient**: `[CaseComment].Parent.ContactId`
-8. **Save** and **Activate**
+   - **Email Alert**: "Ticket Comment Added Notification"
+   - **Alert**: Use `CaseRecord` variable (the Case record retrieved in step 4)
+   - **Additional Context**: You may need to pass the CaseComment record context
+7. **Save** the Flow
+8. **Activate** the Flow
 
-> **Note**: You may need to create a custom field on Case to trigger updates when comments are added, or use a different automation approach.
+> **Alternative Approach**: If the Email Alert doesn't work with CaseComment context, you may need to:
+> 1. Create a Platform Event or use an Apex trigger
+> 2. Or create a custom field on Case that updates when comments are added
+> 3. Then trigger the Flow on Case update instead
+>
+> For now, try the Flow approach above first, as it should work with proper relationship traversal.
 
 ### Phase 8: Configure Default Values (Optional)
 
@@ -478,7 +635,7 @@ Since Case Comment triggers are complex, use Process Builder:
    - ✅ Adding comment to closed ticket is disabled
    - ✅ Add Comment button is disabled when comment field is empty
 
-#### 4. Test Agent Workflows
+#### 5. Test Agent Workflows
 
 1. Log in as technical team member
 2. Navigate to Cases tab or Queue
@@ -486,8 +643,10 @@ Since Case Comment triggers are complex, use Process Builder:
    - ✅ Can see all tickets in assigned queue
    - ✅ Can update ticket status
    - ✅ Can add internal comments
-   - ✅ Can add public comments
+   - ✅ Can add public comments (IsPublished = true)
    - ✅ Can resolve tickets
+   - ✅ Email notifications are sent when status changes
+   - ✅ Email notifications are sent when public comments are added
 
 #### 5. Test Notifications
 
