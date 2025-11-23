@@ -127,16 +127,17 @@ Queues cannot be deployed via metadata and must be created manually in the Sales
 
 1. On the Permission Set detail page, click **Object Settings** → **Case** → **Field Permissions**
 2. Configure field access:
-   - **Subject**: Read/Edit ✅
+   - **Subject**: Read/Edit ✅ (automatically populated)
    - **Description**: Read/Edit ✅
    - **Priority**: Read/Edit ✅
-   - **Status**: Read ✅ (Edit disabled for members)
-   - **Record Type**: Read ✅
-   - **Origin**: Read ✅
+   - **Status**: Read ✅ (Edit disabled for members - set by agents)
+   - **Type**: Read ✅ (Record Type name)
+   - **Case Origin**: Read ✅
    - **ContactId**: Read ✅ (automatically populated)
-   - **OwnerId**: Read ✅
-   - **Internal Comments**: ❌ (No access)
-   - **Resolution**: ❌ (No access)
+   - **OwnerId**: Read ✅ (shows queue or assigned agent)
+   - **RecordTypeId**: Read ✅ (shows ticket type)
+   - **Related_User__c**: Read ✅ (formula field)
+   - **All other fields**: Use default settings (typically Read only or No access)
 3. Click **Save**
 
 #### 4. Configure Case Comment Permissions
