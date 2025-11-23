@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <businessProcess>Default_Support_Process</businessProcess>
+    <description>For enhancement requests and new feature ideas</description>
+    <label>Feature Request</label>
+    <fullName>Feature_Request</fullName>
+</RecordType>
