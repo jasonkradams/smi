@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <businessProcess>Default_Support_Process</businessProcess>
+    <description>For website/application bugs and technical issues</description>
+    <label>Technical Bug</label>
+    <fullName>Technical_Bug</fullName>
+</RecordType>
