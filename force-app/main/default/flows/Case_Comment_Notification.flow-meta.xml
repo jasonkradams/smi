@@ -24,38 +24,15 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
-    <decisions>
-        <name>Check_Is_Published</name>
-        <label>Check Is Published</label>
-        <description>Verifies that the comment is published (public) before sending the notification. Only published comments are visible to members.</description>
-        <locationX>264</locationX>
-        <locationY>182</locationY>
-        <defaultConnectorLabel>Not Published</defaultConnectorLabel>
-        <rules>
-            <name>Is_Published</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>$Record.IsPublished</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Get_Case</targetReference>
-            </connector>
-            <label>Is Published</label>
-        </rules>
-    </decisions>
     <recordLookups>
         <name>Get_Case</name>
         <label>Get Case</label>
         <description>Retrieves the Case record associated with the comment to get ticket details and contact information.</description>
         <locationX>264</locationX>
-        <locationY>398</locationY>
+        <locationY>182</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Check_Web_Origin</targetReference>
+            <targetReference>Check_Is_Published</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -75,35 +52,12 @@
         <queriedFields>Origin</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
-    <decisions>
-        <name>Check_Web_Origin</name>
-        <label>Check Web Origin</label>
-        <description>Verifies that the Case was created via Experience Cloud (Origin = Web).</description>
-        <locationX>264</locationX>
-        <locationY>614</locationY>
-        <defaultConnectorLabel>Not Web</defaultConnectorLabel>
-        <rules>
-            <name>Is_Web_Origin</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Case.Origin</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>Web</stringValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Get_Contact</targetReference>
-            </connector>
-            <label>Is Web Origin</label>
-        </rules>
-    </decisions>
     <recordLookups>
         <name>Get_Contact</name>
         <label>Get Contact</label>
         <description>Retrieves the Contact record associated with the Case to get the member's email address.</description>
-        <locationX>264</locationX>
-        <locationY>830</locationY>
+        <locationX>120</locationX>
+        <locationY>182</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_Contact_Email</targetReference>
@@ -124,11 +78,41 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <decisions>
+        <name>Check_Is_Published</name>
+        <label>Check Is Published</label>
+        <description>Verifies that the comment is published (public) and Case is from Web before sending the notification.</description>
+        <locationX>264</locationX>
+        <locationY>398</locationY>
+        <defaultConnectorLabel>Not Published or Not Web</defaultConnectorLabel>
+        <rules>
+            <name>Is_Published_And_Web</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.IsPublished</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Case.Origin</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Web</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Contact</targetReference>
+            </connector>
+            <label>Is Published and Web Origin</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Check_Contact_Email</name>
         <label>Check Contact Email</label>
         <description>Verifies that the Contact has a valid email address before sending the notification.</description>
         <locationX>264</locationX>
-        <locationY>1046</locationY>
+        <locationY>614</locationY>
         <defaultConnectorLabel>No Email</defaultConnectorLabel>
         <rules>
             <name>Email_Exists</name>
@@ -150,7 +134,7 @@
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Check_Is_Published</targetReference>
+            <targetReference>Get_Case</targetReference>
         </connector>
         <object>CaseComment</object>
         <recordTriggerType>Create</recordTriggerType>
@@ -162,7 +146,7 @@
         <label>Send Comment Email</label>
         <description>Sends a notification email to the member when a public comment is added to their support ticket.</description>
         <locationX>572</locationX>
-        <locationY>1154</locationY>
+        <locationY>722</locationY>
         <actionName>emailSimple</actionName>
         <actionType>emailSimple</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>

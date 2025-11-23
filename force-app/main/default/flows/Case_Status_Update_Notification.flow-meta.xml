@@ -32,7 +32,7 @@
         <locationY>182</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Check_Status_Change</targetReference>
+            <targetReference>Check_Status</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
