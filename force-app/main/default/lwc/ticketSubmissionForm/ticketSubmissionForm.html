@@ -1,0 +1,134 @@
+<template>
+    <lightning-card title="Submit a Ticket" icon-name="standard:case">
+        <div class="slds-p-around_medium">
+            <template if:false={isFormVisible}>
+                <div class="slds-text-align_center slds-p-around_large">
+                    <p class="slds-text-heading_medium slds-m-bottom_medium">
+                        Need help or have feedback?
+                    </p>
+                    <p class="slds-text-body_regular slds-m-bottom_large">
+                        Submit a ticket and our technical team will get back to you.
+                    </p>
+                    <lightning-button
+                        variant="brand"
+                        label="Submit New Ticket"
+                        title="Submit New Ticket"
+                        onclick={handleShowForm}
+                        class="slds-m-top_medium">
+                    </lightning-button>
+                </div>
+            </template>
+
+            <template if:true={isFormVisible}>
+                <template if:true={error}>
+                    <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+                        <span class="slds-assistive-text">error</span>
+                        <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small">
+                            <lightning-icon icon-name="utility:error" size="x-small" alternative-text="Error"></lightning-icon>
+                        </span>
+                        <h2>{error}</h2>
+                    </div>
+                </template>
+
+                <div class="slds-form slds-form_stacked">
+                    <div class="slds-form-element slds-m-bottom_medium">
+                        <label class="slds-form-element__label" for="recordType">
+                            <abbr class="slds-required" title="required">*</abbr>Ticket Type
+                        </label>
+                        <div class="slds-form-element__control">
+                            <lightning-combobox
+                                name="recordType"
+                                label="Ticket Type"
+                                value={selectedRecordType}
+                                placeholder="Select a ticket type"
+                                options={recordTypeOptions}
+                                onchange={handleRecordTypeChange}
+                                required>
+                            </lightning-combobox>
+                        </div>
+                    </div>
+
+                    <div class="slds-form-element slds-m-bottom_medium">
+                        <label class="slds-form-element__label" for="subject">
+                            <abbr class="slds-required" title="required">*</abbr>Subject
+                        </label>
+                        <div class="slds-form-element__control">
+                            <lightning-input
+                                type="text"
+                                name="subject"
+                                label="Subject"
+                                value={subject}
+                                max-length="255"
+                                required
+                                onchange={handleSubjectChange}>
+                            </lightning-input>
+                        </div>
+                        <div class="slds-form-element__help">
+                            Maximum 255 characters
+                        </div>
+                    </div>
+
+                    <div class="slds-form-element slds-m-bottom_medium">
+                        <label class="slds-form-element__label" for="description">
+                            <abbr class="slds-required" title="required">*</abbr>Description
+                        </label>
+                        <div class="slds-form-element__control">
+                            <lightning-textarea
+                                name="description"
+                                label="Description"
+                                value={description}
+                                required
+                                min-length="10"
+                                onchange={handleDescriptionChange}>
+                            </lightning-textarea>
+                        </div>
+                        <div class="slds-form-element__help">
+                            Minimum 10 characters. You have entered {descriptionLength} characters.
+                        </div>
+                    </div>
+
+                    <div class="slds-form-element slds-m-bottom_medium">
+                        <label class="slds-form-element__label" for="priority">
+                            Priority (Optional)
+                        </label>
+                        <div class="slds-form-element__control">
+                            <lightning-combobox
+                                name="priority"
+                                label="Priority"
+                                value={selectedPriority}
+                                placeholder="Select priority (optional)"
+                                options={priorityOptions}
+                                onchange={handlePriorityChange}>
+                            </lightning-combobox>
+                        </div>
+                    </div>
+
+                    <div class="slds-form-element slds-m-top_large">
+                        <lightning-button
+                            variant="brand"
+                            label="Submit Ticket"
+                            title="Submit Ticket"
+                            onclick={handleSubmit}
+                            disabled={isFormDisabled}
+                            class="slds-m-right_small">
+                        </lightning-button>
+                        <lightning-button
+                            variant="neutral"
+                            label="Cancel"
+                            title="Cancel"
+                            onclick={handleCancel}
+                            disabled={isLoading}>
+                        </lightning-button>
+                    </div>
+                </div>
+
+                <template if:true={isLoading}>
+                    <div class="slds-text-align_center slds-m-top_medium">
+                        <lightning-spinner alternative-text="Submitting ticket" size="small"></lightning-spinner>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+</template>
+
