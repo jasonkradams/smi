@@ -10,7 +10,7 @@
     </targets>
     <targetConfigs>
         <targetConfig targets="lightningCommunity__Default">
-            <property name="recordId" type="String" label="Case ID" description="The ID of the Case to display" required="true" />
+            <property name="recordId" type="String" label="Case ID" description="The ID of the Case to display. If not provided, will be extracted from URL path." required="false" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

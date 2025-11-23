@@ -236,12 +236,16 @@ If you want members to see their tickets automatically:
 #### 4. Create Ticket Detail Page
 
 1. Create a new page: `Ticket Detail`
-2. Set URL: `/support/ticket/:recordId` (dynamic parameter)
+2. Set URL: `/support/ticket/:recordId` (dynamic parameter where `:recordId` is the Case ID)
 3. Add components:
    - **ticketDetail** component
 4. Configure component:
-   - Set `recordId` parameter to get value from URL parameter `recordId`
+   - The component automatically extracts the Case ID from the URL path
+   - No additional configuration needed - the `recordId` property is optional
+   - The component reads from the URL pattern `/support/ticket/[CASE_ID]`
 5. Save and publish
+
+**Note**: The `ticketDetail` component automatically extracts the Case ID from the URL path. If you're using Experience Builder's page parameters, you can optionally set the `recordId` property, but it's not required as the component will read it from the URL automatically.
 
 #### 5. Configure Support Dropdown Navigation
 
@@ -448,23 +452,31 @@ Since Case Comment triggers are complex, use Process Builder:
 1. Click "Support" dropdown in navigation menu
 2. Select "My Tickets"
 3. Navigate to My Tickets page
-2. Verify:
+4. Verify:
    - ✅ All tickets for member are visible
-   - ✅ Filters work correctly
+   - ✅ Filters work correctly (Status: All/Open/Closed, Record Type)
    - ✅ Clicking ticket navigates to detail page
    - ✅ Ticket detail shows all information
-   - ✅ Comments are visible
+   - ✅ Comments are visible (only published comments)
+   - ✅ Date formatting displays correctly
+   - ✅ Status and priority badges display with correct colors
+   - ✅ Refresh button updates the ticket list
 
 #### 3. Test Adding Comments
 
 1. Open an open ticket (not Closed/Resolved)
 2. Scroll to "Add Comment" section
-3. Enter comment
+3. Enter comment (minimum length validation should apply)
 4. Click "Add Comment"
 5. Verify:
-   - ✅ Comment appears immediately
+   - ✅ Comment appears immediately after submission
+   - ✅ Comment text is cleared after successful submission
+   - ✅ Success toast notification appears
    - ✅ Email notification sent (if configured)
-   - ✅ Comment is visible to member
+   - ✅ Comment is visible to member with correct formatting
+   - ✅ Comment shows author name and timestamp
+   - ✅ Adding comment to closed ticket is disabled
+   - ✅ Add Comment button is disabled when comment field is empty
 
 #### 4. Test Agent Workflows
 

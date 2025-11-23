@@ -1,23 +1,44 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { NavigationMixin } from 'lightning/navigation';
+import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 import { refreshApex } from '@salesforce/apex';
 import getTicketDetails from '@salesforce/apex/TicketQueryHelper.getTicketDetails';
 import getTicketComments from '@salesforce/apex/TicketQueryHelper.getTicketComments';
 import addComment from '@salesforce/apex/TicketSubmissionHelper.addComment';
 
 export default class TicketDetail extends NavigationMixin(LightningElement) {
-    @api recordId; // Case ID
+    @api recordId; // Case ID (can be set via component property or extracted from URL)
     @track ticket;
     @track comments = [];
     @track newComment = '';
     @track isLoading = false;
     @track isAddingComment = false;
     @track error;
+    @track _urlCaseId; // Case ID extracted from URL
     wiredTicketResult;
     wiredCommentsResult;
+    
+    connectedCallback() {
+        // Extract recordId from URL path if not provided via property
+        if (!this.recordId) {
+            const urlPath = window.location.pathname;
+            const pathParts = urlPath.split('/').filter(part => part.length > 0);
+            const ticketIndex = pathParts.indexOf('ticket');
+            if (ticketIndex >= 0 && pathParts[ticketIndex + 1]) {
+                const caseIdFromPath = pathParts[ticketIndex + 1];
+                // Validate it looks like a Salesforce ID (15 or 18 characters, alphanumeric)
+                if (/^[a-zA-Z0-9]{15,18}$/.test(caseIdFromPath)) {
+                    this._urlCaseId = caseIdFromPath;
+                }
+            }
+        }
+    }
+    
+    get resolvedCaseId() {
+        return this.recordId || this._urlCaseId;
+    }
 
-    @wire(getTicketDetails, { caseId: '$recordId' })
+    @wire(getTicketDetails, { caseId: '$resolvedCaseId' })
     wiredTicket(result) {
         this.wiredTicketResult = result;
         const { data, error } = result;
@@ -42,7 +63,7 @@ export default class TicketDetail extends NavigationMixin(LightningElement) {
         }
     }
 
-    @wire(getTicketComments, { caseId: '$recordId' })
+    @wire(getTicketComments, { caseId: '$resolvedCaseId' })
     wiredComments(result) {
         this.wiredCommentsResult = result;
         const { data, error } = result;
@@ -68,7 +89,8 @@ export default class TicketDetail extends NavigationMixin(LightningElement) {
             return;
         }
 
-        if (!this.recordId) {
+        const caseId = this.resolvedCaseId;
+        if (!caseId) {
             this.showToast('Error', 'Ticket ID is missing.', 'error');
             return;
         }
@@ -78,7 +100,7 @@ export default class TicketDetail extends NavigationMixin(LightningElement) {
 
         try {
             await addComment({
-                caseId: this.recordId,
+                caseId: caseId,
                 commentBody: this.newComment.trim()
             });
 
