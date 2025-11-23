@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <description>Automatically sends a notification email to members when a public comment is added to their support ticket by an agent.</description>
+    <environments>Default</environments>
+    <interviewLabel>Case Comment Notification {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Case Comment Notification</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <decisions>
+        <name>Check_Is_Published</name>
+        <label>Check Is Published</label>
+        <description>Verifies that the comment is published (public) before sending the notification. Only published comments are visible to members.</description>
+        <locationX>264</locationX>
+        <locationY>182</locationY>
+        <defaultConnectorLabel>Not Published</defaultConnectorLabel>
+        <rules>
+            <name>Is_Published</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.IsPublished</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Case</targetReference>
+            </connector>
+            <label>Is Published</label>
+        </rules>
+    </decisions>
+    <recordLookups>
+        <name>Get_Case</name>
+        <label>Get Case</label>
+        <description>Retrieves the Case record associated with the comment to get ticket details and contact information.</description>
+        <locationX>264</locationX>
+        <locationY>398</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Web_Origin</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.ParentId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Case</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>CaseNumber</queriedFields>
+        <queriedFields>Subject</queriedFields>
+        <queriedFields>Status</queriedFields>
+        <queriedFields>ContactId</queriedFields>
+        <queriedFields>Origin</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <decisions>
+        <name>Check_Web_Origin</name>
+        <label>Check Web Origin</label>
+        <description>Verifies that the Case was created via Experience Cloud (Origin = Web).</description>
+        <locationX>264</locationX>
+        <locationY>614</locationY>
+        <defaultConnectorLabel>Not Web</defaultConnectorLabel>
+        <rules>
+            <name>Is_Web_Origin</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Case.Origin</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Web</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Contact</targetReference>
+            </connector>
+            <label>Is Web Origin</label>
+        </rules>
+    </decisions>
+    <recordLookups>
+        <name>Get_Contact</name>
+        <label>Get Contact</label>
+        <description>Retrieves the Contact record associated with the Case to get the member's email address.</description>
+        <locationX>264</locationX>
+        <locationY>830</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Contact_Email</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Case.ContactId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Contact</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Email</queriedFields>
+        <queriedFields>Name</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <decisions>
+        <name>Check_Contact_Email</name>
+        <label>Check Contact Email</label>
+        <description>Verifies that the Contact has a valid email address before sending the notification.</description>
+        <locationX>264</locationX>
+        <locationY>1046</locationY>
+        <defaultConnectorLabel>No Email</defaultConnectorLabel>
+        <rules>
+            <name>Email_Exists</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Contact.Email</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Send_Comment_Email</targetReference>
+            </connector>
+            <label>Email Exists</label>
+        </rules>
+    </decisions>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Check_Is_Published</targetReference>
+        </connector>
+        <object>CaseComment</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <actionCalls>
+        <name>Send_Comment_Email</name>
+        <label>Send Comment Email</label>
+        <description>Sends a notification email to the member when a public comment is added to their support ticket.</description>
+        <locationX>572</locationX>
+        <locationY>1154</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>emailAddresses</name>
+            <value>
+                <elementReference>Get_Contact.Email</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <stringValue>Hello {!Get_Contact.Name},
+
+A new response has been added to your support ticket.
+
+Ticket Details:
+- Case Number: {!Get_Case.CaseNumber}
+- Subject: {!Get_Case.Subject}
+- Status: {!Get_Case.Status}
+
+A team member has added a new comment to your ticket. You can view all comments and add your own response at:
+https://www.spokanemountaineers.org/support/ticket/{!Get_Case.Id}
+
+Best regards,
+Technical Team</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <stringValue>New response on your support ticket #{!Get_Case.CaseNumber}</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>senderAddress</name>
+            <value>
+                <stringValue>admin@spokanemountaineers.org</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>senderType</name>
+            <value>
+                <stringValue>OrgWideEmailAddress</stringValue>
+            </value>
+        </inputParameters>
+    </actionCalls>
+</Flow>

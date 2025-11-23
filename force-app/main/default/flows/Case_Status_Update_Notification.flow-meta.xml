@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <description>Automatically sends notification emails to members when their support ticket status is updated. Sends different emails for resolved/closed tickets vs. other status updates.</description>
+    <environments>Default</environments>
+    <interviewLabel>Case Status Update Notification {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Case Status Update Notification</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Contact</name>
+        <label>Get Contact</label>
+        <description>Retrieves the Contact record associated with the Case to get the member's email address.</description>
+        <locationX>264</locationX>
+        <locationY>182</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Status_Change</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.ContactId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Contact</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Email</queriedFields>
+        <queriedFields>Name</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <decisions>
+        <name>Check_Status</name>
+        <label>Check Status</label>
+        <description>Determines which type of email to send based on the current status (resolved/closed vs. other updates).</description>
+        <locationX>264</locationX>
+        <locationY>398</locationY>
+        <defaultConnectorLabel>Other Status</defaultConnectorLabel>
+        <rules>
+            <name>Status_Resolved</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Closed</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Resolved</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Check_Contact_Email_Resolved</targetReference>
+            </connector>
+            <label>Status is Resolved or Closed</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Contact_Email_Resolved</name>
+        <label>Check Contact Email (Resolved)</label>
+        <description>Verifies that the Contact has a valid email address before sending the resolved notification.</description>
+        <locationX>480</locationX>
+        <locationY>506</locationY>
+        <defaultConnectorLabel>No Email</defaultConnectorLabel>
+        <rules>
+            <name>Email_Exists_Resolved</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Contact.Email</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Send_Resolved_Email</targetReference>
+            </connector>
+            <label>Email Exists</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Contact_Email_Updated</name>
+        <label>Check Contact Email (Updated)</label>
+        <description>Verifies that the Contact has a valid email address before sending the update notification.</description>
+        <locationX>480</locationX>
+        <locationY>614</locationY>
+        <defaultConnectorLabel>No Email</defaultConnectorLabel>
+        <rules>
+            <name>Email_Exists_Updated</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Contact.Email</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Send_Updated_Email</targetReference>
+            </connector>
+            <label>Email Exists</label>
+        </rules>
+    </decisions>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Contact</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Origin</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Web</stringValue>
+            </value>
+        </filters>
+        <object>Case</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <actionCalls>
+        <name>Send_Resolved_Email</name>
+        <label>Send Resolved Email</label>
+        <description>Sends a notification email to the member when their support ticket is resolved or closed.</description>
+        <locationX>696</locationX>
+        <locationY>614</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>emailAddresses</name>
+            <value>
+                <elementReference>Get_Contact.Email</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <stringValue>Hello {!Get_Contact.Name},
+
+Great news! Your support ticket has been resolved.
+
+Ticket Details:
+- Case Number: {!$Record.CaseNumber}
+- Subject: {!$Record.Subject}
+- Type: {!$Record.RecordType.Name}
+- Status: {!$Record.Status}
+- Resolved: {!$Record.ClosedDate}
+
+You can view the full ticket details and any final comments at:
+https://www.spokanemountaineers.org/support/ticket/{!$Record.Id}
+
+If you have any additional questions or concerns, please feel free to submit a new ticket.
+
+Thank you for your patience!
+
+Best regards,
+Technical Team</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <stringValue>Your support ticket #{!$Record.CaseNumber} has been resolved</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>senderAddress</name>
+            <value>
+                <stringValue>admin@spokanemountaineers.org</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>senderType</name>
+            <value>
+                <stringValue>OrgWideEmailAddress</stringValue>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <actionCalls>
+        <name>Send_Updated_Email</name>
+        <label>Send Updated Email</label>
+        <description>Sends a notification email to the member when their support ticket status is updated (but not resolved/closed).</description>
+        <locationX>696</locationX>
+        <locationY>722</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>emailAddresses</name>
+            <value>
+                <elementReference>Get_Contact.Email</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <stringValue>Hello {!Get_Contact.Name},
+
+We have an update on your support ticket.
+
+Ticket Details:
+- Case Number: {!$Record.CaseNumber}
+- Subject: {!$Record.Subject}
+- Type: {!$Record.RecordType.Name}
+- Status: {!$Record.Status}
+- Priority: {!$Record.Priority}
+
+The status of your ticket has been updated. You can view the latest information and add updates at:
+https://www.spokanemountaineers.org/support/ticket/{!$Record.Id}
+
+If you have any questions, please don't hesitate to contact us.
+
+Best regards,
+Technical Team</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <stringValue>Update on your support ticket #{!$Record.CaseNumber}</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>senderAddress</name>
+            <value>
+                <stringValue>admin@spokanemountaineers.org</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>senderType</name>
+            <value>
+                <stringValue>OrgWideEmailAddress</stringValue>
+            </value>
+        </inputParameters>
+    </actionCalls>
+</Flow>
