@@ -12,9 +12,9 @@ export default class TicketSubmissionForm extends NavigationMixin(LightningEleme
     @track selectedPriority = '';
     @track recordTypeOptions = [];
     @track priorityOptions = [
-        { label: 'High', value: 'High' },
+        { label: 'Low', value: 'Low' },
         { label: 'Medium', value: 'Medium' },
-        { label: 'Low', value: 'Low' }
+        { label: 'High', value: 'High' }
     ];
     @track isLoading = false;
     @track isFormVisible = false;

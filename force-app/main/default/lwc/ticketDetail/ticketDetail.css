@@ -1,10 +1,14 @@
+:host {
+    display: block;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.slds-card {
+    margin-bottom: 1rem;
+}
+
 .slds-comment {
     border-bottom: 1px solid #dddbda;
     padding-bottom: 1rem;
 }
-
-.slds-comment:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-}
-
