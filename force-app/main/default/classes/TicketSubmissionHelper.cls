@@ -145,6 +145,9 @@ public with sharing class TicketSubmissionHelper {
                 LIMIT 1
             ];
             
+        } catch (AuraHandledException e) {
+            // Re-throw AuraHandledException as-is to preserve the original message
+            throw e;
         } catch (DmlException e) {
             throw new AuraHandledException('Error creating ticket: ' + e.getDmlMessage(0));
         } catch (Exception e) {
@@ -201,6 +204,9 @@ public with sharing class TicketSubmissionHelper {
             
             return comment;
             
+        } catch (AuraHandledException e) {
+            // Re-throw AuraHandledException as-is to preserve the original message
+            throw e;
         } catch (DmlException e) {
             throw new AuraHandledException('Error adding comment: ' + e.getDmlMessage(0));
         } catch (Exception e) {
