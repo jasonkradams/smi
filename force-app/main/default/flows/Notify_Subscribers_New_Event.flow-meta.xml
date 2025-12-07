@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <description>Posts an event to the related chatter group</description>
+        <name>Post_Event_to_Chatter_Group</name>
+        <label>Post Event to Chatter Group</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <actionName>EventChatterPostHelper</actionName>
+        <actionType>apex</actionType>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>activityGroupName</name>
+            <value>
+                <elementReference>$Record.Activity_Group__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>eventRegistrationId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>EventChatterPostHelper</nameSegment>
+        <offset>0</offset>
+    </actionCalls>
+    <apiVersion>65.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>DEPRECATED: This flow has been replaced by EventChatterBatchPoster scheduled batch job. Posts a notification to the corresponding activity group Chatter group when a new event is created. This leverages the existing Chatter subscription system for notifications.</description>
+    <environments>Default</environments>
+    <interviewLabel>Notify Subscribers New Event {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Notify Subscribers New Event</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Post_Event_to_Chatter_Group</targetReference>
+        </connector>
+        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Status__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Approved</stringValue>
+            </value>
+        </filters>
+        <object>Event_Registration__c</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Obsolete</status>
+    <textTemplates>
+        <description>Chatter Post Template for New Events</description>
+        <name>Message_Text</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;body style=&quot;font-family: Arial, sans-serif; color:#333; margin:0; padding:20px; background:#f7f7f7;&quot;&gt;
+    &lt;div style=&quot;max-width:600px; margin:auto; background:white; padding:24px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.08);&quot;&gt;
+      &lt;p style=&quot;font-size:16px; line-height:1.5;&quot;&gt;
+        A new &lt;strong&gt;{!$Record.Activity_Group__c}&lt;/strong&gt; event has been added to the club calendar!
+      &lt;/p&gt;
+      &lt;div style=&quot;margin:20px 0; padding:16px; background:#e8f5e9; border-left:4px solid #2d5016; border-radius:6px;&quot;&gt;
+        &lt;p style=&quot;margin:0; font-size:16px;&quot;&gt;
+          &lt;strong&gt;Event:&lt;/strong&gt; {!$Record.Name}&lt;br&gt;
+          &lt;strong&gt;Start:&lt;/strong&gt; {!$Record.Start__c}&lt;br&gt;
+          &lt;strong&gt;Location:&lt;/strong&gt; {!$Record.Location__c}
+        &lt;/p&gt;
+      &lt;/div&gt;
+      &lt;p style=&quot;font-size:16px;&quot;&gt;
+        &lt;a href=&quot;https://www.spokanemountaineers.org/s/event-registration/{!$Record.Id}&quot;
+           style=&quot;background:#2d5016; color:white; padding:12px 20px; border-radius:6px; text-decoration:none; display:inline-block; margin-bottom:12px;&quot;&gt;
+           View Event
+        &lt;/a&gt;
+      &lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</text>
+    </textTemplates>
+</Flow>
