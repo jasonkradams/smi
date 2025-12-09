@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>64.0</apiVersion>
-    <description>Automatically adds the Event Bot service account to all newly created Chatter groups</description>
+    <description>Automatically adds the sm-client@prolocity.com service account to all newly created Chatter groups</description>
     <label>Add Chatter Service To New Groups</label>
     <formulas>
         <name>ServiceAccountUsername</name>
         <dataType>String</dataType>
-        <expression>"eventbot@spokanemountaineers.org.smi"</expression>
+        <expression>"sm-client@prolocity.com"</expression>
     </formulas>
     <processMetadataValues>
         <name>BuilderType</name>
