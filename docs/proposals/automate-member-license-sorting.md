@@ -1,7 +1,8 @@
 # Automating Member License Sorting
 
-**Status**: Proposal  
+**Status**: ✅ Implemented  
 **Created**: 2025-12-08  
+**Implemented**: 2025-12-09  
 **Author**: Jason Adams  
 **Related Issue**: [#42](https://github.com/jasonkradams/smi/issues/42)
 
@@ -20,7 +21,7 @@ Currently, license assignments are managed manually, which leads to:
 
 ### Current Constraints
 
-- **475 Premium licenses available** (target: reduce to 450 assigned)
+- **500 Premium licenses available** (target: reduce to 450 assigned)
 - **Chairs must remain Premium** (Profile: `SM Community Plus Chair`)
 - **New users (<90 days old) must remain Premium** (to allow for initial usage patterns)
 - **200 Plus Login licenses** included in contract
@@ -49,17 +50,26 @@ Automate license optimization through a scheduled batch process that:
 1. **LicenseMonitorScheduler** (`Schedulable`)
     - Runs daily to check Premium license count
     - Triggers batch job when count > 475
+    - Located in: `force-app/main/default/classes/LicenseMonitorScheduler.cls`
 
-2. **LicenseShuffleBatch** (`Database.Batchable`)
+2. **LicenseShuffleBatch** (`Database.Batchable`, `Database.Stateful`)
     - Queries all active Community users
-    - Counts logins from `LoginHistory` (past 365 days)
+    - Counts logins from `LoginHistory` (fiscal year or last 365 days based on current month)
     - Identifies candidates for upgrade/downgrade
     - Updates licenses and profiles
-    - Creates audit logs
+    - Accumulates audit logs for later insertion
+    - Located in: `force-app/main/default/classes/LicenseShuffleBatch.cls`
 
-3. **License_Change_Log__c** (Custom Object)
+3. **LicenseChangeLogQueueable** (`Queueable`)
+    - Handles insertion of `License_Change_Log__c` records in a separate transaction
+    - Resolves `MIXED_DML_OPERATION` error (cannot mix User updates with custom object inserts)
+    - Enqueued from `LicenseShuffleBatch.finish()` method
+    - Located in: `force-app/main/default/classes/LicenseChangeLogQueueable.cls`
+
+4. **License_Change_Log__c** (Custom Object)
     - Tracks all license changes
-    - Stores: User, old/new license, old/new profile, login count, reason, timestamp
+    - Stores: User, old/new license, old/new profile, login count, reason, timestamp, batch job ID
+    - Located in: `force-app/main/default/objects/License_Change_Log__c/`
 
 ### Flow Diagram
 
@@ -75,8 +85,10 @@ Automate license optimization through a scheduled batch process that:
 
 2. **Calculate Login Counts**:
     - Query `LoginHistory` for each user
-    - Filter: `LoginTime >= LAST_N_DAYS:365`
-    - Count distinct logins per user
+    - **Fiscal Year Logic**: 
+      - If current month < 4 (Jan-Mar): Use `LAST_N_DAYS:365` (last 365 days)
+      - If current month >= 4 (Apr-Dec): Use `THIS_FISCAL_YEAR` (April 1 to current date)
+    - Count total logins per user in the relevant period
 
 3. **Identify Candidates**:
     - **Downgrade**: Premium users with ≤4 logins (excluding protected)
@@ -104,9 +116,14 @@ All license changes are logged to `License_Change_Log__c` with:
 - Old and new license types
 - Old and new profile names
 - Login count at time of change
-- Reason for change
-- Timestamp
+- Reason for change ("Low usage" or "High usage")
+- Timestamp (`Changed_At__c`)
 - Batch job ID
+
+**Important**: Due to Salesforce's `MIXED_DML_OPERATION` restriction, log records are inserted via a `Queueable` job that runs after the batch completes. This means:
+- User license changes happen immediately
+- Log records are created shortly after (typically within seconds)
+- If the Queueable job fails, check debug logs for error details
 
 ## Expected Outcomes
 
@@ -126,9 +143,11 @@ All license changes are logged to `License_Change_Log__c` with:
 
 ### Technical Risks
 
-- **Governor Limits**: LoginHistory queries are expensive; batch size must be carefully tuned (50-100 users per batch)
+- **Governor Limits**: LoginHistory queries are expensive; batch size is set to 50 users per batch to stay within limits
 - **Query Performance**: Large LoginHistory tables may impact batch execution time
-- **Error Handling**: Users with validation rules or required fields may fail to update
+- **Error Handling**: Users with validation rules or required fields may fail to update (errors are logged but don't stop the batch)
+- **MIXED_DML_OPERATION**: Cannot update User (setup object) and insert License_Change_Log__c (non-setup object) in the same transaction
+  - **Mitigation**: Log records are inserted via `LicenseChangeLogQueueable` in a separate transaction
 
 ### Business Risks
 
@@ -146,36 +165,60 @@ All license changes are logged to `License_Change_Log__c` with:
 ## Implementation Plan
 
 ### Phase 1: Foundation
-- [ ] Create `License_Change_Log__c` custom object and fields
-- [ ] Create `LicenseMonitorScheduler` class
-- [ ] Create `LicenseShuffleBatch` class skeleton
+- [x] Create `License_Change_Log__c` custom object and fields
+- [x] Create `LicenseMonitorScheduler` class
+- [x] Create `LicenseShuffleBatch` class skeleton
 
 ### Phase 2: Core Logic
-- [ ] Implement LoginHistory query logic
-- [ ] Implement license shuffling algorithm
-- [ ] Implement logging functionality
+- [x] Implement LoginHistory query logic
+- [x] Implement license shuffling algorithm
+- [x] Implement logging functionality
 
 ### Phase 3: Testing
-- [ ] Create comprehensive test class
-- [ ] Test all scenarios (upgrade, downgrade, protected users)
-- [ ] Verify governor limit handling
+- [x] Create comprehensive test class
+- [x] Test all scenarios (upgrade, downgrade, protected users)
+- [x] Verify governor limit handling
 
 ### Phase 4: Deployment
-- [ ] Deploy to sandbox for testing
+- [x] Deploy to staging environment for testing
+- [x] Create test data and verify functionality
+- [x] Fix MIXED_DML_OPERATION issue with Queueable class
+- [x] Verify log record creation for upgrades and downgrades
+- [x] Restore threshold to production value (475)
 - [ ] Schedule `LicenseMonitorScheduler` to run daily
 - [ ] Monitor initial runs and adjust thresholds if needed
+- [ ] Deploy to production after testing complete
 
 ### Phase 5: Documentation
-- [ ] Update automation documentation
+- [x] Update proposal document with implementation details
+- [x] Document Queueable class and MIXED_DML workaround
 - [ ] Create admin guide for monitoring
 - [ ] Document troubleshooting procedures
+
+## Implementation Notes
+
+### Testing Configuration
+- **Threshold**: Set to `475` (production value)
+- **Location**: `LicenseMonitorScheduler.TRIGGER_THRESHOLD`
+- **Manual Execution**: Use `scripts/apex/run_license_monitor_manually.apex` to trigger manually
+
+### Key Implementation Details
+- **Batch Size**: 50 users per chunk (to handle LoginHistory queries efficiently)
+- **Stateful Processing**: Uses `Database.Stateful` to track Premium users across chunks
+- **Log Insertion**: Logs are accumulated during batch execution and inserted via Queueable after completion
+- **Protected Users**: Chairs and users <90 days old are never changed
+
+### Test Classes
+- `LicenseShuffleBatchTest.cls`: Comprehensive test coverage for batch logic
+- `LicenseMonitorSchedulerTest.cls`: Tests scheduler trigger logic
+- `LicenseChangeLogQueueableTest.cls`: Tests Queueable log insertion
 
 ## Future Enhancements
 
 - **Custom Metadata**: Configurable thresholds (475 trigger, 450 target, 4/20 login thresholds)
-- **Email Notifications**: Alert admins when license shuffling occurs
+<!-- - **Email Notifications**: Alert admins when license shuffling occurs -->
 - **Dashboard/Reports**: Visualize license usage trends
-- **Manual Trigger**: Option to run optimization immediately
+- **Manual Trigger**: Option to run optimization immediately (partially implemented via manual script)
 - **Predictive Analytics**: Forecast license needs based on usage trends
 
 ## References

@@ -12,6 +12,8 @@ Each automation is designed to reduce manual work, ensure consistency, and suppo
   Ensures all active site users are part of the Conservation Group and logs changes for audit.
 - **[Notify Leader on RSVP](notify-leader-on-rsvp.md)**  
   Automatically sends email notifications to event leaders when someone RSVPs "Attending" to their event.
+- **[Automated License Sorting](../proposals/automate-member-license-sorting.md)**  
+  Automatically optimizes Salesforce Community license usage by downgrading low-usage Premium users and upgrading high-usage Login users. Runs daily when Premium licenses exceed threshold.
 - [User Sync: Salesforce to Google Workspace](user-sync-google-workspace/index.md)  
   Automates the synchronization of active Salesforce members to Google Workspace accounts.
   - **[User Sync Flow](user-sync-google-workspace/salesforce-flow.md)**
