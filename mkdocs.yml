@@ -33,6 +33,9 @@ nav:
           - automation/user-sync-google-workspace/google-app-script/index.md
     - Scheduled Add Aembers to Conservation Group: automation/scheduled-add-members-to-conservation-group.md
     - Notify Leader on RSVP: automation/notify-leader-on-rsvp.md
+  - Proposals:
+    - proposals/index.md
+    - Automate Member License Sorting: proposals/automate-member-license-sorting.md
   - About: about.md  # We'll add this page later.
 
 # Custom branding

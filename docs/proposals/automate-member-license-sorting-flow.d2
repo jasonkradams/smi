@@ -1,0 +1,46 @@
+# direction: right
+vars {
+    d2-config {
+        sketch: true
+        center: true
+    }
+}
+
+DailySchedule: "Daily Scheduler\n(LicenseMonitorScheduler)" {
+    CheckCount: "Check Premium\nLicense Count"
+    DailySchedule -> CheckCount: runs daily
+}
+
+CheckCount -> Decision: "Count > 475?"
+Decision: {
+    Yes: "Yes - Trigger Batch"
+    No: "No - End"
+}
+
+Decision.Yes -> BatchStart: "Execute LicenseShuffleBatch"
+Decision.No -> End1: "No Action Needed"
+
+BatchStart: "Batch Start Method" {
+    QueryUsers: "Query Active Users:\n- Customer Community Plus\n- Customer Community Plus Login\n- Include Profile, CreatedDate"
+    BatchStart -> QueryUsers
+}
+
+QueryUsers -> ExecuteBatch: "Batch Execute Method\n(Process in chunks)"
+
+ExecuteBatch: {
+    CountLogins: "For Each User:\nQuery LoginHistory\nCount logins (past 365 days)"
+    IdentifyCandidates: "Identify Candidates:\n- Premium → Login: ≤4 logins\n- Login → Premium: >20 logins"
+    FilterProtected: "Filter Out Protected:\n- Chairs (SM Community Plus Chair)\n- Users <90 days old"
+    CalculateTarget: "Calculate Target:\nKeep top 450 Premium users\n(sorted by login count)"
+    
+    CountLogins -> IdentifyCandidates
+    IdentifyCandidates -> FilterProtected
+    FilterProtected -> CalculateTarget
+}
+
+CalculateTarget -> UpdateLicenses: "Update User Records:\n- License Type\n- Profile\n- Batch update"
+UpdateLicenses -> LogChanges: "Create License Change Logs:\n- User, Old/New License\n- Old/New Profile\n- Login Count, Reason"
+LogChanges -> BatchFinish: "Batch Finish Method\n(Log Summary)"
+
+BatchFinish -> End2: "Complete"
+
