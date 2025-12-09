@@ -20,6 +20,7 @@ Use the sidebar to explore topics by category. If you're not sure where to begin
 - [Latest Update: Event Participant Follow Handler Deployment Recap](articles/event-participant-follow-handler-update.md)
 - [How To Guides](how-to-guides/index.md)
 - [Automations](automation/index.md)
+- [Proposals](proposals/index.md)
 - [About](about.md)
 
 ## Contributing
