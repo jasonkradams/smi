@@ -3,7 +3,7 @@
 **Status**: Proposal  
 **Created**: 2025-12-08  
 **Author**: Jason Adams  
-**Related Issue**: #[TBD]
+**Related Issue**: [#42](https://github.com/jasonkradams/smi/issues/42)
 
 ## Problem Statement
 
