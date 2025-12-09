@@ -22,7 +22,7 @@ public class LicenseMonitorScheduler implements Schedulable {
         
         System.debug('LicenseMonitorScheduler: Premium license count = ' + premiumLicenseCount);
         
-        // If count > 475, execute LicenseShuffleBatch
+        // If count exceeds threshold, execute LicenseShuffleBatch
         if (premiumLicenseCount > TRIGGER_THRESHOLD) {
             System.debug('LicenseMonitorScheduler: Premium licenses exceed threshold (' + TRIGGER_THRESHOLD + '), triggering batch job');
             LicenseShuffleBatch batch = new LicenseShuffleBatch();
