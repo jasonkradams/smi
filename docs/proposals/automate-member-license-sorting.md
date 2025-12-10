@@ -86,8 +86,8 @@ Automate license optimization through a scheduled batch process that:
 2. **Calculate Login Counts**:
     - Query `LoginHistory` for each user
     - **Fiscal Year Logic**: 
-      - If current month < 4 (Jan-Mar): Use `LAST_N_DAYS:365` (last 365 days)
-      - If current month >= 4 (Apr-Dec): Use `THIS_FISCAL_YEAR` (April 1 to current date)
+        - If current month < 4 (Jan-Mar): Use `LAST_N_DAYS:365` (last 365 days)
+        - If current month >= 4 (Apr-Dec): Use `THIS_FISCAL_YEAR` (April 1 to current date)
     - Count total logins per user in the relevant period
 
 3. **Identify Candidates**:
