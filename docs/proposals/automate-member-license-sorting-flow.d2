@@ -6,19 +6,12 @@ vars {
     }
 }
 
-DailySchedule: "Daily Scheduler\n(LicenseMonitorScheduler)" {
-    CheckCount: "Check Premium\nLicense Count"
-    DailySchedule -> CheckCount: runs daily
+DailySchedule: "Daily Scheduler\n(LoginHistorySyncScheduler)" {
+    SyncBatch: "LoginHistorySyncBatch\nSync LoginHistory to\nFiscal_Year_Login_History__c"
+    DailySchedule -> SyncBatch: runs daily
 }
 
-CheckCount -> Decision: "Count > 475?"
-Decision: {
-    Yes: "Yes - Trigger Batch"
-    No: "No - End"
-}
-
-Decision.Yes -> BatchStart: "Execute LicenseShuffleBatch"
-Decision.No -> End1: "No Action Needed"
+SyncBatch -> BatchStart: "Trigger LicenseShuffleBatch\nin finish() method"
 
 BatchStart: "Batch Start Method" {
     QueryUsers: "Query Active Users:\n- Customer Community Plus\n- Customer Community Plus Login\n- Include Profile, CreatedDate"
@@ -28,10 +21,10 @@ BatchStart: "Batch Start Method" {
 QueryUsers -> ExecuteBatch: "Batch Execute Method\n(Process in chunks)"
 
 ExecuteBatch: {
-    CountLogins: "For Each User:\nQuery LoginHistory\nCount logins (past 365 days)"
-    IdentifyCandidates: "Identify Candidates:\n- Premium → Login: ≤4 logins\n- Login → Premium: >20 logins"
-    FilterProtected: "Filter Out Protected:\n- Chairs (SM Community Plus Chair)\n- Users <90 days old"
-    CalculateTarget: "Calculate Target:\nKeep top 450 Premium users\n(sorted by login count)"
+    CountLogins: "For Each User:\nQuery Fiscal_Year_Login_History__c\nCount logins (fiscal year)"
+    IdentifyCandidates: "Identify Candidates:\n- Users with >5 logins qualify for Premium\n- Protected users always Premium"
+    FilterProtected: "Filter Protected Users:\n- Chairs (SM Community Plus Chair)\n- Users <90 days old\n(Always get Premium)"
+    CalculateTarget: "Calculate Target:\nAssign Premium to:\n- All protected users\n- Users with >5 logins\n- Max 475 total (sort by login count)"
     
     CountLogins -> IdentifyCandidates
     IdentifyCandidates -> FilterProtected

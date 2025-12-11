@@ -14,19 +14,24 @@ if (currentMonth < 4) {
 } else {
     // April through December: Use current fiscal year (starts April 1)
     Integer currentYear = Date.today().year();
-    startDate = Date.newInstance(currentYear, 4, 1);
-    dateRange = 'Current Fiscal Year (from April 1, ' + currentYear + ')';
+    startDate = Date.newInstance(currentYear, 1, 1);
+    dateRange = 'Current Fiscal Year (from January 1, ' + currentYear + ')';
 }
 
 DateTime startDateTime = DateTime.newInstance(startDate, Time.newInstance(0, 0, 0, 0));
 
 // ============================================
-// Get All Active Users
+// Get Active Users with Specific Profiles Only
 // ============================================
+// Only include these profiles (excludes System Administrator):
+// - SM Community Plus Login
+// - SM Community Plus Member
+// - SM Community Plus Chair
 List<User> users = [
-    SELECT Id, FirstName, LastName, Name
+    SELECT Id, FirstName, LastName, Name, Profile.Name
     FROM User
     WHERE IsActive = true
+    AND Profile.Name IN ('SM Community Plus Login', 'SM Community Plus Member', 'SM Community Plus Chair')
 ];
 
 if (users.isEmpty()) {
