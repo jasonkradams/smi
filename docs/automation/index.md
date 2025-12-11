@@ -13,7 +13,7 @@ Each automation is designed to reduce manual work, ensure consistency, and suppo
 - **[Notify Leader on RSVP](notify-leader-on-rsvp.md)**  
   Automatically sends email notifications to event leaders when someone RSVPs "Attending" to their event.
 - **[Automated License Sorting](../proposals/automate-member-license-sorting.md)**  
-  Automatically optimizes Salesforce Community license usage by downgrading low-usage Premium users and upgrading high-usage Login users. Runs daily when Premium licenses exceed threshold.
+  Automatically optimizes Salesforce Community license usage by assigning Premium licenses to users with >5 logins (up to 475 max), and Login licenses to others. Tracks full fiscal year login history via custom object and runs daily to maintain optimal license distribution.
 - [User Sync: Salesforce to Google Workspace](user-sync-google-workspace/index.md)  
   Automates the synchronization of active Salesforce members to Google Workspace accounts.
   - **[User Sync Flow](user-sync-google-workspace/salesforce-flow.md)**

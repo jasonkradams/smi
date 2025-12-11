@@ -4,7 +4,7 @@ This section contains proposals for new features, automations, and improvements 
 
 ## Active Proposals
 
-- [Automating Member License Sorting](automate-member-license-sorting.md) - Automate optimization of Salesforce Community license usage based on user login activity
+- [Automating Member License Sorting](automate-member-license-sorting.md) - Automated system that optimizes Salesforce Community license usage by assigning Premium licenses (up to 475) to users with >5 logins per fiscal year, while protecting Chairs and new members. Includes full fiscal year login tracking and daily automated optimization.
 
 ## Proposal Process
 
