@@ -6,7 +6,9 @@ This folder contains all scripts related to the automated license sorting system
 
 - **`grant_fls_fiscal_year_login_history.apex`**: Grants Field-Level Security (FLS) access to System Administrator profile for all `Fiscal_Year_Login_History__c` fields. Run this after deploying the custom object.
 
-- **`migrate_login_history_initial.apex`**: Executes `LoginHistoryMigrationBatch` to backfill the last 6 months of LoginHistory data into `Fiscal_Year_Login_History__c`. Run this once during initial setup.
+- **`migrate_login_history_initial.apex`**: Executes `LoginHistoryMigrationBatch` to backfill the last 6 months of LoginHistory data into `Fiscal_Year_Login_History__c`. **Run this FIRST before running LicenseShuffleBatch** - otherwise login counts will be 0.
+
+- **`run_initial_migration_and_sync.apex`**: Runs the initial migration and provides instructions for next steps. Use this to ensure data is populated before license shuffling.
 
 ## Utility Scripts
 
@@ -22,7 +24,13 @@ This folder contains all scripts related to the automated license sorting system
 
 ## Manual Execution
 
-- **`run_license_monitor_manually.apex`**: Manually triggers `LicenseShuffleBatch` for immediate license optimization. Useful for testing or manual optimization runs.
+- **`run_license_monitor_manually.apex`**: Manually triggers `LicenseShuffleBatch` for immediate license optimization. **IMPORTANT**: Ensure `Fiscal_Year_Login_History__c` has data first (run initial migration), otherwise login counts will be 0.
+
+## Scheduling Scripts
+
+- **`schedule_daily_sync.apex`**: Schedules `LoginHistorySyncScheduler` to run daily at 2:00 AM. Run this after deploying to production.
+
+- **`schedule_annual_cleanup.apex`**: Schedules `LoginHistoryCleanupScheduler` to run annually on May 1st at 3:00 AM. Run this after deploying to production.
 
 ## Usage
 
