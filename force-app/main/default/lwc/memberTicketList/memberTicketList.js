@@ -92,7 +92,7 @@ export default class MemberTicketList extends NavigationMixin(LightningElement) 
             this[NavigationMixin.Navigate]({
                 type: 'standard__webPage',
                 attributes: {
-                    url: `/support/ticket/${caseId}`
+                    url: `/support/ticket-detail?id=${caseId}`
                 }
             }, false);
         }

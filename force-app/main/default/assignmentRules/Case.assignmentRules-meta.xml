@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssignmentRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <assignmentRule>
+        <fullName>Route to Ecomm</fullName>
+        <active>true</active>
+        <!-- Rule entries need to be configured based on actual assignment criteria -->
+        <!-- TODO: Add ruleEntry elements with assignment criteria -->
+        <!-- Example structure:
+        <ruleEntry>
+            <assignedTo>Service</assignedTo>
+            <assignedToType>Queue</assignedToType>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>Web</value>
+            </criteriaItems>
+        </ruleEntry>
+        -->
+    </assignmentRule>
+</AssignmentRules>

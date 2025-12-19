@@ -236,16 +236,24 @@ If you want members to see their tickets automatically:
 #### 4. Create Ticket Detail Page
 
 1. Create a new page: `Ticket Detail`
-2. Set URL: `/support/ticket/:recordId` (dynamic parameter where `:recordId` is the Case ID)
+2. Set URL: `/support/ticket-detail` (Note: Experience Cloud Builder only allows alphanumeric characters and hyphens in URL segments)
 3. Add components:
    - **ticketDetail** component
 4. Configure component:
-   - The component automatically extracts the Case ID from the URL path
+   - The component automatically extracts the Case ID from URL query parameters or path
    - No additional configuration needed - the `recordId` property is optional
-   - The component reads from the URL pattern `/support/ticket/[CASE_ID]`
+   - The component reads from query parameters: `?id=[CASE_ID]` or `?caseId=[CASE_ID]` or `?recordId=[CASE_ID]`
+   - It can also read from URL path pattern: `/support/ticket/[CASE_ID]` (if using custom routing)
 5. Save and publish
 
-**Note**: The `ticketDetail` component automatically extracts the Case ID from the URL path. If you're using Experience Builder's page parameters, you can optionally set the `recordId` property, but it's not required as the component will read it from the URL automatically.
+**Note**: Experience Cloud Builder doesn't support dynamic URL parameters like `:recordId` in the URL field. The `ticketDetail` component supports both:
+- **Query parameters** (recommended): `/support/ticket-detail?id=500000000000123`
+- **URL path** (if using custom routing): `/support/ticket/500000000000123`
+
+When linking to ticket detail pages from other components (like `memberTicketList`), use the query parameter format:
+```javascript
+/support/ticket-detail?id={CaseId}
+```
 
 #### 5. Configure Support Dropdown Navigation
 

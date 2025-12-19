@@ -19,17 +19,28 @@ export default class TicketDetail extends NavigationMixin(LightningElement) {
     wiredCommentsResult;
     
     connectedCallback() {
-        // Extract recordId from URL path if not provided via property
+        // Extract recordId from URL if not provided via property
         if (!this.recordId) {
-            const urlPath = window.location.pathname;
-            const pathParts = urlPath.split('/').filter(part => part.length > 0);
-            const ticketIndex = pathParts.indexOf('ticket');
-            if (ticketIndex >= 0 && pathParts[ticketIndex + 1]) {
-                const caseIdFromPath = pathParts[ticketIndex + 1];
-                // Validate it looks like a Salesforce ID (15 or 18 characters, alphanumeric)
-                if (/^[a-zA-Z0-9]{15,18}$/.test(caseIdFromPath)) {
-                    this._urlCaseId = caseIdFromPath;
+            // First, try query parameters (preferred for Experience Cloud)
+            const urlParams = new URLSearchParams(window.location.search);
+            let caseId = urlParams.get('id') || urlParams.get('caseId') || urlParams.get('recordId');
+            
+            // If not in query params, try URL path
+            if (!caseId) {
+                const urlPath = window.location.pathname;
+                const pathParts = urlPath.split('/').filter(part => part.length > 0);
+                let ticketIndex = pathParts.indexOf('ticket');
+                if (ticketIndex < 0) {
+                    ticketIndex = pathParts.indexOf('ticket-detail');
                 }
+                if (ticketIndex >= 0 && pathParts[ticketIndex + 1]) {
+                    caseId = pathParts[ticketIndex + 1];
+                }
+            }
+            
+            // Validate it looks like a Salesforce ID (15 or 18 characters, alphanumeric)
+            if (caseId && /^[a-zA-Z0-9]{15,18}$/.test(caseId)) {
+                this._urlCaseId = caseId;
             }
         }
     }

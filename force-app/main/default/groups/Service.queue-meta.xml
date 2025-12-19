@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    NOTE: Queues cannot be retrieved via Metadata API.
+    This file documents the Service queue that exists in production.
+    
+    Queue Details (from production org):
+    - Name: Service
+    - Id: 00GUm000003hsufMAA
+    - Type: Queue
+    
+    To recreate this queue:
+    1. Navigate to Setup > Queues
+    2. Create a new queue named "Service"
+    3. Configure queue members and supported objects as needed
+    
+    This queue is referenced in:
+    - Case Assignment Rules
+    - TicketSubmissionHelper Apex class (may need to update queue name reference)
+-->
