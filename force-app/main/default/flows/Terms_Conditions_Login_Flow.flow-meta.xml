@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>53.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Assign_New_Date_to_User</name>
+        <label>Assign New Date to User</label>
+        <locationX>1401</locationX>
+        <locationY>330</locationY>
+        <assignmentItems>
+            <assignToReference>Get_User.Last_T_C_Signed_Date__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>f_Today</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_User_T_C_Date</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>Did_they_agree_to_Terms</name>
+        <label>Did they agree to Terms?</label>
+        <locationX>1122</locationX>
+        <locationY>324</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Yes_Agreed_to_Ts_Cs</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>I_agree_to_the_terms_conditions</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_New_Date_to_User</targetReference>
+            </connector>
+            <label>Yes Agreed to Ts&amp;Cs</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Ts_Cs_Completed_in_last_365_days</name>
+        <label>Ts&amp;Cs Completed in last 365 days?</label>
+        <locationX>520</locationX>
+        <locationY>326</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Not_Completed_in_Last_365</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_User.Last_T_C_Signed_Date__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_User.Last_T_C_Signed_Date__c</leftValueReference>
+                <operator>LessThan</operator>
+                <rightValue>
+                    <elementReference>f_TodayMinus365</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Terms_Conditions_Screen</targetReference>
+            </connector>
+            <label>Not Completed in Last 365</label>
+        </rules>
+    </decisions>
+    <formulas>
+        <name>f_TermsExpired</name>
+        <dataType>Boolean</dataType>
+        <expression>IF(OR(TODAY() - 365 &gt; {!Get_User.Last_T_C_Signed_Date__c}, {!Get_User.Last_T_C_Signed_Date__c} = NULL),TRUE,FALSE)</expression>
+    </formulas>
+    <formulas>
+        <name>f_Today</name>
+        <dataType>Date</dataType>
+        <expression>Today()</expression>
+    </formulas>
+    <formulas>
+        <name>f_TodayMinus365</name>
+        <dataType>Date</dataType>
+        <expression>TODAY() - 365</expression>
+    </formulas>
+    <interviewLabel>Terms &amp; Conditions Login Flow {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Spokane Mountaineers Terms &amp; Conditions</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <recordLookups>
+        <name>Get_User</name>
+        <label>Get User</label>
+        <locationX>223</locationX>
+        <locationY>328</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Ts_Cs_Completed_in_last_365_days</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>LoginFlow_UserId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>User</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Update_User_T_C_Date</name>
+        <label>Update User T&amp;C Date</label>
+        <locationX>1638</locationX>
+        <locationY>332</locationY>
+        <inputReference>Get_User</inputReference>
+    </recordUpdates>
+    <screens>
+        <name>Terms_Conditions_Screen</name>
+        <label>Terms &amp; Conditions Screen</label>
+        <locationX>894</locationX>
+        <locationY>325</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Did_they_agree_to_Terms</targetReference>
+        </connector>
+        <fields>
+            <name>DisplayText_Terms_and_Conditions</name>
+            <fieldText>&lt;p&gt;Spokane Mountaineers Inc.&lt;/p&gt;&lt;p&gt;Terms and Conditions for membership, access to our website, and online services:&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;b&gt;1. RELEASE OF LIABILITY AND INDEMNITY AGREEMENT&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Please read carefully before continuing.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;I hereby state that I wish to participate in courses and/or activities offered by the Spokane&lt;/p&gt;&lt;p&gt;Mountaineers, a volunteer nonprofit corporation. Such activities may include courses, outdoor&lt;/p&gt;&lt;p&gt;sporting activities and events, social events, use of the Chalet or other Spokane Mountaineers&lt;/p&gt;&lt;p&gt;property, and any activity sponsored or provided by the Spokane Mountaineers.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;I understand that my participation in Spokane Mountaineers activities may involve certain&lt;/p&gt;&lt;p&gt;dangers, including, but not limited to, the hazards of traveling in mountainous terrain; accidents&lt;/p&gt;&lt;p&gt;or illnesses in remote places without medical care or facilities; hazards created by the forces of&lt;/p&gt;&lt;p&gt;nature; the inherent dangers involved in participating in sports, recreation, and social activities;&lt;/p&gt;&lt;p&gt;and the actions of participants and other persons, including negligence.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;I knowingly and voluntarily assume all risks of injury, death, property damage, or other damages&lt;/p&gt;&lt;p&gt;arising out of my participation in any Spokane Mountaineers activity or use of Spokane&lt;/p&gt;&lt;p&gt;Mountaineers property.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;It is the responsibility of each individual to have his or her own first-aid kit and appropriate level&lt;/p&gt;&lt;p&gt;of first-aid training. Leaders do not take responsibility for group first aid.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;I recognize that the Spokane Mountaineers would not be able to operate successfully and&lt;/p&gt;&lt;p&gt;sponsor activities or allow the use of its property without obtaining a release of liability from its&lt;/p&gt;&lt;p&gt;members and participants.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;In consideration of the right to participate in activities offered by the Spokane Mountaineers or&lt;/p&gt;&lt;p&gt;any of its directors, officers, leaders, instructors, or members, I hereby agree to RELEASE,&lt;/p&gt;&lt;p&gt;INDEMNIFY, AND HOLD HARMLESS the Spokane Mountaineers, its directors, officers,&lt;/p&gt;&lt;p&gt;leaders, instructors, and members from any claims resulting from any loss or damage suffered&lt;/p&gt;&lt;p&gt;by me or any family member I bring on a Spokane Mountaineers activity.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;I realize that Spokane Mountaineers activities do not include transportation to and from an&lt;/p&gt;&lt;p&gt;activity. I agree that I am solely responsible for my own transportation and that the Spokane&lt;/p&gt;&lt;p&gt;Mountaineers are not liable for any accident, injury, or damage that may arise during&lt;/p&gt;&lt;p&gt;transportation.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;I certify that I am 18 years of age or older or that I am participating in a Spokane Mountaineers&lt;/p&gt;&lt;p&gt;activity with the permission of a parent or guardian.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;I certify that I have no physical limitation or medical condition that would impair my ability to&lt;/p&gt;&lt;p&gt;participate fully and safely in Spokane Mountaineers activities. I agree to inform the activity&lt;/p&gt;&lt;p&gt;leader of any conditions that may have any effect so that a determination can be made as to the&lt;/p&gt;&lt;p&gt;proper course of action.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;I have signed this agreement freely and voluntarily, with full understanding of the contents of the&lt;/p&gt;&lt;p&gt;agreement and the risks that I am assuming. I understand this is an agreement not to sue the&lt;/p&gt;&lt;p&gt;Spokane Mountaineers.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;b&gt;2. PRIVACY POLICY AND TERMS OF USE&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;THE FOLLOWING DESCRIBES THE PRIVACY POLICY AND TERMS OF USE ON WHICH&lt;/p&gt;&lt;p&gt;THE SPOKANE MOUNTAINEERS OFFER YOU ACCESS TO OUR WEBSITE AND ONLINE&lt;/p&gt;&lt;p&gt;SERVICES:&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Welcome to the Spokane Mountaineers website. We are providing you with access to our&lt;/p&gt;&lt;p&gt;password-protected member’s area, school sign-ups, activities sign-ups, trip reports and&lt;/p&gt;&lt;p&gt;photography area subject to this Statement of our Privacy Policy and Terms of Use (the &amp;amp;quot;Terms&lt;/p&gt;&lt;p&gt;of Use?).&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;We may update the Terms of Use. All updates will be posted to the web site and the revision&lt;/p&gt;&lt;p&gt;date will be noted in the footer to this document. By continuing to use the Spokane&lt;/p&gt;&lt;p&gt;Mountaineers Website, you consent to the Terms of Use, including any updates. If you do not&lt;/p&gt;&lt;p&gt;agree to any provisions of the Terms of Use, you should not access our website.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;b&gt;2.1 Privacy Policy&lt;/b&gt;&lt;/p&gt;&lt;p&gt;We will use the information contained in the membership application and renewal process to&lt;/p&gt;&lt;p&gt;provide your name, address, home phone and email in our membership directory and on the&lt;/p&gt;&lt;p&gt;password protected member pages of this site. If you prefer for any reason NOT to have your&lt;/p&gt;&lt;p&gt;personal information shared in this manner, please let us know by sending an email to&lt;/p&gt;&lt;p&gt;membership@spokanemountaineers.org. If you opt out of providing your information within our&lt;/p&gt;&lt;p&gt;membership tools, we will keep it for our administrative records and membership management&lt;/p&gt;&lt;p&gt;tools and will not make it available to the membership in printed or electronic format. We will&lt;/p&gt;&lt;p&gt;respect your wish for privacy, provided you let us know your needs.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;We do not make our physical and/or electronic mailing lists, contact information, member roster,&lt;/p&gt;&lt;p&gt;or other data collected on our members and membership activities available to other&lt;/p&gt;&lt;p&gt;organizations except in limited circumstances and only upon approval of the Board of Trustees.&lt;/p&gt;&lt;p&gt;Any such disclosure is limited to like-minded organizations when the need relates to a matter of&lt;/p&gt;&lt;p&gt;general interest to our membership and includes a specific restriction on further use beyond the&lt;/p&gt;&lt;p&gt;one-time grant. In no event will the Mountaineers sell this information or allow it to be used for&lt;/p&gt;&lt;p&gt;commercial purposes.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Disclosure of private information is only permitted if such disclosure is required by law, or we&lt;/p&gt;&lt;p&gt;have made a good faith determination that such disclosure is necessary to enforce the Terms&lt;/p&gt;&lt;p&gt;of Use, or is necessary to protect the rights, property, or safety of the Spokane Mountaineers,&lt;/p&gt;&lt;p&gt;its officers and trustees, its pool of volunteers, or its membership.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;b&gt;2.2 Terms of Use&lt;/b&gt;&lt;/p&gt;&lt;p&gt;In using our website, you are expressly agreeing to the following Terms of Use. If you fail to&lt;/p&gt;&lt;p&gt;comply with these Terms of Use, we may suspend or terminate your use of our website and/or&lt;/p&gt;&lt;p&gt;your membership in the Spokane Mountaineers at our sole discretion.&lt;/p&gt;&lt;ol&gt;&lt;li&gt;Use is limited to lawful purposes only.&lt;/li&gt;&lt;li&gt;Use is available only to members in good standing that are current in the payment of their dues.&lt;/li&gt;&lt;li&gt;You are responsible for maintaining your user name and password and should not share this information with others.&lt;/li&gt;&lt;li&gt;You will not use the web site to harass, intimidate, bully, or libel others.&lt;/li&gt;&lt;li&gt;You will not use the web site to post obscene or pornographic materials.&lt;/li&gt;&lt;li&gt;You will take reasonable steps to ensure that your access to the web site does not propagate a computer virus or other malware.&lt;/li&gt;&lt;li&gt;You will not post content to our web site if such posting would be a violation of copyright or other intellectual property rights of another.&lt;/li&gt;&lt;li&gt;You grant the Spokane Mountaineers a perpetual, non-exclusive, worldwide right to use, exploit and commercialize information that you post to our web-site.&lt;/li&gt;&lt;li&gt;You will not use the web site to promote your own commercial venture. Occasional offers to sell used outdoor gear are permitted from time-to-time.&lt;/li&gt;&lt;li&gt;You will not sell or provide public access to information contained on the web site.&lt;/li&gt;&lt;li&gt;You will not act in a manner that could impose a burden on the web host, result in a denial of service to other users, or in any other way interfere with the intended usage of the web site by our members and the public.&lt;/li&gt;&lt;li&gt;You are responsible for any content that you choose to post to our website and agree that you will hold the Spokane Mountaineers, its officers and trustees harmless from any damages or claims made as a result of posting such content to our web site.&lt;/li&gt;&lt;li&gt;We do not warrant the accuracy of the information contained on the website and your use of such information is at your own risk.&lt;/li&gt;&lt;li&gt;Our liability for any damages you could suffer as a result of your use of this web site is limited to the greater of the amount of fees you paid us during the twelve months immediately preceding the action giving rise to sue damages or $100.&lt;/li&gt;&lt;li&gt;We may but are not required to take action to attempt to resolve disputes between members.&lt;/li&gt;&lt;li&gt;If there is a dispute between you and the Spokane Mountaineers or its officers or trustees acting in their official capacities, and such dispute cannot be resolved by the parties working together, such dispute will be resolved by binding arbitration in accordance with the rules of the American Arbitration Association with a venue of Spokane, Washington.&lt;/li&gt;&lt;li&gt;You agree not to use the Spokane Mountaineers logo, or other proprietary information, including the information and content contained on the web site for any reason, except as otherwise permitted by law, or as expressly permitted in writing by the Board of Trustees.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>I_agree_to_the_terms_conditions</name>
+            <dataType>Boolean</dataType>
+            <fieldText>I agree to the terms &amp; conditions</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+            <validationRule>
+                <errorMessage>&lt;p&gt;You must agree to the terms &amp;amp; conditions to proceed.&lt;/p&gt;</errorMessage>
+                <formulaExpression>{!I_agree_to_the_terms_conditions} = TRUE</formulaExpression>
+            </validationRule>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>93</locationX>
+        <locationY>69</locationY>
+        <connector>
+            <targetReference>Get_User</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>LoginFlow_UserId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>
