@@ -1,0 +1,64 @@
+# direction: down
+vars {
+    d2-config {
+        sketch: true
+        center: true
+    }
+}
+
+Start: "User clicks\n\"Sign in with Google\"" {
+    style.fill: "#e3f2fd"
+}
+
+GoogleAuth: "Google OAuth\nAuthentication" {
+    style.fill: "#e3f2fd"
+}
+
+Handler: "GoogleAuthRegistrationHandler\n.createUser() called" {
+    style.fill: "#fff3e0"
+}
+
+ExtractEmail: "Extract email from\nGoogle OAuth data" {
+    style.fill: "#fff3e0"
+}
+
+QueryUser: "Query User by\nUsername = email + '.smi'" {
+    style.fill: "#fff3e0"
+}
+
+Decision: "User found?" {
+    shape: diamond
+    style.fill: "#f3e5f5"
+}
+
+Success: "Return User\n(login successful)" {
+    style.fill: "#e8f5e9"
+}
+
+Error: "Throw exception\nwith guidance" {
+    style.fill: "#ffebee"
+}
+
+ErrorMessage: "User sees error message" {
+    style.fill: "#ffebee"
+}
+
+DonorboxLink: "Donorbox signup link\n(new members)" {
+    style.fill: "#fff9c4"
+}
+
+WebdevContact: "webdev contact info\n(existing members)" {
+    style.fill: "#fff9c4"
+}
+
+Start -> GoogleAuth
+GoogleAuth -> Handler
+Handler -> ExtractEmail
+ExtractEmail -> QueryUser
+QueryUser -> Decision
+Decision -> Success: yes
+Decision -> Error: no
+Error -> ErrorMessage
+ErrorMessage -> DonorboxLink
+ErrorMessage -> WebdevContact
+

@@ -8,6 +8,8 @@ Each automation is designed to reduce manual work, ensure consistency, and suppo
 
 ## Included Jobs
 
+- **[Google Login Automation](google-login-automation.md)**  
+  Technical implementation of Google OAuth authentication for Experience Cloud, including user matching strategy, account creation prevention, and error handling.
 - **[Scheduled: Add Members To Conservation Group](scheduled-add-members-to-conservation-group.md)**  
   Ensures all active site users are part of the Conservation Group and logs changes for audit.
 - **[Notify Leader on RSVP](notify-leader-on-rsvp.md)**  

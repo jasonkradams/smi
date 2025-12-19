@@ -4,6 +4,7 @@ This section contains in-depth technical articles and solutions we've implemente
 
 ## Recent Articles
 
+- **[Enabling Google Login for Spokane Mountaineers Members](enable-google-login.md)** – How we implemented Google OAuth authentication to simplify member login while preserving our Donorbox registration process.
 - **[Event Participant Follow Handler: Tests, Deployment, and Lessons Learned](event-participant-follow-handler-update.md)** – End-to-end recap of the latest handler improvements, unit testing strategy, and deployment verification steps.
 - **[Protecting Member Privacy in Event Participant Lists](event-participant-privacy-solution.md)** – An overview of our privacy solution for Event Participants, written for a general technical audience.
 - **[Event Participant Privacy Redirect Solution (Technical)](event-participant-redirect.md)** – Complete technical implementation guide with deployment instructions, code examples, and troubleshooting.
