@@ -26,7 +26,7 @@
     </actionCalls>
     <apiVersion>65.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
-    <description>DEPRECATED: This flow has been replaced by EventChatterBatchPoster scheduled batch job. Posts a notification to the corresponding activity group Chatter group when a new event is created. This leverages the existing Chatter subscription system for notifications.</description>
+    <description>Posts a notification to the corresponding activity group Chatter group when a new event is created. This leverages the existing Chatter subscription system for notifications.</description>
     <environments>Default</environments>
     <interviewLabel>Notify Subscribers New Event {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Notify Subscribers New Event</label>

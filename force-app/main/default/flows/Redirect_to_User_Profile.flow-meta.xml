@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>64.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <name>Set_Redirect_URL</name>
         <label>Set Redirect URL</label>
-        <locationX>264</locationX>
-        <locationY>398</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignmentItems>
             <assignToReference>redirectUrl</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>/s/profile/{!Get_Event_Participant.Contact.User_Lookup__c}</stringValue>
+                <stringValue>/s/profile/{!Get_Event_Participant.null__NotFound.User_Lookup__c}</stringValue>
             </value>
         </assignmentItems>
         <connector>
@@ -20,8 +21,8 @@
     <decisions>
         <name>Has_Related_User</name>
         <label>Has Related User?</label>
-        <locationX>264</locationX>
-        <locationY>290</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <defaultConnector>
             <targetReference>Show_No_Profile_Message</targetReference>
         </defaultConnector>
@@ -30,7 +31,7 @@
             <name>User_Exists</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Get_Event_Participant.Contact.User_Lookup__c</leftValueReference>
+                <leftValueReference>Get_Event_Participant.null__NotFound.User_Lookup__c</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue>
                     <booleanValue>false</booleanValue>
@@ -67,8 +68,8 @@
     <recordLookups>
         <name>Get_Event_Participant</name>
         <label>Get Event Participant</label>
-        <locationX>264</locationX>
-        <locationY>74</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Has_Related_User</targetReference>
@@ -88,8 +89,8 @@
     <screens>
         <name>Redirect_to_User</name>
         <label>Redirect to User</label>
-        <locationX>264</locationX>
-        <locationY>506</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -97,6 +98,14 @@
             <name>redirect_message</name>
             <fieldText>&lt;p&gt;Redirecting to user profile...&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <nextOrFinishButtonLabel>Continue</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
@@ -105,8 +114,8 @@
     <screens>
         <name>Show_No_Profile_Message</name>
         <label>Show No Profile Message</label>
-        <locationX>50</locationX>
-        <locationY>398</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -114,20 +123,28 @@
             <name>no_profile_message</name>
             <fieldText>&lt;p&gt;This participant has no public profile available.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <nextOrFinishButtonLabel>Close</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>50</locationX>
+        <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_Event_Participant</targetReference>
         </connector>
         <triggerType>None</triggerType>
     </start>
-    <status>Active</status>
+    <status>InvalidDraft</status>
     <variables>
         <name>recordId</name>
         <dataType>String</dataType>

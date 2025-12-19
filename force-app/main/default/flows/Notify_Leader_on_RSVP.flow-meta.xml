@@ -1,224 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>64.0</apiVersion>
-    <decisions>
-        <name>Is_Attending</name>
-        <label>Is Attending?</label>
-        <description>Checks if the participant's Response__c field equals "Attending". Only sends notifications for attending participants, not for "Not Attending" or other response types.</description>
-        <locationX>264</locationX>
-        <locationY>398</locationY>
-        <defaultConnectorLabel>Not Attending</defaultConnectorLabel>
-        <rules>
-            <name>Response_is_Attending</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>$Record.Response__c</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>Attending</stringValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Get_Leader</targetReference>
-            </connector>
-            <label>Response is Attending</label>
-        </rules>
-    </decisions>
-    <decisions>
-        <name>Has_Leader</name>
-        <label>Has Leader?</label>
-        <description>Verifies that the Event Registration has a Leader__c assigned. Prevents attempting to send emails when no leader is configured for the event.</description>
-        <locationX>264</locationX>
-        <locationY>614</locationY>
-        <defaultConnectorLabel>No Leader</defaultConnectorLabel>
-        <rules>
-            <name>Leader_Exists</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Event_Registration.Leader__c</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Get_Participant_Contact</targetReference>
-            </connector>
-            <label>Leader Exists</label>
-        </rules>
-    </decisions>
-    <decisions>
-        <name>Has_Leader_Email</name>
-        <label>Has Leader Email?</label>
-        <description>Checks if the leader's Contact record has a valid email address. This is a safety check to prevent sending emails to invalid/null addresses.</description>
-        <locationX>264</locationX>
-        <locationY>830</locationY>
-        <defaultConnectorLabel>No Email</defaultConnectorLabel>
-        <rules>
-            <name>Email_Exists</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Leader_Contact.Email</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Send_Email_to_Leader</targetReference>
-            </connector>
-            <label>Email Exists</label>
-        </rules>
-    </decisions>
-    <environments>Default</environments>
-    <description>Automatically sends an email notification to the Event Leader when a member RSVPs as "Attending" for their event. The flow retrieves the leader's email from their Contact record for better reliability than using the User.Email field.</description>
-    <interviewLabel>Notify Leader on RSVP {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Notify Leader on RSVP</label>
-    <processMetadataValues>
-        <name>BuilderType</name>
-        <value>
-            <stringValue>LightningFlowBuilder</stringValue>
-        </value>
-    </processMetadataValues>
-    <processMetadataValues>
-        <name>CanvasMode</name>
-        <value>
-            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
-        </value>
-    </processMetadataValues>
-    <processMetadataValues>
-        <name>OriginBuilderType</name>
-        <value>
-            <stringValue>LightningFlowBuilder</stringValue>
-        </value>
-    </processMetadataValues>
-    <processMetadataValues>
-        <name>OfflineBuilderType</name>
-        <value>
-            <stringValue>LightningFlowBuilder</stringValue>
-        </value>
-    </processMetadataValues>
-    <processType>AutoLaunchedFlow</processType>
-    <recordLookups>
-        <name>Get_Event_Registration</name>
-        <label>Get Event Registration</label>
-        <description>Retrieves the Event_Registration__c record associated with the Event_Participant__c. Fetches event details (Name, Leader__c, Start__c, Location__c) needed for the email notification.</description>
-        <locationX>264</locationX>
-        <locationY>182</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Is_Attending</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>$Record.Event_Registration__c</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Event_Registration__c</object>
-        <queriedFields>Id</queriedFields>
-        <queriedFields>Leader__c</queriedFields>
-        <queriedFields>Name</queriedFields>
-        <queriedFields>Start__c</queriedFields>
-        <queriedFields>Location__c</queriedFields>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>Get_Leader</name>
-        <label>Get Leader</label>
-        <description>Retrieves the User record of the Event Leader using the Leader__c lookup from the Event Registration. Queries for Name and ContactId to later get the leader's email from their Contact record.</description>
-        <locationX>264</locationX>
-        <locationY>506</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Has_Leader</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>Get_Event_Registration.Leader__c</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>User</object>
-        <queriedFields>Id</queriedFields>
-        <queriedFields>Name</queriedFields>
-        <queriedFields>ContactId</queriedFields>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>Get_Leader_Contact</name>
-        <label>Get Leader Contact</label>
-        <description>Retrieves the Contact record associated with the Leader's User record. This is done because Contact.Email is more reliable for external communications than User.Email, especially when users have Contact records linked to their User accounts.</description>
-        <locationX>264</locationX>
-        <locationY>722</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Has_Leader_Email</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>Get_Leader.ContactId</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Contact</object>
-        <queriedFields>Id</queriedFields>
-        <queriedFields>Email</queriedFields>
-        <queriedFields>Name</queriedFields>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>Get_Participant_Contact</name>
-        <label>Get Participant Contact</label>
-        <description>Retrieves the Contact record of the participant who RSVP'd. This information is included in the email to the leader so they know who registered for their event.</description>
-        <locationX>120</locationX>
-        <locationY>722</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Get_Leader_Contact</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>$Record.Contact__c</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Contact</object>
-        <queriedFields>Id</queriedFields>
-        <queriedFields>Name</queriedFields>
-        <queriedFields>FirstName</queriedFields>
-        <queriedFields>LastName</queriedFields>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <start>
-        <locationX>50</locationX>
-        <locationY>0</locationY>
-        <connector>
-            <targetReference>Get_Event_Registration</targetReference>
-        </connector>
-        <object>Event_Participant__c</object>
-        <recordTriggerType>Create</recordTriggerType>
-        <triggerType>RecordAfterSave</triggerType>
-    </start>
-    <status>Active</status>
     <actionCalls>
+        <description>Sends an email notification to the event leader with details about the new RSVP. Includes event name, participant name, event start time, location, and a link to view the event registration in Salesforce.</description>
         <name>Send_Email_to_Leader</name>
         <label>Send Email to Leader</label>
-        <description>Sends an email notification to the event leader with details about the new RSVP. Includes event name, participant name, event start time, location, and a link to view the event registration in Salesforce.</description>
-        <locationX>572</locationX>
-        <locationY>938</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <actionName>emailSimple</actionName>
         <actionType>emailSimple</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
@@ -233,7 +20,7 @@
             <value>
                 <stringValue>Hi {!Get_Leader.Name},
 
-A member has RSVP'd for your event.
+A member has RSVP&apos;d for your event.
 
 Event: {!Get_Event_Registration.Name}
 Participant: {!Get_Participant_Contact.Name}
@@ -266,5 +53,220 @@ Spokane Mountaineers</stringValue>
                 <stringValue>OrgWideEmailAddress</stringValue>
             </value>
         </inputParameters>
+        <nameSegment>emailSimple</nameSegment>
     </actionCalls>
+    <apiVersion>65.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <description>Verifies that the Event Registration has a Leader__c assigned. Prevents attempting to send emails when no leader is configured for the event.</description>
+        <name>Has_Leader</name>
+        <label>Has Leader?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>No Leader</defaultConnectorLabel>
+        <rules>
+            <name>Leader_Exists</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Event_Registration.Leader__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Participant_Contact</targetReference>
+            </connector>
+            <label>Leader Exists</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>Checks if the leader&apos;s Contact record has a valid email address. This is a safety check to prevent sending emails to invalid/null addresses.</description>
+        <name>Has_Leader_Email</name>
+        <label>Has Leader Email?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>No Email</defaultConnectorLabel>
+        <rules>
+            <name>Email_Exists</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Leader_Contact.Email</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Send_Email_to_Leader</targetReference>
+            </connector>
+            <label>Email Exists</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>Checks if the participant&apos;s Response__c field equals &quot;Attending&quot;. Only sends notifications for attending participants, not for &quot;Not Attending&quot; or other response types.</description>
+        <name>Is_Attending</name>
+        <label>Is Attending?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Not Attending</defaultConnectorLabel>
+        <rules>
+            <name>Response_is_Attending</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Response__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Attending</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Leader</targetReference>
+            </connector>
+            <label>Response is Attending</label>
+        </rules>
+    </decisions>
+    <description>Automatically sends an email notification to the Event Leader when a member RSVPs as &quot;Attending&quot; for their event. The flow retrieves the leader&apos;s email from their Contact record for better reliability than using the User.Email field.</description>
+    <environments>Default</environments>
+    <interviewLabel>Notify Leader on RSVP {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Notify Leader on RSVP</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OfflineBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <description>Retrieves the Event_Registration__c record associated with the Event_Participant__c. Fetches event details (Name, Leader__c, Start__c, Location__c) needed for the email notification.</description>
+        <name>Get_Event_Registration</name>
+        <label>Get Event Registration</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Is_Attending</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Event_Registration__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Event_Registration__c</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Leader__c</queriedFields>
+        <queriedFields>Name</queriedFields>
+        <queriedFields>Start__c</queriedFields>
+        <queriedFields>Location__c</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <description>Retrieves the User record of the Event Leader using the Leader__c lookup from the Event Registration. Queries for Name and ContactId to later get the leader&apos;s email from their Contact record.</description>
+        <name>Get_Leader</name>
+        <label>Get Leader</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Has_Leader</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Event_Registration.Leader__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>User</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Name</queriedFields>
+        <queriedFields>ContactId</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <description>Retrieves the Contact record associated with the Leader&apos;s User record. This is done because Contact.Email is more reliable for external communications than User.Email, especially when users have Contact records linked to their User accounts.</description>
+        <name>Get_Leader_Contact</name>
+        <label>Get Leader Contact</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Has_Leader_Email</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Leader.ContactId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Contact</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Email</queriedFields>
+        <queriedFields>Name</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <description>Retrieves the Contact record of the participant who RSVP&apos;d. This information is included in the email to the leader so they know who registered for their event.</description>
+        <name>Get_Participant_Contact</name>
+        <label>Get Participant Contact</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Leader_Contact</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Contact__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Contact</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Name</queriedFields>
+        <queriedFields>FirstName</queriedFields>
+        <queriedFields>LastName</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Event_Registration</targetReference>
+        </connector>
+        <object>Event_Participant__c</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
 </Flow>

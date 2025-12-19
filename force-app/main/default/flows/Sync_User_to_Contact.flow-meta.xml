@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>64.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <name>Assign_User_to_Contact</name>
         <label>Assign User to Contact</label>
-        <locationX>264</locationX>
-        <locationY>398</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignmentItems>
             <assignToReference>ContactToUpdate.User_Lookup__c</assignToReference>
             <operator>Assign</operator>
@@ -20,8 +21,8 @@
     <decisions>
         <name>User_Found</name>
         <label>User Found?</label>
-        <locationX>264</locationX>
-        <locationY>290</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <defaultConnectorLabel>No User Found</defaultConnectorLabel>
         <rules>
             <name>User_Exists</name>
@@ -64,8 +65,8 @@
     <recordLookups>
         <name>Get_Contact_Record</name>
         <label>Get Contact Record</label>
-        <locationX>264</locationX>
-        <locationY>74</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_User_Record</targetReference>
@@ -85,8 +86,8 @@
     <recordLookups>
         <name>Get_User_Record</name>
         <label>Get User Record</label>
-        <locationX>264</locationX>
-        <locationY>182</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>User_Found</targetReference>
@@ -120,19 +121,19 @@
     <recordUpdates>
         <name>Update_Contact_Record</name>
         <label>Update Contact Record</label>
-        <locationX>264</locationX>
-        <locationY>506</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <inputReference>ContactToUpdate</inputReference>
     </recordUpdates>
     <start>
-        <locationX>50</locationX>
+        <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_Contact_Record</targetReference>
         </connector>
         <triggerType>None</triggerType>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
     <variables>
         <name>ContactToUpdate</name>
         <dataType>SObject</dataType>
