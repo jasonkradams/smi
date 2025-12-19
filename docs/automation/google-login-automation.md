@@ -6,9 +6,9 @@ This document describes the technical implementation of Google OAuth authenticat
 
 ## Access
 
-* Apex Class: [GoogleAuthRegistrationHandler](https://github.com/jasonkradams/smi/blob/main/force-app/main/default/classes/GoogleAuthRegistrationHandler.cls)
-* Test Class: [GoogleAuthRegistrationHandlerTest](https://github.com/jasonkradams/smi/blob/main/force-app/main/default/classes/GoogleAuthRegistrationHandlerTest.cls)
-* Auth Provider: Setup → Identity → Auth. Providers → **Google**
+- Apex Class: [GoogleAuthRegistrationHandler](https://github.com/jasonkradams/smi/blob/main/force-app/main/default/classes/GoogleAuthRegistrationHandler.cls)
+- Test Class: [GoogleAuthRegistrationHandlerTest](https://github.com/jasonkradams/smi/blob/main/force-app/main/default/classes/GoogleAuthRegistrationHandlerTest.cls)
+- Auth Provider: Setup → Identity → Auth. Providers → **Google**
 
 ---
 
@@ -29,31 +29,31 @@ The `GoogleAuthRegistrationHandler` implements Salesforce's `Auth.RegistrationHa
 
 1. **My Domain** must be deployed
 2. **Google Auth Provider** must be configured with:
-   - Consumer Key and Secret from Google Cloud Console
-   - Scopes: `openid email profile`
-   - Registration Handler: `GoogleAuthRegistrationHandler`
+    - Consumer Key and Secret from Google Cloud Console
+    - Scopes: `openid email profile`
+    - Registration Handler: `GoogleAuthRegistrationHandler`
 3. **Experience Cloud Site** must have:
-   - Google Auth Provider enabled in Login & Registration settings
-   - Social Login component added to the Login page
-   - Self-Registration disabled (to prevent bypassing Donorbox)
+    - Google Auth Provider enabled in Login & Registration settings
+    - Social Login component added to the Login page
+    - Self-Registration disabled (to prevent bypassing Donorbox)
 
 ### Setup Steps
 
 1. **Configure Google Auth Provider**:
-   - Navigate to: Setup → Identity → Auth. Providers → **Google**
-   - Assign Registration Handler: `GoogleAuthRegistrationHandler`
-   - Set "Execute Registration As" to a user with appropriate permissions
+    - Navigate to: Setup → Identity → Auth. Providers → **Google**
+    - Assign Registration Handler: `GoogleAuthRegistrationHandler`
+    - Set "Execute Registration As" to a user with appropriate permissions
 
 2. **Enable for Experience Cloud Site**:
-   - Navigate to: Setup → Digital Experiences → All Sites → **Spokane Mountaineers** → Administration → Login & Registration
-   - Under Authentication Providers, enable **Google**
-   - Under Registration, set **Self-Registration** to **Disabled**
+    - Navigate to: Setup → Digital Experiences → All Sites → **Spokane Mountaineers** → Administration → Login & Registration
+    - Under Authentication Providers, enable **Google**
+    - Under Registration, set **Self-Registration** to **Disabled**
 
 3. **Add Social Login Component**:
-   - Open Experience Builder for your site
-   - Navigate to the Login page
-   - Add the **Social Login** component
-   - Publish changes
+    - Open Experience Builder for your site
+    - Navigate to the Login page
+    - Add the **Social Login** component
+    - Publish changes
 
 ---
 
@@ -66,10 +66,10 @@ The handler uses **username pattern matching** for reliable user identification:
 ```apex
 String usernamePattern = email.toLowerCase().trim() + '.smi';
 List<User> usersByUsername = [
-    SELECT Id, Username, Email, IsActive
-    FROM User
-    WHERE Username = :usernamePattern
-    LIMIT 1
+	SELECT Id, Username, Email, IsActive
+	FROM User
+	WHERE Username = :usernamePattern
+	LIMIT 1
 ];
 ```
 
@@ -86,22 +86,23 @@ The handler **does not create new accounts**. If no matching user is found, it t
 
 ```apex
 if (!usersByUsername.isEmpty()) {
-    return usersByUsername[0];
+	return usersByUsername[0];
 }
 
 // No user found - provide actionable guidance
 throw new RegistrationHandlerException(
-    'No account found for this email address.\n\n' +
-    'If you are a new member, please sign up at:\n' +
-    'https://donorbox.org/spokanemountaineers-membership-2\n\n' +
-    'If you already have an account, please:\n' +
-    '1. Use your usual login method for now\n' +
-    '2. Report this issue to webdev@spokanemountaineers.org\n\n' +
-    'We will help you link your Google account to your existing membership.'
+	'No account found for this email address.\n\n' +
+	'If you are a new member, please sign up at:\n' +
+	'https://donorbox.org/spokanemountaineers-membership-2\n\n' +
+	'If you already have an account, please:\n' +
+	'1. Use your usual login method for now\n' +
+	'2. Report this issue to webdev@spokanemountaineers.org\n\n' +
+	'We will help you link your Google account to your existing membership.'
 );
 ```
 
 This ensures that:
+
 - New memberships go through Donorbox (payment required)
 - Existing members get clear guidance on next steps
 - No duplicate accounts are created
@@ -112,7 +113,7 @@ This ensures that:
 
 ![Google Login Flow Diagram](google-login-flow.svg)
 
-*Source: [google-login-flow.d2](google-login-flow.d2)*
+_Source: [google-login-flow.d2](google-login-flow.d2)_
 
 ---
 
@@ -125,12 +126,14 @@ This ensures that:
 Main entry point called by Salesforce during Google OAuth flow.
 
 **Parameters:**
+
 - `portalId`: Network (Experience Cloud site) ID
 - `data`: User data from Google OAuth callback (includes email, firstName, lastName)
 
 **Returns:** `User` record if found, throws exception if not found
 
 **Logic:**
+
 1. Validates email is present
 2. Calls `findExistingUser()` to locate user
 3. If found, returns user
@@ -141,11 +144,13 @@ Main entry point called by Salesforce during Google OAuth flow.
 Finds existing user by username pattern.
 
 **Parameters:**
+
 - `email`: Email address from Google OAuth
 
 **Returns:** `User` record if found, `null` if not found
 
 **Logic:**
+
 1. Constructs username pattern: `email.toLowerCase().trim() + '.smi'`
 2. Queries User table for matching username
 3. Returns first match or `null`
@@ -191,6 +196,7 @@ sf apex run test --class-names GoogleAuthRegistrationHandlerTest --target-org sm
 #### No Account Found
 
 **User sees:**
+
 ```
 No account found for this email address.
 
@@ -205,12 +211,14 @@ We will help you link your Google account to your existing membership.
 ```
 
 **Resolution:**
+
 - New members: Direct to Donorbox signup
 - Existing members: Contact webdev for account linking assistance
 
 #### Blank Email
 
 **User sees:**
+
 ```
 Email is required for authentication
 ```
@@ -226,11 +234,13 @@ Email is required for authentication
 If the `.smi` suffix is removed in the future, update line 96 in `GoogleAuthRegistrationHandler.cls`:
 
 **Current:**
+
 ```apex
 String usernamePattern = email.toLowerCase().trim() + '.smi';
 ```
 
 **Future (if .smi removed):**
+
 ```apex
 String usernamePattern = email.toLowerCase().trim();
 ```
@@ -247,6 +257,7 @@ To add support for additional OAuth providers (e.g., Microsoft, Facebook):
 ### Monitoring
 
 Monitor for:
+
 - Failed login attempts (check debug logs)
 - User-reported issues (webdev@spokanemountaineers.org)
 - Exception frequency (Salesforce debug logs)
@@ -323,4 +334,3 @@ For issues or questions about Google login automation:
 
 - **Email**: [webdev@spokanemountaineers.org](mailto:webdev@spokanemountaineers.org)
 - **GitHub Issues**: [Create an issue](https://github.com/jasonkradams/smi/issues/new)
-

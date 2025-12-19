@@ -7,9 +7,9 @@ This guide shows how to update the favicon (`favicon.ico`) for a Salesforce Expe
 1. Navigate to **Setup** → **Static Resources**.
 2. Click **New**.
 3. Fill out the form:
-   - **Name**: `favicon_ico`
-   - **File**: Upload your `favicon.ico` file
-   - **Cache Control**: `Public`
+    - **Name**: `favicon_ico`
+    - **File**: Upload your `favicon.ico` file
+    - **Cache Control**: `Public`
 4. Save the static resource.
 
 > 💡 Best format is a `.ico` file at 16x16 or 32x32 pixels.
@@ -19,13 +19,13 @@ This guide shows how to update the favicon (`favicon.ico`) for a Salesforce Expe
 1. Go to **Setup** → **Digital Experiences** → **All Sites**.
 2. Click **Builder** next to your site.
 3. In **Experience Builder**:
-   - Click the **gear icon (⚙️)** in the top right.
-   - Go to **Advanced** → **Edit Head Markup**.
+    - Click the **gear icon (⚙️)** in the top right.
+    - Go to **Advanced** → **Edit Head Markup**.
 4. Add the following HTML:
 
-   ```html
-   <link rel="icon" type="image/x-icon" href="/resource/favicon_ico" />
-   ```
+    ```html
+    <link rel="icon" type="image/x-icon" href="/resource/favicon_ico" />
+    ```
 
     Replace FaviconICO with the name you gave your static resource if it differs.
 
@@ -34,12 +34,11 @@ This guide shows how to update the favicon (`favicon.ico`) for a Salesforce Expe
 ## Troubleshooting
 
 - If the new favicon doesn't show up immediately:
+    - Open the site in an incognito window.
+    - Clear your browser cache.
+    - Ensure the static resource is publicly accessible.
 
-  - Open the site in an incognito window.
-  - Clear your browser cache.
-  - Ensure the static resource is publicly accessible.
-
-----
+---
 
 ## ✅ Example
 
@@ -49,7 +48,7 @@ If your favicon file is named favicon.ico and uploaded as a static resource name
 <link rel="icon" type="image/x-icon" href="/resource/FaviconICO" />
 ```
 
-----
+---
 
 ## 🔁 Why This is Needed
 

@@ -7,6 +7,7 @@ This guide walks through setting up a staging sandbox to match your production E
 ## 🎯 Overview
 
 When setting up a new sandbox, you may encounter errors in Experience Builder such as:
+
 - "The Managed Content Folder Definition, Activity_Groups, is not valid."
 - "We can't load the <name> component because it's not supported by any data."
 
@@ -29,6 +30,7 @@ The EventChatterPostHelper requires Chatter groups with names matching your acti
 ### Required Activity Groups
 
 Create public Chatter groups for:
+
 - Hiking
 - Climbing
 - Backpacking
@@ -56,6 +58,7 @@ Plus any additional activity groups used in your `Event_Registration__c` records
 ### ⚠ Troubleshooting: Flow Error When Creating Groups
 
 If you see errors like:
+
 ```
 "We can't save this record because the 'Add Chatter Service To New Groups' process failed"
 "INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY"
@@ -81,8 +84,8 @@ This means the **"Add Chatter Service To New Groups"** flow is trying to automat
 3. Click **Deactivate**
 4. Create the groups manually
 5. After groups are created, you can:
-   - Reactivate the flow, OR
-   - Add the service account using `scripts/apex/add_chatter_service_to_all_groups.apex`
+    - Reactivate the flow, OR
+    - Add the service account using `scripts/apex/add_chatter_service_to_all_groups.apex`
 
 ---
 
@@ -98,13 +101,14 @@ Managed Content folders are created through the Experience Builder UI and cannot
 4. Select **Content** from the settings menu
 5. Click **New Folder** or **Manage Folders**
 6. Create a new folder with:
-   - **Name**: `Activity_Groups`
-   - **Type**: Managed Content Folder
+    - **Name**: `Activity_Groups`
+    - **Type**: Managed Content Folder
 7. Save the folder
 
 ### Alternative: Check Production Setup
 
 If you have access to production, you can:
+
 1. Navigate to the same location in production
 2. Note the exact folder name and configuration
 3. Replicate it in staging
@@ -150,11 +154,11 @@ After setting up the above, verify your Experience Builder pages load correctly.
 
 ### Common Issues and Fixes
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| "Managed Content Folder Definition not valid" | Folder doesn't exist | Create the folder in Step 2 |
-| "Component not supported by any data" | No records match component filters | Create test data in Step 3 |
-| "Chatter group not found" | Chatter groups missing | Run script in Step 1 |
+| Error                                         | Cause                              | Solution                    |
+| --------------------------------------------- | ---------------------------------- | --------------------------- |
+| "Managed Content Folder Definition not valid" | Folder doesn't exist               | Create the folder in Step 2 |
+| "Component not supported by any data"         | No records match component filters | Create test data in Step 3  |
+| "Chatter group not found"                     | Chatter groups missing             | Run script in Step 1        |
 
 ---
 
@@ -205,6 +209,7 @@ Or use the Salesforce CLI to deploy specific components.
 ### Flow Preventing Group Creation
 
 If groups fail to create due to the "Add Chatter Service To New Groups" flow:
+
 1. **Check if Event Bot exists**: Query `SELECT Id, Username FROM User WHERE Username = 'eventbot@spokanemountaineers.org.smi'`
 2. **Create the service account** if missing (see deployment guide), OR
 3. **Temporarily deactivate the flow** (Setup → Flows → "Add Chatter Service To New Groups" → Deactivate)
@@ -227,5 +232,4 @@ If groups fail to create due to the "Add Chatter Service To New Groups" flow:
 
 ---
 
-> ✨ *Need help? Check the debug logs from the scripts for detailed information about what was created or any errors encountered.*
-
+> ✨ _Need help? Check the debug logs from the scripts for detailed information about what was created or any errors encountered._

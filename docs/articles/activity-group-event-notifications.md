@@ -1,6 +1,6 @@
 # Keeping Members Informed: Activity Group Event Notifications
 
-*Published: November 26, 2025 | Category: Community Solutions*
+_Published: November 26, 2025 | Category: Community Solutions_
 
 ## The Problem We Solved
 
@@ -44,9 +44,9 @@ The notifications use Salesforce's Connect API to create beautifully formatted C
 - **Bold headings** - "New {Activity Group} Event!" (singular) or "New {Activity Group} Events Added!" (plural)
 - **Event count** - "We've added X new {Activity Group} events to the club calendar:"
 - **Structured event details** - Each event shown with:
-  - Bold event name
-  - Leader, Start date/time, Location
-  - Direct link to event registration page
+    - Bold event name
+    - Leader, Start date/time, Location
+    - Direct link to event registration page
 - **Simplified date format** - Compact "M/d/yy at h:mma" format (e.g., "1/15/26 at 7:00AM")
 - **Professional formatting** - Clean, readable layout that matches Chatter's native styling
 
@@ -87,7 +87,7 @@ The system automatically matches events to Chatter groups:
 
 ### Why This Approach Works
 
-- **Non-disruptive** - Works with existing Event_Registration__c and Chatter group structure
+- **Non-disruptive** - Works with existing `Event_Registration__c` and Chatter group structure
 - **Scalable** - Handles bulk event approvals efficiently
 - **Maintainable** - Uses standard Salesforce tools (Flows, Apex, Connect API)
 - **Extensible** - Easy to add more formatting or features in the future
@@ -167,14 +167,14 @@ The batch job runs automatically:
 
 1. **Scheduled Execution** - Runs daily at 5:00 AM Pacific Time via Salesforce's scheduled job system
 2. **Event Query** - Queries all `Event_Registration__c` records where:
-   - `Status__c = 'Approved'`
-   - `Activity_Group__c != null`
-   - `Chatter_Posted__c != true` (includes `false`, `null`, or any non-true value)
+    - `Status__c = 'Approved'`
+    - `Activity_Group__c != null`
+    - `Chatter_Posted__c != true` (includes `false`, `null`, or any non-true value)
 3. **Grouping** - Events are automatically grouped by `Activity_Group__c`
 4. **Batch Posting** - For each activity group:
-   - Finds the matching Public Chatter group
-   - Builds a rich text message with all events for that group
-   - Posts a single comprehensive message to the Chatter group
+    - Finds the matching Public Chatter group
+    - Builds a rich text message with all events for that group
+    - Posts a single comprehensive message to the Chatter group
 5. **Tracking** - After posting, sets `Chatter_Posted__c = true` to prevent duplicate processing
 
 ### Chatter Group Requirements
@@ -188,16 +188,19 @@ For notifications to work, you need:
 ### Monitoring
 
 **Check Flow Execution:**
+
 1. Go to **Setup → Flows**
 2. Find **Notify Subscribers New Event**
 3. Review **Interview Logs** to see execution history
 
 **Check Chatter Posts:**
+
 - Navigate to the activity group Chatter group
 - Look for posts titled "New {Activity Group} Event!"
 - Posts appear immediately after event approval
 
 **Query Event Registrations:**
+
 ```sql
 -- See recently approved events
 SELECT Id, Name, Activity_Group__c, Status__c, Start__c
@@ -210,19 +213,22 @@ LIMIT 10
 ### Troubleshooting
 
 **No Chatter posts appearing:**
-- Verify Event_Registration__c records have `Status__c = 'Approved'` and `Chatter_Posted__c != true`
+
+- Verify `Event_Registration__c` records have `Status__c = 'Approved'` and `Chatter_Posted__c != true`
 - Check that `Activity_Group__c` field is populated
-- Verify a Public Chatter group exists with a name matching the Activity_Group__c value
+- Verify a Public Chatter group exists with a name matching the `Activity_Group__c` value
 - Check that the scheduled batch job is running (Setup → Apex Jobs)
 - Review batch job execution logs for errors
 - Check debug logs for EventChatterBatchPoster and EventChatterPostHelper errors
 
 **Chatter group not found:**
-- Verify the Chatter group name exactly matches the Activity_Group__c value (case-sensitive)
+
+- Verify the Chatter group name exactly matches the `Activity_Group__c` value (case-sensitive)
 - Ensure the group is Public (not Private or Unlisted)
 - Check that the group exists and is active
 
 **Batch job not running:**
+
 - Verify the scheduled job exists (Setup → Scheduled Jobs)
 - Check that the job is scheduled for 5:00 AM Pacific Time
 - Verify the job hasn't been aborted or failed
@@ -230,8 +236,9 @@ LIMIT 10
 - Manually trigger the batch job to test: `Database.executeBatch(new EventChatterBatchPoster(), 200);`
 
 **Rich text formatting issues:**
+
 - The Connect API handles formatting automatically
-- Verify event fields (Name, Start__c, Location__c) are populated for best results
+- Verify event fields (Name, `Start__c`, `Location__c`) are populated for best results
 - Check debug logs if formatting appears incorrect
 
 ## Technical Implementation Details
@@ -241,16 +248,19 @@ LIMIT 10
 The batch class provides:
 
 **Schedulable Interface:**
+
 - `execute(SchedulableContext)` - Schedules the batch job to run daily at 5am Pacific
 
 **Batchable Interface:**
+
 - `start(Database.BatchableContext)` - Queries all approved events where `Chatter_Posted__c != true`
 - `execute(Database.BatchableContext, List<Event_Registration__c>)` - Groups events by activity group and posts
 - `finish(Database.BatchableContext)` - Logs completion status
 
 **Key Features:**
+
 - Processes events in batches of 200 records
-- Groups events by Activity_Group__c before posting
+- Groups events by Activity_Group\_\_c before posting
 - Posts one comprehensive message per activity group
 - Handles errors gracefully (continues processing other groups if one fails)
 
@@ -261,13 +271,16 @@ See: [EventChatterBatchPoster.cls](https://github.com/jasonkradams/smi/blob/main
 The helper class provides:
 
 **Batch Methods:**
+
 - `postBatchToChatterGroup(String, List<Event_Registration__c>)` - Posts batch of events to a single group
 - `buildBatchRichTextMessageBody(List<Event_Registration__c>, String)` - Builds formatted message with multiple events
 
 **Single Event Methods:**
+
 - `postEventToChatterGroup(List<PostToChatterInput>)` - Invocable method for single event posting (legacy)
 
 **Helper Methods:**
+
 - `buildRichTextMessageBody(Event_Registration__c)` - Constructs formatted message for single event
 - `addParagraphText(...)` - Helper for adding text paragraphs
 - `addParagraphWithBoldText(...)` - Helper for adding bold text paragraphs
@@ -275,6 +288,7 @@ The helper class provides:
 - `formatDateTime(DateTime)` - Formats dates as "M/d/yy at h:mma"
 
 **Key Features:**
+
 - Uses Connect API for rich text formatting
 - Handles null fields gracefully with defaults
 - Supports both single and batch posting formats
@@ -288,7 +302,7 @@ The `EventChatterBatchPoster` batch job is efficient and scalable:
 
 1. **Schedule**: Runs daily at 5:00 AM Pacific Time
 2. **Query**: Finds all events approved in last 24 hours
-3. **Grouping**: Automatically groups events by Activity_Group__c
+3. **Grouping**: Automatically groups events by Activity_Group\_\_c
 4. **Posting**: Creates one comprehensive post per activity group
 5. **Error Handling**: Continues processing even if one group fails
 

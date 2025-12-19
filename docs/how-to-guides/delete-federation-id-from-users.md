@@ -13,7 +13,7 @@ This flow was critical when reconfiguring the Federation ID generation logic acr
 - **Flow Type**: Scheduled-Triggered Flow
 - **Schedule**: Daily (but primarily run manually during reset operations)
 
-----
+---
 
 ## 🖼 Flow Diagram: Delete Federation ID From 25 Users
 
@@ -56,21 +56,21 @@ This flow was critical when reconfiguring the Federation ID generation logic acr
 ## 🔎 How It Works
 
 1. **Pull Users Without Federation ID**:
-   - Get up to 25 Users at a time who still have a populated FederationId.
-   - Filters out integration users, inactive users, and others not needing modification.
+    - Get up to 25 Users at a time who still have a populated FederationId.
+    - Filters out integration users, inactive users, and others not needing modification.
 
 2. **Decision: Records Present?**:
-   - If users are found → Continue.
-   - If no users are found → Create a single Log entry and End.
+    - If users are found → Continue.
+    - If no users are found → Create a single Log entry and End.
 
 3. **For Each User**:
-   - **Create a Log Record** capturing the removal action.
-   - **Assign an empty value to FederationId** (effectively nulling it).
-   - Add the User and Log Record to their respective Collections.
+    - **Create a Log Record** capturing the removal action.
+    - **Assign an empty value to FederationId** (effectively nulling it).
+    - Add the User and Log Record to their respective Collections.
 
 4. **After Loop**:
-   - **Update User Records** in bulk (nulling Federation IDs).
-   - **Create Log Records** in bulk for auditing.
+    - **Update User Records** in bulk (nulling Federation IDs).
+    - **Create Log Records** in bulk for auditing.
 
 5. **End**.
 
@@ -93,9 +93,9 @@ Logs are created under the custom app:
 - **App Name**: `Remove Federation ID Logs`
 - Accessible via the App Launcher by searching for `Remove Federation ID Logs`.
 - These records contain:
-  - Which User was cleared.
-  - When the clearing action happened.
-  - Original Federation ID values.
+    - Which User was cleared.
+    - When the clearing action happened.
+    - Original Federation ID values.
 
 ✅ These logs provide full auditability of all Federation ID resets performed.
 
@@ -109,4 +109,4 @@ Logs are created under the custom app:
 
 ---
 
-> ✨ *This flow is retained for future administrative use if a Federation ID reset is ever needed again.*
+> ✨ _This flow is retained for future administrative use if a Federation ID reset is ever needed again._

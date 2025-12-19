@@ -10,6 +10,7 @@ This guide walks through how to batch-update Federation IDs for existing Salesfo
 ## 🛠 Overview
 
 We created a Flow that:
+
 - Finds users missing a Federation ID,
 - Calculates a correct Federation ID based on their email,
 - Updates the User record,
@@ -22,16 +23,16 @@ We created a Flow that:
 
 1. Go to **Setup** → **Object Manager** → **Create** → **Custom Object**.
 2. Fill out:
-   - **Label**: `Federation ID Update Log`
-   - **Plural Label**: `Federation ID Update Logs`
-   - **Object Name**: `FederationIDUpdateLog`
-   - **Record Name**: Auto-Number, format `FID-{0000}`
-   - **Description**: `Log of Federation ID updates performed by automated flows.`
+    - **Label**: `Federation ID Update Log`
+    - **Plural Label**: `Federation ID Update Logs`
+    - **Object Name**: `FederationIDUpdateLog`
+    - **Record Name**: Auto-Number, format `FID-{0000}`
+    - **Description**: `Log of Federation ID updates performed by automated flows.`
 
 3. Check these options:
-   - ✅ Allow Reports
-   - ❌ Allow Activities (optional)
-   - ✅ Deployment Status: Deployed
+    - ✅ Allow Reports
+    - ❌ Allow Activities (optional)
+    - ✅ Deployment Status: Deployed
 
 4. Save.
 
@@ -59,15 +60,17 @@ We created a Flow that:
 ### Build the Flow:
 
 #### 1. Get Records: Find Users
+
 - **Object**: `User`
 - **Conditions**:
-  - `FederationId IS NULL`
-  - `Profile.Name CONTAINS 'Experience'`
+    - `FederationId IS NULL`
+    - `Profile.Name CONTAINS 'Experience'`
 - Store: **All Records**
 
 ---
 
 #### 2. Loop Through Users
+
 - Add a **Loop** over the collection of users without Federation IDs.
 
 Inside the Loop:
@@ -97,11 +100,11 @@ Assign this value to the **FederationId** field for the current User.
 #### 4. Create Record: Log the Update
 
 - Create a new record in `Federation ID Update Log`:
-  - **UserId__c** = `{!LoopedUser.Id}`
-  - **OldFederationId__c** = `{!LoopedUser.FederationId}`
-  - **NewFederationId__c** = Calculated Federation ID
-  - **Email__c** = `{!LoopedUser.Email}`
-  - **UpdatedAt__c** = `Now()`
+    - **UserId\_\_c** = `{!LoopedUser.Id}`
+    - **OldFederationId\_\_c** = `{!LoopedUser.FederationId}`
+    - **NewFederationId\_\_c** = Calculated Federation ID
+    - **Email\_\_c** = `{!LoopedUser.Email}`
+    - **UpdatedAt\_\_c** = `Now()`
 
 ---
 
@@ -125,14 +128,14 @@ Assign this value to the **FederationId** field for the current User.
 1. Go to **App Launcher** → Search **Federation ID Update Logs**.
 2. If needed, **Create a Tab** in Setup → Tabs → New Custom Object Tab.
 3. On the "Federation ID Update Logs" screen:
-   - Click the **Gear Icon** ⚙️.
-   - Click **New List View**.
+    - Click the **Gear Icon** ⚙️.
+    - Click **New List View**.
 4. Name it something like:
-   - `All Logs`
-   - or `Recent Federation Updates`
+    - `All Logs`
+    - or `Recent Federation Updates`
 5. Set visibility to yourself or your admin group.
 6. Customize Columns:
-   - Add: `Email`, `Old Federation ID`, `New Federation ID`, `Updated At`.
+    - Add: `Email`, `Old Federation ID`, `New Federation ID`, `Updated At`.
 7. Save.
 
 ✅ Now you can monitor every Federation ID update that the batch flow processed.
@@ -148,4 +151,4 @@ Assign this value to the **FederationId** field for the current User.
 
 ---
 
-> ✨ *If you need to re-run the batch update in the future, simply re-schedule or manually trigger the Flow.*
+> ✨ _If you need to re-run the batch update in the future, simply re-schedule or manually trigger the Flow._

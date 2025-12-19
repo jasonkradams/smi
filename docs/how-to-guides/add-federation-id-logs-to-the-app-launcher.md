@@ -33,8 +33,8 @@ Click **Next**.
 ## 🧩 Step 3: Set Tab Visibility
 
 - **Set Tab Visibility** for profiles:
-  - Typically, choose **Default On** for Admin profiles.
-  - Or customize based on who should see the logs.
+    - Typically, choose **Default On** for Admin profiles.
+    - Or customize based on who should see the logs.
 
 Click **Next**.
 
@@ -63,14 +63,14 @@ Now that the Tab is created:
 
 ## 📋 Summary
 
-| Step | Action |
-|:---|:---|
-| 1 | Setup → Tabs → New Custom Object Tab |
-| 2 | Select `Federation ID Update Log` as the object |
-| 3 | Pick a Tab Style and configure visibility |
-| 4 | Save and deploy |
-| 5 | Search for your logs in the App Launcher |
+| Step | Action                                          |
+| :--- | :---------------------------------------------- |
+| 1    | Setup → Tabs → New Custom Object Tab            |
+| 2    | Select `Federation ID Update Log` as the object |
+| 3    | Pick a Tab Style and configure visibility       |
+| 4    | Save and deploy                                 |
+| 5    | Search for your logs in the App Launcher        |
 
 ---
 
-> ✨ *Once added, you can also create List Views, Filters, and Reports based on your Federation ID Update Logs.*
+> ✨ _Once added, you can also create List Views, Filters, and Reports based on your Federation ID Update Logs._

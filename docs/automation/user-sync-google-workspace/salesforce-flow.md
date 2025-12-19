@@ -16,11 +16,11 @@ This scheduled Flow identifies all active members in Salesforce and sends their 
 
 1. Navigate to **Setup > Named Credentials**
 2. Create a new credential:
-   - Label: `Google Workspace Webhook`
-   - Name: `Google_Workspace_Webhook`
-   - URL: `https://script.google.com/macros/s/XXXXX/exec` (your script URL)
-   - Identity Type: Anonymous (or Named Principal if using token)
-   - Generate Authorization Header: false
+    - Label: `Google Workspace Webhook`
+    - Name: `Google_Workspace_Webhook`
+    - URL: `https://script.google.com/macros/s/XXXXX/exec` (your script URL)
+    - Identity Type: Anonymous (or Named Principal if using token)
+    - Generate Authorization Header: false
 
 ### 2. Define an External Credential (if using OAuth)
 
@@ -32,9 +32,9 @@ This scheduled Flow identifies all active members in Salesforce and sends their 
 - Object: `User`
 - Filter: `User.IsActive Equals 'True'`
 - Fields to collect:
-  - First Name
-  - Last Name
-  - Federation ID (used as the Workspace username)
+    - First Name
+    - Last Name
+    - Federation ID (used as the Workspace username)
 
 ### 4. Add an HTTP Callout Action
 

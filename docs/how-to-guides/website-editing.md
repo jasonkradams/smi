@@ -28,11 +28,11 @@ It is powered by Salesforce **Experience Cloud** (Aura framework) and managed us
 
 Here are commonly used Salesforce admin tools:
 
-| Name                  | Link                                                                 |
-|-----------------------|----------------------------------------------------------------------|
-| Setup Home            | [Setup](https://spokanemountaineers.lightning.force.com/lightning/setup/SetupOneHome/home) |
-| Digital Experiences   | [Experience Builder](https://spokanemountaineers.lightning.force.com/lightning/cms/home) |
-| User Management       | [Users](https://spokanemountaineers.lightning.force.com/lightning/setup/ManageUsers/home) |
+| Name                | Link                                                                                       |
+| ------------------- | ------------------------------------------------------------------------------------------ |
+| Setup Home          | [Setup](https://spokanemountaineers.lightning.force.com/lightning/setup/SetupOneHome/home) |
+| Digital Experiences | [Experience Builder](https://spokanemountaineers.lightning.force.com/lightning/cms/home)   |
+| User Management     | [Users](https://spokanemountaineers.lightning.force.com/lightning/setup/ManageUsers/home)  |
 
 Bookmark these for easy access when managing site content or user permissions.
 
@@ -43,9 +43,9 @@ Bookmark these for easy access when managing site content or user permissions.
 1. Navigate to [Digital Experiences](https://spokanemountaineers.lightning.force.com/lightning/cms/home).
 2. Click **Builder** next to the `Spokane Mountaineers` site.
 3. In Builder, you can:
-   - Click on page sections to edit content
-   - Add or remove components from the layout
-   - Update navigation and metadata
+    - Click on page sections to edit content
+    - Add or remove components from the layout
+    - Update navigation and metadata
 
 ---
 

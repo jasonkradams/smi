@@ -34,7 +34,7 @@ When a user accidentally creates a large number of recurring Events (e.g., hundr
 5. **Delete the Records**
     - Copy the list of Ids and use **Data Loader** or **Workbench (see below)** to bulk delete.
     - Alternatively, use **Execute Anonymous** with Apex (advanced).
-    ![Delete the Records](../assets/images/salesforce%20execute%20soql%20query.png)
+      ![Delete the Records](../assets/images/salesforce%20execute%20soql%20query.png)
 
 ## Optional: Delete In The Event Registration Table
 
@@ -48,7 +48,7 @@ If the event has not yet been approved then it will be in the Event Registration
 
 2. **Open the Query Editor**
     - In the Developer Console, go to the bottom panel → **Query Editor** tab.
-    ![Query Editor](../assets/images/salesforce%20dev%20console%20query%20editor.png)
+      ![Query Editor](../assets/images/salesforce%20dev%20console%20query%20editor.png)
 
 3. **Run a SOQL Query to Identify Records**
     - Example query:
@@ -64,4 +64,4 @@ If the event has not yet been approved then it will be in the Event Registration
     - Export results if you want a record for audit.
 5. **Delete the Records**
     - Select the records you want to delete, then cick the **Delete Row** button.
-    ![Delete the Records](../assets/images/salesforce%20query%20editor%20delete%20row%20button.png)
+      ![Delete the Records](../assets/images/salesforce%20query%20editor%20delete%20row%20button.png)

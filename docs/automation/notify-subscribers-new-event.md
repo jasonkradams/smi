@@ -6,9 +6,9 @@ This automated Salesforce batch job posts rich text notifications to activity gr
 
 ## Access
 
-* Apex Class: [EventChatterBatchPoster.cls](https://github.com/jasonkradams/smi/blob/main/force-app/main/default/classes/EventChatterBatchPoster.cls)
-* Helper Class: [EventChatterPostHelper.cls](https://github.com/jasonkradams/smi/blob/main/force-app/main/default/classes/EventChatterPostHelper.cls)
-* Scheduled Jobs: [Setup → Scheduled Jobs](https://spokanemountaineers.lightning.force.com/lightning/setup/ScheduledJobs/home)
+- Apex Class: [EventChatterBatchPoster.cls](https://github.com/jasonkradams/smi/blob/main/force-app/main/default/classes/EventChatterBatchPoster.cls)
+- Helper Class: [EventChatterPostHelper.cls](https://github.com/jasonkradams/smi/blob/main/force-app/main/default/classes/EventChatterPostHelper.cls)
+- Scheduled Jobs: [Setup → Scheduled Jobs](https://spokanemountaineers.lightning.force.com/lightning/setup/ScheduledJobs/home)
 
 ---
 
@@ -46,6 +46,7 @@ The batch job implements the standard Salesforce batchable pattern:
 **Purpose**: Query all approved events that haven't been posted yet
 
 **Query Logic**:
+
 ```apex
 SELECT Id, Name, Activity_Group__c, Start__c, Location__c, Chatter_Posted__c
 FROM Event_Registration__c
@@ -64,14 +65,16 @@ ORDER BY Activity_Group__c, Start__c
 **Purpose**: Process events in batches, group by activity group, and post
 
 **Process**:
-1. Receives batch of up to 200 Event_Registration__c records
+
+1. Receives batch of up to 200 Event_Registration\_\_c records
 2. Groups events by `Activity_Group__c` into a Map
 3. For each activity group:
-   - Finds matching Public Chatter group
-   - Calls `EventChatterPostHelper.postBatchToChatterGroup()` with all events for that group
-   - Posts single comprehensive message
+    - Finds matching Public Chatter group
+    - Calls `EventChatterPostHelper.postBatchToChatterGroup()` with all events for that group
+    - Posts single comprehensive message
 
 **Error Handling**:
+
 - If one activity group fails, continues processing other groups
 - Logs errors but doesn't throw exceptions
 - Ensures batch job completes even if some posts fail
@@ -81,6 +84,7 @@ ORDER BY Activity_Group__c, Start__c
 **Purpose**: Log completion status
 
 **Actions**:
+
 - Queries AsyncApexJob to get execution details
 - Logs status, job items processed, and any errors
 - Provides summary for monitoring
@@ -91,10 +95,10 @@ ORDER BY Activity_Group__c, Start__c
 
 ### Objects Used
 
-| **Object** | **Purpose** | **Key Fields** |
-|:----------:|:-----------:|:--------------:|
+|       **Object**        |             **Purpose**             |                              **Key Fields**                               |
+| :---------------------: | :---------------------------------: | :-----------------------------------------------------------------------: |
 | `Event_Registration__c` | Trigger record - the approved event | `Id`, `Name`, `Activity_Group__c`, `Start__c`, `Location__c`, `Status__c` |
-| `CollaborationGroup` | Target Chatter group for posting | `Id`, `Name`, `CollaborationType` |
+|  `CollaborationGroup`   |  Target Chatter group for posting   |                     `Id`, `Name`, `CollaborationType`                     |
 
 ### Relationships
 
@@ -115,9 +119,9 @@ When only one event is found for an activity group:
 4. **Blank line**
 5. **Bold Event Name**
 6. **Event Details** (separate paragraphs):
-   - Leader: {Leader Name} or "TBD"
-   - Start: {Date/Time in M/d/yy at h:mma format} or "TBD"
-   - Location: {Location} or "Location TBD"
+    - Leader: {Leader Name} or "TBD"
+    - Start: {Date/Time in M/d/yy at h:mma format} or "TBD"
+    - Location: {Location} or "Location TBD"
 7. **View Event**: URL (auto-linked by Chatter)
 
 ### Multiple Events Format (Batch)
@@ -128,12 +132,12 @@ When multiple events are found for an activity group:
 2. **Introduction**: "We've added X new {Activity Group} events to the club calendar:"
 3. **Blank line**
 4. **For each event**:
-   - **Bold Event Name**
-   - Leader: {Leader Name}
-   - Start: {Date/Time}
-   - Location: {Location}
-   - View Event: {URL}
-   - (blank line between events)
+    - **Bold Event Name**
+    - Leader: {Leader Name}
+    - Start: {Date/Time}
+    - Location: {Location}
+    - View Event: {URL}
+    - (blank line between events)
 
 ### Example Output (Single Event)
 
@@ -183,10 +187,10 @@ View Event: https://www.spokanemountaineers.org/s/event-registration/a03...
 2. **No Activity Group**: Query filters out events without `Activity_Group__c`
 3. **Chatter Group Not Found**: If no matching Public group exists, logs error and continues with other groups
 4. **Null Fields**: Provides default values:
-   - Missing Name → "Unnamed Event"
-   - Missing Activity Group → "Unknown"
-   - Missing Start → "TBD"
-   - Missing Location → "Location TBD"
+    - Missing Name → "Unnamed Event"
+    - Missing Activity Group → "Unknown"
+    - Missing Start → "TBD"
+    - Missing Location → "Location TBD"
 5. **Multiple Events Same Group**: Groups all events by activity group and posts single message
 6. **Posting Failures**: If one group fails, continues processing other groups
 7. **Large Batches**: Processes in batches of 200 records to handle governor limits
@@ -198,6 +202,7 @@ View Event: https://www.spokanemountaineers.org/s/event-registration/a03...
 **IMPORTANT**: This batch job requires custom fields and a Flow to prevent duplicate processing. See [Event Chatter Batch Setup Guide](event-chatter-batch-setup.md) for details.
 
 **Required Field**:
+
 - `Chatter_Posted__c` (Checkbox) - Tracks if event has been posted to Chatter
 
 **No Flow Required**: The batch job handles setting `Chatter_Posted__c = true` after posting. The field defaults to unchecked for new approved events.
@@ -211,6 +216,7 @@ View Event: https://www.spokanemountaineers.org/s/event-registration/a03...
 The batch class implements `Database.Batchable<SObject>` and `Schedulable`:
 
 **Schedulable Interface:**
+
 ```apex
 public void execute(SchedulableContext ctx) {
     EventChatterBatchPoster batch = new EventChatterBatchPoster();
@@ -219,13 +225,15 @@ public void execute(SchedulableContext ctx) {
 ```
 
 **Batchable Interface:**
+
 - `start(Database.BatchableContext)` - Returns QueryLocator for all approved events where `Chatter_Posted__c != true`
 - `execute(Database.BatchableContext, List<Event_Registration__c>)` - Groups events and posts
 - `finish(Database.BatchableContext)` - Logs completion status
 
 **Key Features:**
+
 - Processes in batches of 200 records
-- Groups events by Activity_Group__c before posting
+- Groups events by Activity_Group\_\_c before posting
 - Calls EventChatterPostHelper.postBatchToChatterGroup() for each group
 - Comprehensive error handling and logging
 
@@ -236,19 +244,21 @@ See: [EventChatterBatchPoster.cls](https://github.com/jasonkradams/smi/blob/main
 The helper class provides batch posting methods:
 
 **Batch Methods:**
+
 ```apex
 public static void postBatchToChatterGroup(
-    String activityGroupName, 
+    String activityGroupName,
     List<Event_Registration__c> events
 )
 
 public static ConnectApi.MessageBodyInput buildBatchRichTextMessageBody(
-    List<Event_Registration__c> events, 
+    List<Event_Registration__c> events,
     String activityGroup
 )
 ```
 
 **Key Methods:**
+
 - `buildBatchRichTextMessageBody(...)` - Builds formatted message with multiple events
 - `postBatchToChatterGroup(...)` - Posts batch message to a single Chatter group
 - `buildRichTextMessageBody(Event_Registration__c)` - Single event format
@@ -259,6 +269,7 @@ public static ConnectApi.MessageBodyInput buildBatchRichTextMessageBody(
 
 **Connect API Usage:**
 The class uses Salesforce's Connect API (`ConnectApi.ChatterFeeds.postFeedElement`) to post rich text messages with proper formatting. This ensures:
+
 - Native Chatter formatting
 - Proper paragraph structure
 - Bold text support
@@ -294,22 +305,22 @@ See: [EventChatterPostHelper.cls](https://github.com/jasonkradams/smi/blob/main/
 
 ### Common Issues
 
-| **Issue** | **Possible Cause** | **Solution** |
-|:---------:|:------------------:|:------------:|
-| No Chatter posts appearing | Batch job not scheduled | Run the scheduling script: `scripts/apex/schedule_event_chatter_batch.apex` |
-| No Chatter posts appearing | Events already posted | Verify `Chatter_Posted__c` is not `true` on approved events |
-| No Chatter posts appearing | Event not approved | Verify `Status__c = 'Approved'` on Event_Registration__c |
-| No Chatter posts appearing | Chatter group not found | Verify Public Chatter group exists with name matching Activity_Group__c |
-| No Chatter posts appearing | Activity Group not set | Verify `Activity_Group__c` is populated on Event_Registration__c |
-| Batch job not running | Job not scheduled | Schedule the job using the script or manually via Setup → Scheduled Jobs |
-| Batch job not running | Job aborted | Check Scheduled Jobs for aborted jobs, reschedule if needed |
-| Batch job failing | Apex errors | Check debug logs and Apex Jobs for error details |
-| Chatter group not found | Name mismatch | Verify Chatter group name exactly matches Activity_Group__c (case-sensitive) |
-| Chatter group not found | Group is Private | Ensure Chatter group is Public (CollaborationType = 'Public') |
-| Posting fails | Network/API issues | Check debug logs for Connect API errors |
-| Posting fails | User permissions | Verify running user has permission to post to Chatter groups |
-| Events missing from post | Already marked as posted | Verify `Chatter_Posted__c` is not `true` on the event. If needed, set to `false` to reprocess |
-| Duplicate posts | Multiple batch runs | `Chatter_Posted__c = true` prevents duplicates. Verify field is being set correctly after posting |
+|         **Issue**          |    **Possible Cause**    |                                           **Solution**                                            |
+| :------------------------: | :----------------------: | :-----------------------------------------------------------------------------------------------: |
+| No Chatter posts appearing | Batch job not scheduled  |            Run the scheduling script: `scripts/apex/schedule_event_chatter_batch.apex`            |
+| No Chatter posts appearing |  Events already posted   |                    Verify `Chatter_Posted__c` is not `true` on approved events                    |
+| No Chatter posts appearing |    Event not approved    |                    Verify `Status__c = 'Approved'` on Event_Registration\_\_c                     |
+| No Chatter posts appearing | Chatter group not found  |             Verify Public Chatter group exists with name matching Activity_Group\_\_c             |
+| No Chatter posts appearing |  Activity Group not set  |                Verify `Activity_Group__c` is populated on Event_Registration\_\_c                 |
+|   Batch job not running    |    Job not scheduled     |             Schedule the job using the script or manually via Setup → Scheduled Jobs              |
+|   Batch job not running    |       Job aborted        |                    Check Scheduled Jobs for aborted jobs, reschedule if needed                    |
+|     Batch job failing      |       Apex errors        |                         Check debug logs and Apex Jobs for error details                          |
+|  Chatter group not found   |      Name mismatch       |          Verify Chatter group name exactly matches Activity_Group\_\_c (case-sensitive)           |
+|  Chatter group not found   |     Group is Private     |                   Ensure Chatter group is Public (CollaborationType = 'Public')                   |
+|       Posting fails        |    Network/API issues    |                              Check debug logs for Connect API errors                              |
+|       Posting fails        |     User permissions     |                   Verify running user has permission to post to Chatter groups                    |
+|  Events missing from post  | Already marked as posted |   Verify `Chatter_Posted__c` is not `true` on the event. If needed, set to `false` to reprocess   |
+|      Duplicate posts       |   Multiple batch runs    | `Chatter_Posted__c = true` prevents duplicates. Verify field is being set correctly after posting |
 
 ### Debug Logs
 
@@ -322,6 +333,7 @@ Enable debug logs for the `EventChatterPostHelper` class to see detailed executi
 5. Approve an event and review the logs
 
 Look for:
+
 - "Event Registration not found" - Event query failed
 - "Chatter group not found" - Group lookup failed
 - "Successfully posted to Chatter group" - Post succeeded
@@ -386,12 +398,14 @@ AND Name IN ('Hiking', 'Climbing', 'Alpine', 'Conservation')
 The `EventChatterBatchPoster` class provides the batch processing:
 
 **Main Methods:**
+
 - `execute(SchedulableContext)` - Schedules the batch job
 - `start(Database.BatchableContext)` - Queries all approved events where `Chatter_Posted__c != true`
 - `execute(Database.BatchableContext, List<Event_Registration__c>)` - Groups and posts events
 - `finish(Database.BatchableContext)` - Logs completion
 
 **Test Coverage:**
+
 - Comprehensive test coverage for batch execution, grouping, and edge cases
 - Tests cover empty batches, missing groups, and multiple events
 
@@ -402,13 +416,16 @@ See: [EventChatterBatchPoster.cls](https://github.com/jasonkradams/smi/blob/main
 The `EventChatterPostHelper` class provides the posting functionality:
 
 **Batch Methods:**
+
 - `postBatchToChatterGroup(String, List<Event_Registration__c>)` - Posts batch of events to a single group
 - `buildBatchRichTextMessageBody(List<Event_Registration__c>, String)` - Builds formatted message with multiple events
 
 **Single Event Methods:**
+
 - `postEventToChatterGroup(List<PostToChatterInput>)` - **Invocable Method** - Posts single event (can be called from Flows)
 
 **Helper Methods:**
+
 - `buildRichTextMessageBody(Event_Registration__c)` - Builds formatted message for single event
 - `addParagraphText(...)` - Adds text paragraphs
 - `addParagraphWithBoldText(...)` - Adds bold text paragraphs
@@ -416,6 +433,7 @@ The `EventChatterPostHelper` class provides the posting functionality:
 - `formatDateTime(DateTime)` - Formats dates as "M/d/yy at h:mma"
 
 **Test Coverage:**
+
 - Comprehensive test coverage for both batch and single event methods
 - Tests cover all helper methods, edge cases, and error handling
 
@@ -425,17 +443,17 @@ See: [EventChatterPostHelper.cls](https://github.com/jasonkradams/smi/blob/main/
 
 ## 🚀 Future Enhancements
 
-| **Feature** | **Notes** |
-|:-----------:|:---------:|
-| Reset Posted Flag | Allow admins to reset `Chatter_Posted__c` to reprocess events if needed |
-| Multiple Schedule Times | Run multiple times per day if needed (e.g., morning and evening) |
+|         **Feature**         |                                **Notes**                                |
+| :-------------------------: | :---------------------------------------------------------------------: |
+|      Reset Posted Flag      | Allow admins to reset `Chatter_Posted__c` to reprocess events if needed |
+|   Multiple Schedule Times   |    Run multiple times per day if needed (e.g., morning and evening)     |
 | Service Account Integration | Use dedicated Event Bot service account for consistent posting identity |
-| Email Notifications | Add email notifications in addition to Chatter posts (Phase 2) |
-| Custom Message Templates | Allow customization of message format per activity group |
-| Image Support | Include event images in Chatter posts |
-| Multi-group Support | Post to multiple groups if an event spans multiple activity types |
-| Engagement Analytics | Track views, clicks, and comments on event posts |
-| Batch Size Configuration | Allow configuration of batch size (currently 200) |
+|     Email Notifications     |     Add email notifications in addition to Chatter posts (Phase 2)      |
+|  Custom Message Templates   |        Allow customization of message format per activity group         |
+|        Image Support        |                  Include event images in Chatter posts                  |
+|     Multi-group Support     |    Post to multiple groups if an event spans multiple activity types    |
+|    Engagement Analytics     |            Track views, clicks, and comments on event posts             |
+|  Batch Size Configuration   |            Allow configuration of batch size (currently 200)            |
 
 ---
 
@@ -452,11 +470,13 @@ To set up the scheduled batch job, run the following Apex script:
 **Script**: `scripts/apex/schedule_event_chatter_batch.apex`
 
 This script:
+
 1. Checks for existing scheduled jobs and removes them
 2. Schedules the batch job to run daily at 5:00 AM Pacific Time
 3. Logs the job ID and next fire time
 
 **Manual Scheduling** (Alternative):
+
 1. Go to **Setup → Apex Classes**
 2. Find `EventChatterBatchPoster`
 3. Click **Schedule Apex**
@@ -464,6 +484,7 @@ This script:
 5. Save
 
 **Verifying Schedule**:
+
 - Go to **Setup → Scheduled Jobs**
 - Look for "Event Chatter Batch Posting - Daily 5am"
 - Verify next fire time is correct

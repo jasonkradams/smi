@@ -12,12 +12,15 @@ This section contains in-depth technical articles and solutions we've implemente
 ## Article Categories
 
 ### Salesforce Solutions
+
 Technical implementations and custom solutions built on the Salesforce platform.
 
 ### Experience Cloud Enhancements
+
 User experience improvements and custom functionality for our community portal.
 
 ### Integration Patterns
+
 How we connect different systems and services to create seamless workflows.
 
 ## Contributing

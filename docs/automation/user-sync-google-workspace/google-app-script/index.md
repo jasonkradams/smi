@@ -23,18 +23,19 @@ automations/user-sync-google-workspace/google-app-script/
 ## Permissions & Scopes
 
 You must:
+
 - Enable the **Admin SDK API** in your Google Cloud project
 - Add the following scopes to your manifest:
 
 ```json
 {
-  "oauthScopes": [
-    "https://www.googleapis.com/auth/admin.directory.user",
-    "https://www.googleapis.com/auth/admin.directory.orgunit",
-    "https://www.googleapis.com/auth/script.external_request",
-    "https://www.googleapis.com/auth/script.scriptapp",
-    "https://www.googleapis.com/auth/gmail.send" // if using alerting
-  ]
+    "oauthScopes": [
+        "https://www.googleapis.com/auth/admin.directory.user",
+        "https://www.googleapis.com/auth/admin.directory.orgunit",
+        "https://www.googleapis.com/auth/script.external_request",
+        "https://www.googleapis.com/auth/script.scriptapp",
+        "https://www.googleapis.com/auth/gmail.send" // if using alerting
+    ]
 }
 ```
 
@@ -43,12 +44,11 @@ You must:
 1. Open Google Apps Script: [https://script.google.com](https://script.google.com)
 2. Add the required files and scopes
 3. Click **Deploy > Manage Deployments > New Deployment**
-   - Choose type **Web App**
-   - Execute as: **Me**
-   - Who has access: **Anyone** (or domain-only)
+    - Choose type **Web App**
+    - Execute as: **Me**
+    - Who has access: **Anyone** (or domain-only)
 4. Copy the Web App URL for use in your Salesforce Named Credential
 
 ---
 
 See [`user_sync.js`](./user_sync.js) and [`alerts.js`](./alerts.js) for implementation details.
-

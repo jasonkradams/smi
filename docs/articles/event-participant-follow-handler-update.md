@@ -19,12 +19,12 @@ Over the last round of development we tightened up the `EventParticipantFollowHa
 
 ## Anatomy of the New Tests
 
-| Scenario | What We Assert | Notes |
-| --- | --- | --- |
-| Happy Path | `EntitySubscription` count += 1 on the registration | Confirms attendees follow the page Members actually see. |
-| Missing User | No subscription created | Coverage for contacts without `User_Lookup__c`. |
-| Registration Missing | No subscription created | Simulates a missing registration record in test overrides. |
-| Bulk Insert | Only one subscription exists | Confirms composite key dedupe and pre-existing record check. |
+| Scenario             | What We Assert                                      | Notes                                                        |
+| -------------------- | --------------------------------------------------- | ------------------------------------------------------------ |
+| Happy Path           | `EntitySubscription` count += 1 on the registration | Confirms attendees follow the page Members actually see.     |
+| Missing User         | No subscription created                             | Coverage for contacts without `User_Lookup__c`.              |
+| Registration Missing | No subscription created                             | Simulates a missing registration record in test overrides.   |
+| Bulk Insert          | Only one subscription exists                        | Confirms composite key dedupe and pre-existing record check. |
 
 All tests rely on helpers such as `createContactWithUser(nextSuffix())` and `fetchAnyRegistrationId()` to guarantee unique context per method.
 
@@ -47,4 +47,3 @@ sf project deploy start \
 - Consider surfacing the registration feed in Experience Cloud so members immediately see the updates they auto-follow.
 
 Have questions or want to replicate the setup? Ping the Salesforce dev channel and reference this article—everything you need is here.
-

@@ -20,10 +20,11 @@ The goal is to make login easy for members while keeping Google Workspace invisi
 ### 1. Create Bare-Bones Google Accounts
 
 - In **Google Admin Console**:
-  - Go to **Directory → Users → Add new user**.
-  - When adding a user, **uncheck** "Send login info to this email address" to avoid sending a welcome email.
+    - Go to **Directory → Users → Add new user**.
+    - When adding a user, **uncheck** "Send login info to this email address" to avoid sending a welcome email.
 
 Alternatively, when bulk importing users via CSV:
+
 - Do not specify notification email fields.
 - Upload users without triggering email alerts.
 
@@ -38,15 +39,15 @@ Set up an Organizational Unit (OU) to manage app access:
 - **Create a new OU** called `IdP Only Users`.
 - Move all SAML-only users into this OU.
 - In **Apps > Google Workspace > Settings for Org Units**:
-  - **Disable**:
-    - Gmail
-    - Google Drive
-    - Google Calendar
-    - Google Meet
-    - Google Chat
-    - Any other unneeded Google Apps
+    - **Disable**:
+        - Gmail
+        - Google Drive
+        - Google Calendar
+        - Google Meet
+        - Google Chat
+        - Any other unneeded Google Apps
 - **Leave enabled**:
-  - Google Identity Services (required for SAML authentication)
+    - Google Identity Services (required for SAML authentication)
 
 > ✅ This ensures users cannot use Google services — only authentication via SAML.
 
@@ -62,12 +63,12 @@ Set up an Organizational Unit (OU) to manage app access:
 
 ## 🔥 How Login Works for Members
 
-| Step | What Happens |
-|:---|:---|
-| Member visits Salesforce login page | |
-| Member clicks "Login with SSO" | |
-| Google Workspace authenticates identity (behind the scenes) | |
-| Member is redirected into Salesforce | |
+| Step                                                        | What Happens |
+| :---------------------------------------------------------- | :----------- |
+| Member visits Salesforce login page                         |              |
+| Member clicks "Login with SSO"                              |              |
+| Google Workspace authenticates identity (behind the scenes) |              |
+| Member is redirected into Salesforce                        |              |
 
 > 🧠 The member never directly logs into Google Workspace, sees a Gmail inbox, or manages a Google password.
 
@@ -92,11 +93,11 @@ Set up an Organizational Unit (OU) to manage app access:
 
 ## 🧠 Summary
 
-| Area | Responsibility |
-|:---|:---|
-| Google Workspace | Authentication Only (no Apps access) |
-| Salesforce | User Management, Authorization, Permissions |
-| Member Experience | Simple, no new accounts to manage |
+| Area              | Responsibility                              |
+| :---------------- | :------------------------------------------ |
+| Google Workspace  | Authentication Only (no Apps access)        |
+| Salesforce        | User Management, Authorization, Permissions |
+| Member Experience | Simple, no new accounts to manage           |
 
 By following this setup, your members will enjoy a seamless, simplified login experience, and your admin team will maintain full control over access without additional complexity.
 

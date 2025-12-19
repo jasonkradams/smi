@@ -1,6 +1,6 @@
 # Protecting Member Privacy in Event Participant Lists
 
-*Published: November 5, 2025 | Category: Community Solutions*
+_Published: November 5, 2025 | Category: Community Solutions_
 
 ## The Problem We Solved
 
@@ -82,19 +82,19 @@ This ensures we find the right match even when email addresses aren't exactly th
 
 ✅ Members' private information is no longer exposed through Event participant lists  
 ✅ Only public profile information is accessible  
-✅ Privacy settings are respected automatically  
+✅ Privacy settings are respected automatically
 
 ### User Experience
 
 ✅ Seamless navigation - members don't notice the change  
 ✅ Consistent appearance - looks like standard Salesforce lists  
-✅ Works for both linked and unlinked participants  
+✅ Works for both linked and unlinked participants
 
 ### Data Quality
 
 ✅ 99.14% of Contacts successfully linked to Users  
 ✅ Automatic maintenance keeps connections current  
-✅ Handles edge cases gracefully  
+✅ Handles edge cases gracefully
 
 ## For Administrators
 
@@ -119,6 +119,7 @@ System.debug('Sync completion rate: ' + (totalContacts > 0 ? ((syncedContacts * 
 If you need to sync specific Contacts manually, you can use Anonymous Apex in the Developer Console:
 
 **Sync a Single Contact:**
+
 ```java
 // Replace with the actual Contact ID
 String contactId = '0031N00001K1hLJQAZ';
@@ -127,6 +128,7 @@ System.debug('Sync result: ' + success);
 ```
 
 **Sync Multiple Contacts:**
+
 ```java
 // Replace with actual Contact IDs
 List<String> contactIds = new List<String>{
@@ -135,7 +137,7 @@ List<String> contactIds = new List<String>{
     '0032G00002sd32kQAA'
 };
 
-List<EventParticipantRedirectHelper.SyncResult> results = 
+List<EventParticipantRedirectHelper.SyncResult> results =
     EventParticipantRedirectHelper.bulkSyncContactsToUsers(contactIds);
 
 for (EventParticipantRedirectHelper.SyncResult result : results) {
@@ -148,16 +150,19 @@ for (EventParticipantRedirectHelper.SyncResult result : results) {
 ### Troubleshooting
 
 **Participant names aren't clickable:**
+
 - The Contact may not have a linked User account
 - This is normal - not all Contacts have corresponding User accounts
 - The name will display as plain text
 
 **Links go to wrong profiles:**
+
 - Check that the Contact's email matches the User's email
 - Verify the User account is active and has a Community license
 - Review the sync status for that Contact
 
 **Sync isn't working:**
+
 - Verify the automation Flows are active
 - Check that Contacts have email addresses
 - Ensure User records exist with matching information
@@ -185,4 +190,3 @@ The approach balances technical sophistication with practical simplicity, provid
 ---
 
 **For Technical Details**: See the companion article "Solving Event Participant Privacy in Experience Cloud" for complete implementation details, code examples, and deployment instructions.
-

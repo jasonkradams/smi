@@ -6,7 +6,7 @@ This checklist helps verify the correct operation of the automated sync process 
 
 ### ✅ Google Workspace Setup
 
-- [X] Verify "IdP Users Only" OU exists
+- [x] Verify "IdP Users Only" OU exists
 - [ ] Create a test user manually to confirm admin privileges
 - [ ] Enable Admin SDK API in the associated Google Cloud project
 - [ ] Add Admin SDK service in Apps Script project

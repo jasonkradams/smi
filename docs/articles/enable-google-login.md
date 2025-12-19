@@ -1,12 +1,13 @@
 # Enabling Google Login for Spokane Mountaineers Members
 
-*Published: December 2025 | Category: Experience Cloud Enhancements*
+_Published: December 2025 | Category: Experience Cloud Enhancements_
 
 ## The Problem We Solved
 
 Our members were asking for a simpler way to log in to the Spokane Mountaineers website. Many of them already use Google accounts for other services, and having to remember yet another password was becoming a barrier to accessing our community portal.
 
 We wanted to enable "Sign in with Google" functionality while ensuring that:
+
 - Only existing members could use it (no bypassing our Donorbox registration process)
 - The login would reliably match members to their existing accounts
 - Members would get clear guidance if something went wrong
@@ -52,8 +53,8 @@ If you don't have a membership account yet:
 1. Click **"Sign in with Google"** on the login page
 2. Choose your Google account
 3. You'll see a helpful message directing you to:
-   - Sign up through [Donorbox](https://donorbox.org/spokanemountaineers-membership-2) if you're a new member
-   - Contact [webdev@spokanemountaineers.org](mailto:webdev@spokanemountaineers.org) if you already have an account but are having trouble
+    - Sign up through [Donorbox](https://donorbox.org/spokanemountaineers-membership-2) if you're a new member
+    - Contact [webdev@spokanemountaineers.org](mailto:webdev@spokanemountaineers.org) if you already have an account but are having trouble
 
 This ensures that new memberships still go through our proper registration and payment process via Donorbox.
 
@@ -86,4 +87,3 @@ We're always looking to improve the member experience. Potential future enhancem
 ## Questions or Issues?
 
 If you have questions about Google login or encounter any issues, please contact our tech team at [webdev@spokanemountaineers.org](mailto:webdev@spokanemountaineers.org).
-

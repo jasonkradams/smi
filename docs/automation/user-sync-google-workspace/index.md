@@ -14,21 +14,25 @@ The architecture relies on Salesforce Flows and Google Apps Script, requiring no
 ## Components
 
 ### Salesforce Org
+
 - **Scheduled Flow:** Queries all members where `User.IsActive == "True"`
 - **Named Credential:** Configured to securely send data to a Google Apps Script endpoint via HTTP
 
 ### Google Workspace
+
 - **Google Apps Script Web App:** Receives a list of active members and compares it to the users in the `IdP Users Only` OU
 - **Google Workspace Admin SDK:** Used by the script to create, update, suspend, or delete user accounts
 
 ## Sync Behavior
+
 | Case                                                  | Action                       |
 | ----------------------------------------------------- | ---------------------------- |
 | User is Active in Salesforce but not in Google        | **Create** Workspace account |
-| User is Active in both                                | **NoOp**                |
+| User is Active in both                                | **NoOp**                     |
 | User is not Active in Salesforce but exists in Google | **Delete** account           |
 
 ## File Structure for Docs
+
 ```
 automation/user-sync-google-workspace/
 ├── index.md                    # Overview of automation goals & approach

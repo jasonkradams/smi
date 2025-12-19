@@ -1,6 +1,6 @@
 # Solving Event Participant Privacy in Experience Cloud
 
-*Published: November 5, 2025 | Category: Salesforce Solutions*
+_Published: November 5, 2025 | Category: Salesforce Solutions_
 
 ## The Privacy Puzzle We Faced
 
@@ -37,12 +37,13 @@ Manual data entry wasn't an option - we needed automation. We implemented a thre
 **Real-time Sync**: A record-triggered Flow that automatically updates the Contact lookup when Users are created or modified. This catches new users and any changes to existing ones.
 
 **Batch Backfill**: For our existing data, we created a batch Apex class that processes contacts in batches of 200, matching Contacts to Users based on a prioritized approach:
+
 1. **Email Match** (most reliable): `Contact.Email = User.Email`
 2. **FederationIdentifier Match**: `Contact.Email` (transformed) = `User.FederationIdentifier`
-   - Transformation: Replace `@` with `_` and append `@spokanemountaineers.org`
-   - Example: `jason@example.com` → `jason_example.com@spokanemountaineers.org`
+    - Transformation: Replace `@` with `_` and append `@spokanemountaineers.org`
+    - Example: `jason@example.com` → `jason_example.com@spokanemountaineers.org`
 3. **Username Match**: `Contact.Email + '.smi' = User.Username`
-   - Example: `jason@example.com` → `jason@example.com.smi`
+    - Example: `jason@example.com` → `jason@example.com.smi`
 
 This prioritized approach ensures we match the most reliable identifier first, avoiding duplicate email matches while handling various User naming conventions.
 
@@ -59,6 +60,7 @@ Since Event Participants in our org use the custom `Event_Participant__c` object
 - **Visual Consistency**: Styled to match Salesforce standard related list appearance
 
 The component checks each participant's `Contact.User_Lookup__c` field and creates conditional links:
+
 - If a related User exists → Create a clickable link to their profile page (`/s/profile/{UserId}`)
 - If no User exists → Show plain text (no link, just the name)
 
@@ -75,23 +77,27 @@ We built a Lightning Web Component that handles the redirect gracefully:
 ## Technical Deep Dive: What We Built
 
 ### Custom Fields
-- **Contact.User_Lookup__c** - The bridge field linking Contacts to Users (Lookup relationship)
+
+- **Contact.User_Lookup\_\_c** - The bridge field linking Contacts to Users (Lookup relationship)
 
 ### Lightning Web Components
+
 - **eventParticipantRelatedList** - Custom related list that replaces standard Event Participants list with smart redirect functionality
-  - Queries `Event_Participant__c` records for a given `Event_Registration__c`
-  - Displays Contact names with conditional links to User profiles
-  - Styled to match Salesforce standard related list appearance
+    - Queries `Event_Participant__c` records for a given `Event_Registration__c`
+    - Displays Contact names with conditional links to User profiles
+    - Styled to match Salesforce standard related list appearance
 
 ### Flows
+
 - **Sync_User_to_Contact** - Manual sync operations for administrators
 - **User_to_Contact_Sync_Trigger** - Automatic real-time sync when Users change (Before Save trigger)
 
 ### Apex Classes
+
 - **EventParticipantRedirectHelper** - Core business logic and utility methods
-  - `getEventParticipants(String eventId)` - Retrieves participants for an Event or Event_Registration__c
-  - `bulkSyncContactsToUsers(List<String> contactIds)` - Efficient bulk sync method (2 SOQL queries total)
-  - `syncContactToUser(String contactId)` - Single contact sync method
+    - `getEventParticipants(String eventId)` - Retrieves participants for an Event or Event_Registration\_\_c
+    - `bulkSyncContactsToUsers(List<String> contactIds)` - Efficient bulk sync method (2 SOQL queries total)
+    - `syncContactToUser(String contactId)` - Single contact sync method
 - **ContactUserSyncBatch** - Efficient batch processing for existing data (processes 200 records per batch)
 
 ## Deployment Strategy: Minimal Disruption
@@ -154,7 +160,8 @@ Here's everything you need to deploy this privacy-enhancing solution to your own
 
 ### Custom Fields We Created
 
-#### Contact.User_Lookup__c
+#### Contact.User_Lookup\_\_c
+
 - **Type**: Lookup (User)
 - **Purpose**: The bridge field linking Contacts to Users
 - **Location**: `/objects/Contact/fields/User_Lookup__c.field-meta.xml`
@@ -162,6 +169,7 @@ Here's everything you need to deploy this privacy-enhancing solution to your own
 ### Flows for Automation
 
 #### Sync_User_to_Contact
+
 - **Type**: Autolaunched Flow
 - **Purpose**: Utility Flow for syncing a Contact to its matching User record
 - **Input**: `recordId` (Contact ID)
@@ -169,6 +177,7 @@ Here's everything you need to deploy this privacy-enhancing solution to your own
 - **Location**: `/flows/Sync_User_to_Contact.flow-meta.xml`
 
 #### User_to_Contact_Sync_Trigger
+
 - **Type**: Record-Triggered Flow (User, Before Save)
 - **Purpose**: Automatically syncs User to Contact when Users are created/updated
 - **Location**: `/flows/User_to_Contact_Sync_Trigger.flow-meta.xml`
@@ -176,32 +185,35 @@ Here's everything you need to deploy this privacy-enhancing solution to your own
 ### Apex Classes for Core Logic
 
 #### EventParticipantRedirectHelper
+
 - **Purpose**: Provides methods for redirect logic and batch sync operations
 - **Key Methods**:
-  - `getEventParticipants(String eventId)` - Returns list of participants for an Event or Event_Registration__c
-  - `bulkSyncContactsToUsers(List<String> contactIds)` - **Recommended**: Efficient bulk sync method (2-3 SOQL queries total)
-  - `syncContactToUser(String contactId)` - Single contact sync method (legacy, use bulk method for multiple contacts)
+    - `getEventParticipants(String eventId)` - Returns list of participants for an Event or Event_Registration\_\_c
+    - `bulkSyncContactsToUsers(List<String> contactIds)` - **Recommended**: Efficient bulk sync method (2-3 SOQL queries total)
+    - `syncContactToUser(String contactId)` - Single contact sync method (legacy, use bulk method for multiple contacts)
 - **Performance**: The `bulkSyncContactsToUsers` method reduces SOQL queries from ~3 per contact to just 2-3 total queries regardless of contact count
 - **Location**: `/classes/EventParticipantRedirectHelper.cls`
 
 #### ContactUserSyncBatch
+
 - **Purpose**: Batch job to backfill existing Contacts with User lookups
 - **Capacity**: Processes 200 records per batch execution (up to 50,000 contacts per batch job)
 - **Matching Logic**: Prioritized approach:
-  1. `Contact.Email = User.Email` (most reliable)
-  2. `Contact.Email` (transformed) = `User.FederationIdentifier` (replace `@` with `_`, append `@spokanemountaineers.org`)
-  3. `Contact.Email + '.smi' = User.Username` (common pattern)
+    1. `Contact.Email = User.Email` (most reliable)
+    2. `Contact.Email` (transformed) = `User.FederationIdentifier` (replace `@` with `_`, append `@spokanemountaineers.org`)
+    3. `Contact.Email + '.smi' = User.Username` (common pattern)
 - **Location**: `/classes/ContactUserSyncBatch.cls`
 
 ### Lightning Web Component
 
 #### eventParticipantRelatedList
+
 - **Purpose**: Custom related list component for Event Participants in Experience Cloud
-- **Features**: 
-  - Queries `Event_Participant__c` records for `Event_Registration__c`
-  - Displays Contact names with conditional links to User profiles
-  - Styled to match Salesforce standard related list appearance
-  - Handles loading states and errors gracefully
+- **Features**:
+    - Queries `Event_Participant__c` records for `Event_Registration__c`
+    - Displays Contact names with conditional links to User profiles
+    - Styled to match Salesforce standard related list appearance
+    - Handles loading states and errors gracefully
 - **Location**: `/lwc/eventParticipantRelatedList/`
 
 ## Step-by-Step Deployment
@@ -274,6 +286,7 @@ Database.executeBatch(new ContactUserSyncBatch(), 200);
 ```
 
 The batch job will:
+
 - Process up to 50,000 contacts in batches of 200
 - Use prioritized matching to link Contacts to Users
 - Send a completion email with statistics
@@ -304,6 +317,7 @@ The batch job will:
 We've implemented a high-performance bulk sync method that dramatically reduces SOQL query usage:
 
 **Performance Comparison:**
+
 - **Legacy Method**: ~3 SOQL queries per contact
 - **New Bulk Method**: Only 2-3 SOQL queries total regardless of contact count
 - **Efficiency Gain**: 1,000 contacts = 3,000 queries → 3 queries (99.9% reduction!)
@@ -320,7 +334,7 @@ List<String> contactIds = new List<String>{
     '0032G00002sd32kQAA'   // Contact 3
 };
 
-List<EventParticipantRedirectHelper.SyncResult> results = 
+List<EventParticipantRedirectHelper.SyncResult> results =
     EventParticipantRedirectHelper.bulkSyncContactsToUsers(contactIds);
 
 // Check results
@@ -334,9 +348,9 @@ for (EventParticipantRedirectHelper.SyncResult result : results) {
 ```java
 // Sync contacts in batches of 50 (optimal for governor limits)
 List<Contact> contactsToSync = [
-    SELECT Id, Name, Email, User_Lookup__c 
-    FROM Contact 
-    WHERE Email != NULL 
+    SELECT Id, Name, Email, User_Lookup__c
+    FROM Contact
+    WHERE Email != NULL
     AND User_Lookup__c = NULL
     ORDER BY CreatedDate
     LIMIT 400
@@ -353,13 +367,13 @@ List<String> currentBatch = new List<String>();
 for (Integer i = 0; i < contactsToSync.size(); i++) {
     Contact contact = contactsToSync[i];
     currentBatch.add(contact.Id);
-    
+
     if (currentBatch.size() >= batchSize || i == contactsToSync.size() - 1) {
         System.debug('Processing batch of ' + currentBatch.size() + ' contacts');
-        
-        List<EventParticipantRedirectHelper.SyncResult> batchResults = 
+
+        List<EventParticipantRedirectHelper.SyncResult> batchResults =
             EventParticipantRedirectHelper.bulkSyncContactsToUsers(currentBatch);
-        
+
         for (EventParticipantRedirectHelper.SyncResult result : batchResults) {
             if (result.success) {
                 successCount++;
@@ -367,7 +381,7 @@ for (Integer i = 0; i < contactsToSync.size(); i++) {
                 failureCount++;
             }
         }
-        
+
         currentBatch.clear();
     }
 }
@@ -384,8 +398,8 @@ String eventRegistrationId = 'a122G000008VdzJQAS'; // Replace with your Event_Re
 
 // Get all Event_Participant__c records for this Event_Registration__c
 List<Event_Participant__c> participants = [
-    SELECT Contact__c 
-    FROM Event_Participant__c 
+    SELECT Contact__c
+    FROM Event_Participant__c
     WHERE Event_Registration__c = :eventRegistrationId
     AND Contact__c != null
 ];
@@ -398,15 +412,15 @@ for (Event_Participant__c participant : participants) {
 
 if (!contactIds.isEmpty()) {
     System.debug('Syncing ' + contactIds.size() + ' Event participants...');
-    
-    List<EventParticipantRedirectHelper.SyncResult> results = 
+
+    List<EventParticipantRedirectHelper.SyncResult> results =
         EventParticipantRedirectHelper.bulkSyncContactsToUsers(contactIds);
-    
+
     Integer successCount = 0;
     for (EventParticipantRedirectHelper.SyncResult result : results) {
         if (result.success) successCount++;
     }
-    
+
     System.debug('Event participant sync completed: ' + successCount + '/' + results.size() + ' successful');
 }
 ```
@@ -422,6 +436,7 @@ System.debug('SOQL queries remaining: ' + (Limits.getLimitQueries() - Limits.get
 ```
 
 **Expected Results:**
+
 - Small batches (50 contacts): ~3 SOQL queries total
 - Large batches (1,000+ contacts): ~3 SOQL queries total
 - Query limit usage: <5% regardless of contact count
@@ -433,20 +448,21 @@ System.debug('SOQL queries remaining: ' + (Limits.getLimitQueries() - Limits.get
 The sync process uses a three-tier matching approach:
 
 1. **Email Match** (Highest Priority)
-   - `Contact.Email = User.Email`
-   - Most reliable match, used first
+    - `Contact.Email = User.Email`
+    - Most reliable match, used first
 
 2. **FederationIdentifier Match** (Second Priority)
-   - Transformation: `Contact.Email.replace('@', '_') + '@spokanemountaineers.org'`
-   - Example: `jason@example.com` → `jason_example.com@spokanemountaineers.org`
-   - Matches against `User.FederationIdentifier`
+    - Transformation: `Contact.Email.replace('@', '_') + '@spokanemountaineers.org'`
+    - Example: `jason@example.com` → `jason_example.com@spokanemountaineers.org`
+    - Matches against `User.FederationIdentifier`
 
 3. **Username Match** (Third Priority)
-   - Pattern: `Contact.Email + '.smi'`
-   - Example: `jason@example.com` → `jason@example.com.smi`
-   - Matches against `User.Username`
+    - Pattern: `Contact.Email + '.smi'`
+    - Example: `jason@example.com` → `jason@example.com.smi`
+    - Matches against `User.Username`
 
 This prioritized approach ensures:
+
 - Most reliable matches are found first
 - Handles various User naming conventions
 - Avoids duplicate matches when multiple Users share the same email
@@ -464,16 +480,19 @@ This prioritized approach ensures:
 ### Bulk Sync Performance Issues?
 
 **High SOQL Query Usage:**
+
 - Ensure you're using `bulkSyncContactsToUsers()` instead of individual `syncContactToUser()` calls
 - Check that you're processing contacts in batches of 50 or fewer
 - Monitor query usage: `System.debug('Queries used: ' + Limits.getQueries());`
 
 **Memory Limit Errors:**
+
 - Reduce batch size from 50 to 25 if processing contacts with large data
 - Use QueryLocator for very large datasets (>10,000 contacts)
 - Clear collections between batches: `currentBatch.clear();`
 
 **Slow Performance:**
+
 - The bulk sync method should complete 1,000 contacts in <30 seconds
 - If slower, check for custom triggers on Contact objects
 - Verify User lookup indexes are in place
@@ -503,9 +522,9 @@ This prioritized approach ensures:
 ### Component Not Displaying?
 
 - Verify `eventParticipantRelatedList` component is added to the page layout
-- Check that the component has access to the Event_Registration__c record
+- Check that the component has access to the Event_Registration\_\_c record
 - Review browser console for JavaScript errors
-- Ensure the Event_Registration__c has Event_Participant__c records
+- Ensure the `Event_Registration__c` has `Event_Participant__c` records
 
 ## Monitoring & Maintenance
 
@@ -542,11 +561,13 @@ This section provides a comprehensive rollback plan in case the Event Participan
 #### Phase 1: Disable New Functionality
 
 **1. Deactivate Flows**
+
 - Navigate to Setup → Flows
 - Find `User_to_Contact_Sync_Trigger` and `Sync_User_to_Contact`
 - Click "Deactivate" for each Flow
 
 **2. Remove Lightning Component**
+
 - Edit Event Registration page layouts in Experience Cloud Builder
 - Remove the `eventParticipantRelatedList` component
 - Replace with standard related list if needed
@@ -555,11 +576,12 @@ This section provides a comprehensive rollback plan in case the Event Participan
 #### Phase 2: Revert Data Model Changes (Optional)
 
 **3. Clear Contact User Lookups (Optional)**
+
 ```java
 // Execute in Anonymous Apex to clear all User lookups
 List<Contact> contactsToUpdate = [
-    SELECT Id, User_Lookup__c 
-    FROM Contact 
+    SELECT Id, User_Lookup__c
+    FROM Contact
     WHERE User_Lookup__c != null
     LIMIT 50000
 ];
@@ -575,6 +597,7 @@ System.debug('Cleared User lookup from ' + contactsToUpdate.size() + ' Contacts'
 #### Phase 3: Remove Custom Components (Optional - Destructive)
 
 **4. Delete Custom Fields**
+
 ```bash
 # WARNING: This is destructive!
 sf project delete source \
@@ -583,6 +606,7 @@ sf project delete source \
 ```
 
 **5. Delete Apex Classes**
+
 ```bash
 sf project delete source \
     --source-dir force-app/main/default/classes/EventParticipantRedirectHelper.cls \
@@ -593,6 +617,7 @@ sf project delete source \
 ```
 
 **6. Delete Flows**
+
 ```bash
 sf project delete source \
     --source-dir force-app/main/default/flows/Sync_User_to_Contact.flow-meta.xml \
@@ -601,6 +626,7 @@ sf project delete source \
 ```
 
 **7. Delete Lightning Component**
+
 ```bash
 sf project delete source \
     --source-dir force-app/main/default/lwc/eventParticipantRelatedList \
@@ -610,6 +636,7 @@ sf project delete source \
 ### Rollback Validation
 
 **Functionality Testing**
+
 - [ ] Event pages load normally
 - [ ] Event Participants related list shows standard Contact names
 - [ ] Clicking participant names opens Contact records (original behavior)
@@ -617,6 +644,7 @@ sf project delete source \
 - [ ] Performance returns to baseline levels
 
 **Data Integrity Checks**
+
 - [ ] Contact records are unchanged
 - [ ] Event relationships remain intact
 - [ ] No orphaned lookup relationships

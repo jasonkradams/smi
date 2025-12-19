@@ -6,8 +6,8 @@ This automated Salesforce Flow sends an email notification to the event leader w
 
 ## Access
 
-* Flow: [Notify Leader on RSVP](https://spokanemountaineers.lightning.force.com/lightning/setup/Flows/home)
-* GitHub: [Notify_Leader_on_RSVP.flow-meta.xml](https://github.com/jasonkradams/smi/blob/main/force-app/main/default/flows/Notify_Leader_on_RSVP.flow-meta.xml)
+- Flow: [Notify Leader on RSVP](https://spokanemountaineers.lightning.force.com/lightning/setup/Flows/home)
+- GitHub: [Notify_Leader_on_RSVP.flow-meta.xml](https://github.com/jasonkradams/smi/blob/main/force-app/main/default/flows/Notify_Leader_on_RSVP.flow-meta.xml)
 
 ---
 
@@ -28,9 +28,9 @@ This Flow automatically notifies event leaders via email when a member RSVPs to 
 - **Object**: `Event_Participant__c`
 - **Trigger Type**: Record-Triggered Flow
 - **Trigger Timing**: After Save
-- **Entry Conditions**: 
-  - Record is created (not updated)
-  - `Response__c = "Attending"`
+- **Entry Conditions**:
+    - Record is created (not updated)
+    - `Response__c = "Attending"`
 
 ---
 
@@ -39,6 +39,7 @@ This Flow automatically notifies event leaders via email when a member RSVPs to 
 ### 1. Get Event Registration
 
 Retrieves the related `Event_Registration__c` record to access:
+
 - Event name
 - Leader lookup (`Leader__c`)
 - Event start time (`Start__c`)
@@ -62,6 +63,7 @@ Checks if the participant's response is "Attending".
 ### 3. Get Leader User Record
 
 Retrieves the User record from `Event_Registration__c.Leader__c` to access:
+
 - User ID
 - User Name (for email greeting)
 - Contact ID (`ContactId`) - used to get the Contact email
@@ -86,6 +88,7 @@ Validates that a leader is assigned to the event.
 ### 5. Get Leader Contact (Parallel with Get Participant Contact)
 
 Retrieves the Contact record associated with the leader User to access:
+
 - Contact Email (primary email address)
 - Contact Name
 
@@ -123,11 +126,13 @@ Sends a formatted email to the event leader.
 **Element**: `Send_Email_to_Leader`
 
 **Email Subject**:
+
 ```
 New RSVP for {Event Registration Name}
 ```
 
 **Email Body**:
+
 ```
 Hi {Leader Name},
 
@@ -147,6 +152,7 @@ Spokane Mountaineers
 ```
 
 **Email Configuration**:
+
 - **To**: `Get_Leader_Contact.Email`
 - **From/Sender**: `admin@spokanemountaineers.org` (Org-Wide Email Address)
 - **Sender Type**: `OrgWideEmailAddress`
@@ -157,13 +163,13 @@ Spokane Mountaineers
 
 ### Objects Used
 
-| **Object** | **Purpose** | **Key Fields** |
-|:----------:|:-----------:|:--------------:|
-| `Event_Participant__c` | Trigger record - represents someone RSVPing | `Event_Registration__c`, `Contact__c`, `Response__c` |
-| `Event_Registration__c` | The event being RSVP'd for | `Leader__c`, `Name`, `Start__c`, `Location__c` |
-| `User` | Event leader's user record | `Id`, `Name`, `ContactId` |
-| `Contact` | Leader's contact record (for email) | `Id`, `Email`, `Name` |
-| `Contact` | Participant's contact record (for email content) | `Id`, `Name`, `FirstName`, `LastName` |
+|       **Object**        |                   **Purpose**                    |                    **Key Fields**                    |
+| :---------------------: | :----------------------------------------------: | :--------------------------------------------------: |
+| `Event_Participant__c`  |   Trigger record - represents someone RSVPing    | `Event_Registration__c`, `Contact__c`, `Response__c` |
+| `Event_Registration__c` |            The event being RSVP'd for            |    `Leader__c`, `Name`, `Start__c`, `Location__c`    |
+|         `User`          |            Event leader's user record            |              `Id`, `Name`, `ContactId`               |
+|        `Contact`        |       Leader's contact record (for email)        |                `Id`, `Email`, `Name`                 |
+|        `Contact`        | Participant's contact record (for email content) |        `Id`, `Name`, `FirstName`, `LastName`         |
 
 ### Relationships
 
@@ -208,12 +214,12 @@ The flow retrieves the Contact via `User.ContactId`, then uses `Contact.Email` f
 
 ### Common Issues
 
-| **Issue** | **Possible Cause** | **Solution** |
-|:---------:|:------------------:|:------------:|
-| No email received | Leader Contact missing email | Verify `Contact.Email` is populated for the leader |
-| No email received | Leader User missing ContactId | Verify `User.ContactId` is populated |
-| Flow not triggering | Event Participant created with wrong Response | Verify `Response__c = "Attending"` on new records |
-| Email not sending | Invalid sender address | Verify Org-Wide Email Address `admin@spokanemountaineers.org` is configured and active |
+|      **Issue**      |              **Possible Cause**               |                                      **Solution**                                      |
+| :-----------------: | :-------------------------------------------: | :------------------------------------------------------------------------------------: |
+|  No email received  |         Leader Contact missing email          |                   Verify `Contact.Email` is populated for the leader                   |
+|  No email received  |         Leader User missing ContactId         |                          Verify `User.ContactId` is populated                          |
+| Flow not triggering | Event Participant created with wrong Response |                   Verify `Response__c = "Attending"` on new records                    |
+|  Email not sending  |            Invalid sender address             | Verify Org-Wide Email Address `admin@spokanemountaineers.org` is configured and active |
 
 ### Verify Email Delivery
 
@@ -226,14 +232,14 @@ The flow retrieves the Contact via `User.ContactId`, then uses `Contact.Email` f
 
 ## 🚀 Future Enhancements
 
-| **Feature** | **Notes** |
-|:-----------:|:---------:|
-| Handle Updates | Currently only triggers on Create. Could add Update trigger to notify when someone changes from "Not Attending" to "Attending" |
-| Email Template | Use Salesforce Email Template instead of hardcoded email body for easier customization |
-| HTML Email | Format email as HTML for better presentation |
-| Bulk RSVP Notification | Option to batch RSVP notifications (e.g., send one email per day with all new RSVPs) |
-| Opt-out Preference | Allow leaders to opt-out of RSVP notifications per event |
-| Participant Count | Include total participant count in the email |
+|      **Feature**       |                                                           **Notes**                                                            |
+| :--------------------: | :----------------------------------------------------------------------------------------------------------------------------: |
+|     Handle Updates     | Currently only triggers on Create. Could add Update trigger to notify when someone changes from "Not Attending" to "Attending" |
+|     Email Template     |                     Use Salesforce Email Template instead of hardcoded email body for easier customization                     |
+|       HTML Email       |                                          Format email as HTML for better presentation                                          |
+| Bulk RSVP Notification |                      Option to batch RSVP notifications (e.g., send one email per day with all new RSVPs)                      |
+|   Opt-out Preference   |                                    Allow leaders to opt-out of RSVP notifications per event                                    |
+|   Participant Count    |                                          Include total participant count in the email                                          |
 
 ---
 
@@ -250,7 +256,7 @@ The flow retrieves the Contact via `User.ContactId`, then uses `Contact.Email` f
 - **Flow Type**: Auto-Launched Flow (Record-Triggered)
 - **Process Type**: RecordAfterSave
 - **Status**: Active
-- **Bulk Support**: Yes (handles multiple Event_Participant__c records created in same transaction)
+- **Bulk Support**: Yes (handles multiple Event_Participant\_\_c records created in same transaction)
 - **Maintainability**: Each flow element includes a description explaining its purpose and intent for easier future maintenance
 
 ---
@@ -258,4 +264,3 @@ The flow retrieves the Contact via `User.ContactId`, then uses `Contact.Email` f
 ## 📞 Support
 
 For issues or questions about this flow, contact the tech team at [webdev@spokanemountaineers.org](mailto:webdev@spokanemountaineers.org).
-

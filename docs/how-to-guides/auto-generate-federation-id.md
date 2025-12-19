@@ -54,12 +54,12 @@ SUBSTITUTE(
 
 ## 📚 Example Outputs
 
-| Username | Resulting Federation ID |
-|:---|:---|
-| `_a.first.last@gmail.com.smi` | `_a.first.last_gmail.com@spokanemountaineers.org` |
+| Username                         | Resulting Federation ID                                  |
+| :------------------------------- | :------------------------------------------------------- |
+| `_a.first.last@gmail.com.smi`    | `_a.first.last_gmail.com@spokanemountaineers.org`        |
 | `first.list+example@example.com` | `first.list+example_example.com@spokanemountaineers.org` |
-| `jane.doe@yahoo.com.smi` | `jane.doe_yahoo.com@spokanemountaineers.org` |
-| `mark.smith@outlook.com` | `mark.smith_outlook.com@spokanemountaineers.org` |
+| `jane.doe@yahoo.com.smi`         | `jane.doe_yahoo.com@spokanemountaineers.org`             |
+| `mark.smith@outlook.com`         | `mark.smith_outlook.com@spokanemountaineers.org`         |
 
 ---
 
@@ -82,4 +82,4 @@ SUBSTITUTE(
 
 ---
 
-> ✨ *If future usernames or rules change, this formula should be reviewed and updated accordingly.*
+> ✨ _If future usernames or rules change, this formula should be reviewed and updated accordingly._

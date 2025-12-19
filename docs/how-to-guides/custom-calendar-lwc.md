@@ -12,22 +12,22 @@ This guide provides detailed instructions on deploying, configuring, and using t
 ## Project Structure
 
 - **LWC Component**: `customCalendarLWC`
-  - `customCalendarLWC.js`: JavaScript logic for the calendar.
-  - `customCalendarLWC.html`: HTML template for the calendar UI.
-  - `customCalendarLWC.css`: Styling for the calendar.
-  - `customCalendarLWC.js-meta.xml`: Metadata configuration for the component.
-  - `customCalendarLWC.design`: Design configuration for Experience Builder.
+    - `customCalendarLWC.js`: JavaScript logic for the calendar.
+    - `customCalendarLWC.html`: HTML template for the calendar UI.
+    - `customCalendarLWC.css`: Styling for the calendar.
+    - `customCalendarLWC.js-meta.xml`: Metadata configuration for the component.
+    - `customCalendarLWC.design`: Design configuration for Experience Builder.
 - **Apex Classes**:
-  - `CalendarController.cls`: Apex class to fetch and manage calendar data.
-  - `CalendarControllerTest.cls`: Test class for `CalendarController`.
+    - `CalendarController.cls`: Apex class to fetch and manage calendar data.
+    - `CalendarControllerTest.cls`: Test class for `CalendarController`.
 
 ## Prerequisites
 
 1. **Salesforce CLI**: Ensure you have the Salesforce CLI installed. You can download it from [Salesforce CLI](https://developer.salesforce.com/tools/sfdxcli).
 2. **Authentication**: Authenticate with your Salesforce org using the following command:
-   ```bash
-   sf login
-   ```
+    ```bash
+    sf login
+    ```
 
 ## Deployment
 
@@ -58,9 +58,9 @@ sf project deploy start \
 To test the component locally:
 
 1. Use the Salesforce CLI to start the local development server:
-   ```bash
-   sfdx force:lightning:lwc:start
-   ```
+    ```bash
+    sfdx force:lightning:lwc:start
+    ```
 2. Open the local development server in your browser to view and test the component.
 
 ## Testing

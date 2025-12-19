@@ -13,6 +13,7 @@ The Spokane Mountaineers manage two types of Salesforce Community licenses:
 - **Customer Community Plus Login (Login-Based)**: ~$1.50 per member per year, pooled 5,000 total logins per year
 
 The system automatically optimizes license assignments to address:
+
 - Inefficient license usage (Premium licenses assigned to low-usage members)
 - Cost optimization opportunities
 - Manual administrative overhead
@@ -46,14 +47,14 @@ Automate license optimization through a scheduled batch process that:
 
 ### Components
 
-1. **Fiscal_Year_Login_History__c** (Custom Object)
+1. **Fiscal_Year_Login_History\_\_c** (Custom Object)
     - Mirrors LoginHistory records to track full fiscal year (Feb 1 - Jan 31) login activity
     - Required because LoginHistory API only provides 6 months of data
     - Fields mirror LoginHistory structure with external ID on `Login_History_Id__c` to prevent duplicates
     - Located in: `force-app/main/default/objects/Fiscal_Year_Login_History__c/`
 
 2. **LoginHistorySyncBatch** (`Database.Batchable`, `Database.Stateful`)
-    - Runs daily to sync LoginHistory records to Fiscal_Year_Login_History__c
+    - Runs daily to sync LoginHistory records to Fiscal_Year_Login_History\_\_c
     - Queries LoginHistory from last 2 days and upserts to custom object
     - Triggers LicenseShuffleBatch in finish() method to ensure sync completes before shuffling
     - Located in: `force-app/main/default/classes/LoginHistorySyncBatch.cls`
@@ -85,7 +86,7 @@ Automate license optimization through a scheduled batch process that:
     - Enqueued from `LicenseShuffleBatch.finish()` method
     - Located in: `force-app/main/default/classes/LicenseChangeLogQueueable.cls`
 
-8. **License_Change_Log__c** (Custom Object)
+8. **License_Change_Log\_\_c** (Custom Object)
     - Tracks all license changes
     - Stores: User, old/new license, old/new profile, login count, reason, timestamp, batch job ID
     - Located in: `force-app/main/default/objects/License_Change_Log__c/`
@@ -98,7 +99,7 @@ Automate license optimization through a scheduled batch process that:
 
 10. **Field-Level Security Script** (`grant_fls_fiscal_year_login_history.apex`)
     - Anonymous Apex script to grant FLS access to System Administrator profile
-    - Programmatically sets read/edit permissions for all Fiscal_Year_Login_History__c fields
+    - Programmatically sets read/edit permissions for all Fiscal_Year_Login_History\_\_c fields
     - Must be run after deploying the custom object (foundation step)
     - Located in: `scripts/apex/license-sorting/grant_fls_fiscal_year_login_history.apex`
 
@@ -116,7 +117,7 @@ Automate license optimization through a scheduled batch process that:
 
 2. **Calculate Login Counts**:
     - Query `Fiscal_Year_Login_History__c` for each user (not LoginHistory - API only provides 6 months)
-    - **Fiscal Year Logic** (Fiscal Year: Feb 1 - Jan 31): 
+    - **Fiscal Year Logic** (Fiscal Year: Feb 1 - Jan 31):
         - If current month in {2,3,4} (Feb-Apr): Use `LAST_N_DAYS:365` (last 365 days - first 3 months of FY)
         - If current month >= 5 (May-Dec): Use current fiscal year (Feb 1 of current year to now)
         - If current month == 1 (Jan): Use fiscal year (Feb 1 of previous year to now)
@@ -145,6 +146,7 @@ Automate license optimization through a scheduled batch process that:
 ### Logging
 
 All license changes are logged to `License_Change_Log__c` with:
+
 - User reference
 - Old and new license types
 - Old and new profile names
@@ -154,6 +156,7 @@ All license changes are logged to `License_Change_Log__c` with:
 - Batch job ID
 
 **Important**: Due to Salesforce's `MIXED_DML_OPERATION` restriction, log records are inserted via a `Queueable` job that runs after the batch completes. This means:
+
 - User license changes happen immediately
 - Log records are created shortly after (typically within seconds)
 - If the Queueable job fails, check debug logs for error details
@@ -181,14 +184,14 @@ All license changes are logged to `License_Change_Log__c` with:
 - **Governor Limits**: LoginHistory queries are expensive; batch size is set to 50 users per batch to stay within limits
 - **Query Performance**: Large `Fiscal_Year_Login_History__c` tables may impact batch execution time
 - **LoginHistory API Limitation**: LoginHistory API only provides 6 months of data
-  - **Mitigation**: Custom object `Fiscal_Year_Login_History__c` tracks full fiscal year via daily sync
+    - **Mitigation**: Custom object `Fiscal_Year_Login_History__c` tracks full fiscal year via daily sync
 - **Error Handling**: Users with validation rules or required fields may fail to update (errors are logged but don't stop the batch)
 - **MIXED_DML_OPERATION**: Cannot update User (setup object) and insert `License_Change_Log__c` (non-setup object) in the same transaction
-  - **Mitigation**: Log records are inserted via `LicenseChangeLogQueueable` in a separate transaction
+    - **Mitigation**: Log records are inserted via `LicenseChangeLogQueueable` in a separate transaction
 - **Data Sync Timing**: `LoginHistorySyncBatch` must complete before `LicenseShuffleBatch` runs
-  - **Mitigation**: `LicenseShuffleBatch` is triggered from `LoginHistorySyncBatch.finish()` method
+    - **Mitigation**: `LicenseShuffleBatch` is triggered from `LoginHistorySyncBatch.finish()` method
 - **Field-Level Security**: System Administrators require FLS permissions for `Fiscal_Year_Login_History__c` fields
-  - **Mitigation**: FLS grant script (`scripts/apex/license-sorting/grant_fls_fiscal_year_login_history.apex`) programmatically sets permissions
+    - **Mitigation**: FLS grant script (`scripts/apex/license-sorting/grant_fls_fiscal_year_login_history.apex`) programmatically sets permissions
 
 ### Business Risks
 
@@ -207,12 +210,14 @@ All license changes are logged to `License_Change_Log__c` with:
 ## Implementation Plan
 
 ### Phase 1: Foundation ✅
+
 - Create `License_Change_Log__c` custom object and fields
 - Create `Fiscal_Year_Login_History__c` custom object and fields
 - Create `LicenseShuffleBatch` class skeleton
 - Create FLS grant script for field-level security setup
 
 ### Phase 2: Core Logic ✅
+
 - Implement fiscal year login counting logic using `Fiscal_Year_Login_History__c`
 - Implement license shuffling algorithm (>5 logins, max 475 Premium)
 - Implement logging functionality via Queueable class
@@ -220,14 +225,16 @@ All license changes are logged to `License_Change_Log__c` with:
 - Create `LoginHistoryCleanupBatch` for annual data cleanup
 
 ### Phase 3: Testing ✅
+
 - Create comprehensive test classes for all components
 - Test all scenarios (upgrade, downgrade, protected users, edge cases)
 - Verify governor limit handling and batch processing
 - Test job chaining (sync batch triggers shuffle batch)
 
 ### Phase 4: Deployment & Setup
+
 - [x] Deploy all components to staging environment
-- [x] Create Fiscal_Year_Login_History__c custom object and fields
+- [x] Create Fiscal_Year_Login_History\_\_c custom object and fields
 - [x] Create LoginHistorySyncBatch and scheduler
 - [x] Create LoginHistoryCleanupBatch and scheduler
 - [x] Update LicenseShuffleBatch to use custom object and new logic
@@ -241,6 +248,7 @@ All license changes are logged to `License_Change_Log__c` with:
 - [ ] Deploy to production after testing complete
 
 ### Phase 5: Documentation
+
 - [x] Document system architecture and components
 - [x] Document Queueable class and MIXED_DML workaround
 - [x] Document setup scripts and deployment steps
@@ -250,12 +258,14 @@ All license changes are logged to `License_Change_Log__c` with:
 ## Implementation Notes
 
 ### Testing Configuration
+
 - **Max Premium Licenses**: 475
 - **Login Threshold**: >5 logins qualify for Premium
 - **Fiscal Year**: Feb 1 - Jan 31
 - **Manual Execution**: Can trigger LoginHistorySyncBatch or LicenseShuffleBatch directly
 
 ### Key Implementation Details
+
 - **Batch Size**: 50 users per chunk for LicenseShuffleBatch, 200 for LoginHistorySyncBatch and LoginHistoryMigrationBatch
 - **Stateful Processing**: Uses `Database.Stateful` to track Premium users across chunks
 - **Log Insertion**: Logs are accumulated during batch execution and inserted via Queueable after completion
@@ -263,10 +273,11 @@ All license changes are logged to `License_Change_Log__c` with:
 - **Daily Sync**: LoginHistorySyncBatch runs daily to sync LoginHistory to custom object
 - **Annual Cleanup**: LoginHistoryCleanupBatch runs May 1st to delete records before previous fiscal year
 - **Job Chaining**: LoginHistorySyncBatch triggers LicenseShuffleBatch in finish() method
-- **Field-Level Security**: System Administrator profile requires FLS permissions for Fiscal_Year_Login_History__c fields (granted via script)
+- **Field-Level Security**: System Administrator profile requires FLS permissions for Fiscal_Year_Login_History\_\_c fields (granted via script)
 - **Initial Migration**: LoginHistoryMigrationBatch provides one-time backfill of last 6 months of LoginHistory data
 
 ### Test Classes
+
 - `LicenseShuffleBatchTest.cls`: Comprehensive test coverage for batch logic
 - `LicenseChangeLogQueueableTest.cls`: Tests Queueable log insertion
 - `LoginHistorySyncBatchTest.cls`: Tests sync batch logic
@@ -276,6 +287,7 @@ All license changes are logged to `License_Change_Log__c` with:
 - `LoginHistoryMigrationBatch`: Includes test methods for initial migration logic
 
 ### Setup Scripts
+
 - `scripts/apex/license-sorting/grant_fls_fiscal_year_login_history.apex`: Grants FLS permissions to System Administrator profile
 - `scripts/apex/license-sorting/migrate_login_history_initial.apex`: Executes LoginHistoryMigrationBatch for initial data backfill
 - `scripts/apex/license-sorting/README.md`: Documentation for all license sorting scripts
@@ -302,7 +314,7 @@ All license changes are logged to `License_Change_Log__c` with:
 - **Dashboard/Reports**: Visualize license usage trends and fiscal year login activity
 - **Manual Trigger**: Option to run optimization immediately (available via direct batch execution)
 - **Predictive Analytics**: Forecast license needs based on usage trends
-- **Data Retention Policy**: Configurable retention period for Fiscal_Year_Login_History__c records
+- **Data Retention Policy**: Configurable retention period for Fiscal_Year_Login_History\_\_c records
 
 ## References
 
@@ -314,4 +326,3 @@ All license changes are logged to `License_Change_Log__c` with:
 ## Status
 
 System is implemented and ready for production deployment. All components have been deployed to staging and tested. Initial data migration has been completed. System awaits scheduling of daily sync and annual cleanup jobs, followed by production deployment after final testing verification.
-
