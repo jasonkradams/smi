@@ -6,6 +6,7 @@ nav:
   - Home: index.md
   - Articles:
     - articles/index.md
+    - Enabling Google Login: articles/enable-google-login.md
     - Event Participant Follow Handler Update: articles/event-participant-follow-handler-update.md
     - Event Participant Privacy (Overview): articles/event-participant-privacy-solution.md
     - Event Participant Privacy (Technical): articles/event-participant-redirect.md
@@ -24,6 +25,7 @@ nav:
     - Salesforce Development Console Cheatsheet: how-to-guides/salesforce-development-console-cheatsheet.md
   - Automation:
     - automation/index.md
+    - Google Login Automation: automation/google-login-automation.md
     - User Sync:
         - User Sync Overview: automation/user-sync-google-workspace/index.md
         - Salesforce to Google Workspace: automation/user-sync-google-workspace/salesforce-flow.md
