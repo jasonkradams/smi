@@ -15,7 +15,6 @@ nav:
       - Customize Favicon: how-to-guides/update-experience-cloud-favicon.md
       - Preventing Logout With KeepAlives: how-to-guides/keepalive-sessions.md
       - Website Editing: how-to-guides/website-editing.md
-      - Custom Calendar LWC Guide: how-to-guides/custom-calendar-lwc.md
       - Bulk Delete Events in Salesforce: how-to-guides/bulk-delete-events-in-salesforce.md
       - Salesforce Development Console Cheatsheet: how-to-guides/salesforce-development-console-cheatsheet.md
   - Automation:
