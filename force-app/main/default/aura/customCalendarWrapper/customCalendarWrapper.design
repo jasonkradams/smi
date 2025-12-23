@@ -1,3 +1,0 @@
-<design:component >
-    <design:attribute name="calendarTitle" label="Calendar Title" description="Title for the calendar" />
-</design:component>

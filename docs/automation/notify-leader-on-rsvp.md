@@ -246,7 +246,6 @@ The flow retrieves the Contact via `User.ContactId`, then uses `Contact.Email` f
 ## 📝 Related Documentation
 
 - [Event Participant Redirect](../articles/event-participant-redirect.md): Related solution for event participant functionality
-- [Custom Calendar LWC Guide](../how-to-guides/custom-calendar-lwc.md): Documentation on the calendar component used for events
 
 ---
 

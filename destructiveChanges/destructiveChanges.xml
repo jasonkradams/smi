@@ -3,7 +3,17 @@
   <types>
     <members>UserSyncInput</members>
     <members>UserSyncInputTest</members>
+    <members>CalendarController</members>
+    <members>CalendarControllerTest</members>
     <name>ApexClass</name>
+  </types>
+  <types>
+    <members>customCalendarLWC</members>
+    <name>LightningComponentBundle</name>
+  </types>
+  <types>
+    <members>customCalendarWrapper</members>
+    <name>AuraDefinitionBundle</name>
   </types>
   <version>59.0</version>
 </Package>
