@@ -98,7 +98,6 @@ We built a Lightning Web Component that handles the redirect gracefully:
     - `getEventParticipants(String eventId)` - Retrieves participants for an Event or Event_Registration\_\_c
     - `bulkSyncContactsToUsers(List<String> contactIds)` - Efficient bulk sync method (2 SOQL queries total)
     - `syncContactToUser(String contactId)` - Single contact sync method
-- **ContactUserSyncBatch** - Efficient batch processing for existing data (processes 200 records per batch)
 
 ## Deployment Strategy: Minimal Disruption
 
@@ -194,16 +193,6 @@ Here's everything you need to deploy this privacy-enhancing solution to your own
 - **Performance**: The `bulkSyncContactsToUsers` method reduces SOQL queries from ~3 per contact to just 2-3 total queries regardless of contact count
 - **Location**: `/classes/EventParticipantRedirectHelper.cls`
 
-#### ContactUserSyncBatch
-
-- **Purpose**: Batch job to backfill existing Contacts with User lookups
-- **Capacity**: Processes 200 records per batch execution (up to 50,000 contacts per batch job)
-- **Matching Logic**: Prioritized approach:
-    1. `Contact.Email = User.Email` (most reliable)
-    2. `Contact.Email` (transformed) = `User.FederationIdentifier` (replace `@` with `_`, append `@spokanemountaineers.org`)
-    3. `Contact.Email + '.smi' = User.Username` (common pattern)
-- **Location**: `/classes/ContactUserSyncBatch.cls`
-
 ### Lightning Web Component
 
 #### eventParticipantRelatedList
@@ -234,11 +223,8 @@ sf project deploy start \
 sf project deploy start \
     --source-dir force-app/main/default/classes/EventParticipantRedirectHelper.cls \
     --source-dir force-app/main/default/classes/EventParticipantRedirectHelperTest.cls \
-    --source-dir force-app/main/default/classes/ContactUserSyncBatch.cls \
-    --source-dir force-app/main/default/classes/ContactUserSyncBatchTest.cls \
     --test-level RunSpecifiedTests \
     --tests EventParticipantRedirectHelperTest \
-    --tests ContactUserSyncBatchTest \
     --target-org your-org-alias
 ```
 
@@ -270,7 +256,6 @@ sf project deploy start \
     --source-dir force-app/main/default/objects \
     --test-level RunSpecifiedTests \
     --tests EventParticipantRedirectHelperTest \
-    --tests ContactUserSyncBatchTest \
     --target-org your-org-alias
 ```
 
@@ -281,15 +266,30 @@ sf project deploy start \
 Execute this in Developer Console or Anonymous Apex to sync existing data:
 
 ```java
-// Run the batch to sync existing Contacts
-Database.executeBatch(new ContactUserSyncBatch(), 200);
+// Sync existing Contacts using bulk method
+List<Contact> contactsToSync = [
+    SELECT Id, Email, User_Lookup__c
+    FROM Contact
+    WHERE Email != NULL
+    AND User_Lookup__c = NULL
+    LIMIT 200
+];
+
+List<String> contactIds = new List<String>();
+for (Contact c : contactsToSync) {
+    contactIds.add(c.Id);
+}
+
+List<EventParticipantRedirectHelper.SyncResult> results =
+    EventParticipantRedirectHelper.bulkSyncContactsToUsers(contactIds);
+
+Integer successCount = 0;
+for (EventParticipantRedirectHelper.SyncResult result : results) {
+    if (result.success) successCount++;
+}
+
+System.debug('Synced ' + successCount + ' out of ' + results.size() + ' contacts');
 ```
-
-The batch job will:
-
-- Process up to 50,000 contacts in batches of 200
-- Use prioritized matching to link Contacts to Users
-- Send a completion email with statistics
 
 **Expected Results**: In our org, we achieved a 99.14% sync rate (1,732 out of 1,747 contacts successfully synced).
 
@@ -611,8 +611,6 @@ sf project delete source \
 sf project delete source \
     --source-dir force-app/main/default/classes/EventParticipantRedirectHelper.cls \
     --source-dir force-app/main/default/classes/EventParticipantRedirectHelperTest.cls \
-    --source-dir force-app/main/default/classes/ContactUserSyncBatch.cls \
-    --source-dir force-app/main/default/classes/ContactUserSyncBatchTest.cls \
     --target-org your-org-alias
 ```
 

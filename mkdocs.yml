@@ -5,40 +5,28 @@ edit_uri: edit/main/docs/
 nav:
   - Home: index.md
   - Articles:
-    - articles/index.md
-    - Enabling Google Login: articles/enable-google-login.md
-    - Event Participant Follow Handler Update: articles/event-participant-follow-handler-update.md
-    - Event Participant Privacy (Overview): articles/event-participant-privacy-solution.md
-    - Event Participant Privacy (Technical): articles/event-participant-redirect.md
+      - articles/index.md
+      - Enabling Google Login: articles/enable-google-login.md
+      - Event Participant Follow Handler Update: articles/event-participant-follow-handler-update.md
+      - Event Participant Privacy (Overview): articles/event-participant-privacy-solution.md
+      - Event Participant Privacy (Technical): articles/event-participant-redirect.md
   - How-To Guides:
-    - how-to-guides/index.md
-    - Customize Favicon: how-to-guides/update-experience-cloud-favicon.md
-    - Preventing Logout With KeepAlives: how-to-guides/keepalive-sessions.md
-    - Website Editing: how-to-guides/website-editing.md
-    - Custom Calendar LWC Guide: how-to-guides/custom-calendar-lwc.md
-    - Google Workspace SAML IdP: how-to-guides/google-workspace-saml-idp.md
-    - Auto-Generate Federation ID: how-to-guides/auto-generate-federation-id.md
-    - Batch Update Federation IDs: how-to-guides/batch-update-federation-id.md
-    - Add Federation ID Logs to the App Launcher: how-to-guides/add-federation-id-logs-to-the-app-launcher.md
-    - Delete Federation ID From Users: how-to-guides/delete-federation-id-from-users.md
-    - Bulk Delete Events in Salesforce: how-to-guides/bulk-delete-events-in-salesforce.md
-    - Salesforce Development Console Cheatsheet: how-to-guides/salesforce-development-console-cheatsheet.md
+      - how-to-guides/index.md
+      - Customize Favicon: how-to-guides/update-experience-cloud-favicon.md
+      - Preventing Logout With KeepAlives: how-to-guides/keepalive-sessions.md
+      - Website Editing: how-to-guides/website-editing.md
+      - Custom Calendar LWC Guide: how-to-guides/custom-calendar-lwc.md
+      - Bulk Delete Events in Salesforce: how-to-guides/bulk-delete-events-in-salesforce.md
+      - Salesforce Development Console Cheatsheet: how-to-guides/salesforce-development-console-cheatsheet.md
   - Automation:
-    - automation/index.md
-    - Google Login Automation: automation/google-login-automation.md
-    - User Sync:
-        - User Sync Overview: automation/user-sync-google-workspace/index.md
-        - Salesforce to Google Workspace: automation/user-sync-google-workspace/salesforce-flow.md
-        - Google App Script: automation/user-sync-google-workspace/google-apps-script.md
-        - Sync Testing Checklist: automation/user-sync-google-workspace/user-sync-testing-checklist.md
-        - Google App Script:
-          - automation/user-sync-google-workspace/google-app-script/index.md
-    - Scheduled Add Aembers to Conservation Group: automation/scheduled-add-members-to-conservation-group.md
-    - Notify Leader on RSVP: automation/notify-leader-on-rsvp.md
+      - automation/index.md
+      - Google Login Automation: automation/google-login-automation.md
+      - Scheduled Add Aembers to Conservation Group: automation/scheduled-add-members-to-conservation-group.md
+      - Notify Leader on RSVP: automation/notify-leader-on-rsvp.md
   - Proposals:
-    - proposals/index.md
-    - Automate Member License Sorting: proposals/automate-member-license-sorting.md
-  - About: about.md  # We'll add this page later.
+      - proposals/index.md
+      - Automate Member License Sorting: proposals/automate-member-license-sorting.md
+  - About: about.md # We'll add this page later.
 
 # Custom branding
 theme:
@@ -88,7 +76,7 @@ theme:
     - search.suggest
     - toc.follow
     # - toc.integrate
-  
+
   plugins:
     - git-revision-date-localized:
       enable_creation_date: true
