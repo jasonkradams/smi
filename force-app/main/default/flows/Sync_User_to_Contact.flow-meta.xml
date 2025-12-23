@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>64.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
@@ -8,7 +8,8 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <assignmentItems>
-            <assignToReference>ContactToUpdate.User_Lookup__c</assignToReference>
+            <assignToReference
+      >ContactToUpdate.User_Lookup__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <elementReference>Get_User_Record.Id</elementReference>
@@ -41,7 +42,8 @@
         </rules>
     </decisions>
     <environments>Default</environments>
-    <interviewLabel>Sync User to Contact {!$Flow.CurrentDateTime}</interviewLabel>
+    <interviewLabel
+  >Sync User to Contact {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Sync User to Contact</label>
     <processMetadataValues>
         <name>BuilderType</name>
@@ -67,7 +69,8 @@
         <label>Get Contact Record</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <assignNullValuesIfNoRecordsFound
+    >false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_User_Record</targetReference>
         </connector>
@@ -88,20 +91,14 @@
         <label>Get User Record</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <assignNullValuesIfNoRecordsFound
+    >false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>User_Found</targetReference>
         </connector>
-        <filterLogic>1 OR (2 OR 3)</filterLogic>
+        <filterLogic>1 OR 2</filterLogic>
         <filters>
             <field>Username</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>Get_Contact_Record.Email</elementReference>
-            </value>
-        </filters>
-        <filters>
-            <field>FederationIdentifier</field>
             <operator>EqualTo</operator>
             <value>
                 <elementReference>Get_Contact_Record.Email</elementReference>

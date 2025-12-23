@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>52.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
@@ -90,23 +90,12 @@
         <expression>LEFT({!Get_Contact.FirstName},5)</expression>
     </formulas>
     <formulas>
-        <description>Federation ID. As of April 2025 this is used with Google Workspace as the IdP.
-A Google Workspace account will be created for every user in the &apos;IdP Only Users&apos; Organizational Unit in Google Workspace.
-These users will not have login access to Google Workspace, but their accounts will be automatically created and deleted as users activate and deactivate.</description>
-        <name>formula_federation_id</name>
-        <dataType>String</dataType>
-        <expression>SUBSTITUTE(
-  LEFT({!formula_Username}, FIND(&quot;.smi&quot;, {!formula_Username}) - 1),
-  &quot;@&quot;,
-  &quot;_&quot;
-) &amp; &quot;@spokanemountaineers.org&quot;</expression>
-    </formulas>
-    <formulas>
         <name>formula_Username</name>
         <dataType>String</dataType>
         <expression>{!Get_Contact.Email}&amp;&quot;.smi&quot;</expression>
     </formulas>
-    <interviewLabel>Create New Member User {!$Flow.CurrentDateTime}</interviewLabel>
+    <interviewLabel
+  >Create New Member User {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Create New Member User</label>
     <processMetadataValues>
         <name>BuilderType</name>
@@ -230,12 +219,6 @@ These users will not have login access to Google Workspace, but their accounts w
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>FederationIdentifier</field>
-            <value>
-                <elementReference>formula_federation_id</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
             <field>FirstName</field>
             <value>
                 <elementReference>Get_Contact.FirstName</elementReference>
@@ -274,7 +257,8 @@ These users will not have login access to Google Workspace, but their accounts w
         <inputAssignments>
             <field>PostalCode</field>
             <value>
-                <elementReference>Get_Contact.MailingPostalCode</elementReference>
+                <elementReference
+        >Get_Contact.MailingPostalCode</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -321,7 +305,8 @@ These users will not have login access to Google Workspace, but their accounts w
         <label>Get Contact</label>
         <locationX>743</locationX>
         <locationY>134</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <assignNullValuesIfNoRecordsFound
+    >false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_User</targetReference>
         </connector>
@@ -342,7 +327,8 @@ These users will not have login access to Google Workspace, but their accounts w
         <label>Get User</label>
         <locationX>743</locationX>
         <locationY>242</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <assignNullValuesIfNoRecordsFound
+    >false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Existing_User</targetReference>
         </connector>
