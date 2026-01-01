@@ -54,13 +54,7 @@ public class GoogleAuthRegistrationHandler implements Auth.RegistrationHandler {
         System.debug('ERROR: No existing user found for email: ' + data.email);
         System.debug('User must register through Donorbox before using Google login');
         
-        String errorMessage = 'No account found for this email address.\n\n' +
-            'If you are a new member, please sign up at:\n' +
-            'https://donorbox.org/spokanemountaineers-membership-2\n\n' +
-            'If you already have an account, please:\n' +
-            '1. Use your usual login method for now\n' +
-            '2. Report this issue to webdev@spokanemountaineers.org\n\n' +
-            'We will help you link your Google account to your existing membership.';
+        String errorMessage = 'No account found. New members: sign up at donorbox.org/spokanemountaineers-membership-2. Existing members: contact webdev@spokanemountaineers.org to link your Google account.';
         
         throw new RegistrationHandlerException(errorMessage);
     }
