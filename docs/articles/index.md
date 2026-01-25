@@ -4,6 +4,7 @@ This section contains in-depth technical articles and solutions we've implemente
 
 ## Recent Articles
 
+- **[Restricting Member Access to Account Records in Experience Cloud](experience-cloud-account-access-restriction.md)** – How we resolved a privacy concern by removing Account object read access for member-facing profiles, protecting sensitive financial and household data.
 - **[Enabling Google Login for Spokane Mountaineers Members](enable-google-login.md)** – How we implemented Google OAuth authentication to simplify member login while preserving our Donorbox registration process.
 - **[Event Participant Follow Handler: Tests, Deployment, and Lessons Learned](event-participant-follow-handler-update.md)** – End-to-end recap of the latest handler improvements, unit testing strategy, and deployment verification steps.
 - **[Protecting Member Privacy in Event Participant Lists](event-participant-privacy-solution.md)** – An overview of our privacy solution for Event Participants, written for a general technical audience.

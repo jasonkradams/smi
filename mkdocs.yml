@@ -6,6 +6,7 @@ nav:
   - Home: index.md
   - Articles:
       - articles/index.md
+      - Restricting Account Access: articles/experience-cloud-account-access-restriction.md
       - Enabling Google Login: articles/enable-google-login.md
       - Event Participant Follow Handler Update: articles/event-participant-follow-handler-update.md
       - Event Participant Privacy (Overview): articles/event-participant-privacy-solution.md
