@@ -8,6 +8,8 @@ Each automation is designed to reduce manual work, ensure consistency, and suppo
 
 ## Included Jobs
 
+- **[Event Approval Email Alerts](event-approval-email-alerts.md)**  
+  Email alerts that notify activity group committee chairs when new events are submitted for approval. Covers all 9 activity groups with explicit email alert configuration.
 - **[Google Login Automation](google-login-automation.md)**  
   Technical implementation of Google OAuth authentication for Experience Cloud, including user matching strategy, account creation prevention, and error handling.
 - **[Scheduled: Add Members To Conservation Group](scheduled-add-members-to-conservation-group.md)**  
