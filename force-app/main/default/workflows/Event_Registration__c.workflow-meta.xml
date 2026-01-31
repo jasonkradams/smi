@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>Email_Chalet_Committee</fullName>
+        <description>Chalet Committee Event Approval</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>Chalet_Committee</recipient>
+            <type>group</type>
+        </recipients>
+        <senderAddress>admin@spokanemountaineers.org</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>unfiled$public/Event_Approval_Request_Alert</template>
+    </alerts>
+    <alerts>
+        <fullName>Email_Climbing_Committee</fullName>
+        <description>Climbing Committee Event Approval</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>Climbing_Committee</recipient>
+            <type>group</type>
+        </recipients>
+        <senderAddress>admin@spokanemountaineers.org</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>unfiled$public/Event_Approval_Request_Alert</template>
+    </alerts>
+    <alerts>
+        <fullName>Email_Clubwide_Committee</fullName>
+        <description>Clubwide Committee Event Approval</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>Clubwide_Approvers</recipient>
+            <type>group</type>
+        </recipients>
+        <senderAddress>admin@spokanemountaineers.org</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>unfiled$public/Event_Approval_Request_Alert</template>
+    </alerts>
+    <alerts>
+        <fullName>Email_Conservation_Committee</fullName>
+        <description>Conservation Committee Event Approval</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>Conservation_Committee</recipient>
+            <type>group</type>
+        </recipients>
+        <senderAddress>admin@spokanemountaineers.org</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>unfiled$public/Event_Approval_Request_Alert</template>
+    </alerts>
+    <alerts>
+        <fullName>Email_Hiking_Committee</fullName>
+        <description>Hiking Committee Event Approval</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>Hiking_Committee</recipient>
+            <type>group</type>
+        </recipients>
+        <senderAddress>admin@spokanemountaineers.org</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>unfiled$public/Event_Approval_Request_Alert</template>
+    </alerts>
+    <alerts>
+        <fullName>Email_Mountain_Biking_Committee</fullName>
+        <description>Mountain Biking Committee Event Approval</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>Mountain_Biking_Committee</recipient>
+            <type>group</type>
+        </recipients>
+        <senderAddress>admin@spokanemountaineers.org</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>unfiled$public/Event_Approval_Request_Alert</template>
+    </alerts>
+    <alerts>
+        <fullName>Email_Paddling_Committee</fullName>
+        <description>Paddling Committee Event Approval</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>Paddling_Committee</recipient>
+            <type>group</type>
+        </recipients>
+        <senderAddress>admin@spokanemountaineers.org</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>unfiled$public/Event_Approval_Request_Alert</template>
+    </alerts>
+    <alerts>
+        <fullName>Email_Road_Biking_Committee</fullName>
+        <description>Road Biking Committee Event Approval</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>Road_Biking_Committee</recipient>
+            <type>group</type>
+        </recipients>
+        <senderAddress>admin@spokanemountaineers.org</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>unfiled$public/Event_Approval_Request_Alert</template>
+    </alerts>
+    <alerts>
+        <fullName>Email_Skiing_Committee</fullName>
+        <description>Skiing Committee Event Approval</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>Skiing_Committee</recipient>
+            <type>group</type>
+        </recipients>
+        <senderAddress>admin@spokanemountaineers.org</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>unfiled$public/Event_Approval_Request_Alert</template>
+    </alerts>
+</Workflow>
