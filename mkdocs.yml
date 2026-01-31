@@ -6,6 +6,7 @@ nav:
   - Home: index.md
   - Articles:
       - articles/index.md
+      - Fixing Approval Email Notifications: articles/fixing-approval-email-notifications.md
       - Restricting Account Access: articles/experience-cloud-account-access-restriction.md
       - Enabling Google Login: articles/enable-google-login.md
       - Event Participant Follow Handler Update: articles/event-participant-follow-handler-update.md
@@ -20,6 +21,7 @@ nav:
       - Salesforce Development Console Cheatsheet: how-to-guides/salesforce-development-console-cheatsheet.md
   - Automation:
       - automation/index.md
+      - Event Approval Email Alerts: automation/event-approval-email-alerts.md
       - Google Login Automation: automation/google-login-automation.md
       - Scheduled Add Aembers to Conservation Group: automation/scheduled-add-members-to-conservation-group.md
       - Notify Leader on RSVP: automation/notify-leader-on-rsvp.md
