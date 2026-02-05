@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>52.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
@@ -34,12 +34,14 @@
         <processMetadataValues>
             <name>originalFormula</name>
             <value>
-                <stringValue>AND(!ISPICKVAL([Event].Activity_Group__c ,&quot;&quot;),ISNEW())</stringValue>
+                <stringValue
+        >AND(!ISPICKVAL([Event].Activity_Group__c ,&quot;&quot;),ISNEW(),NOT([Event].IsRecurrence2))</stringValue>
             </value>
         </processMetadataValues>
         <name>formula_myRule_1</name>
         <dataType>Boolean</dataType>
-        <expression>AND(!ISPICKVAL({!myVariable_current.Activity_Group__c} ,&quot;&quot;),ISNEW())</expression>
+        <expression
+    >AND(!ISPICKVAL({!myVariable_current.Activity_Group__c} ,&quot;&quot;),ISNEW(),NOT({!myVariable_current.IsRecurrence2}))</expression>
     </formulas>
     <interviewLabel>Event_Process-7_InterviewLabel</interviewLabel>
     <label>Event Process</label>
@@ -95,7 +97,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue></stringValue>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -106,7 +108,8 @@
             </processMetadataValues>
             <field>Activity_Group__c</field>
             <value>
-                <elementReference>myVariable_current.Activity_Group__c</elementReference>
+                <elementReference
+        >myVariable_current.Activity_Group__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -131,7 +134,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue></stringValue>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -142,7 +145,8 @@
             </processMetadataValues>
             <field>Description__c</field>
             <value>
-                <elementReference>myVariable_current.Description</elementReference>
+                <elementReference
+        >myVariable_current.Description</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -167,7 +171,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue></stringValue>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -178,7 +182,8 @@
             </processMetadataValues>
             <field>End__c</field>
             <value>
-                <elementReference>myVariable_current.EndDateTime</elementReference>
+                <elementReference
+        >myVariable_current.EndDateTime</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -203,7 +208,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue></stringValue>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -214,7 +219,8 @@
             </processMetadataValues>
             <field>Event_Pre_Requisites__c</field>
             <value>
-                <elementReference>myVariable_current.Event_Pre_Requisites__c</elementReference>
+                <elementReference
+        >myVariable_current.Event_Pre_Requisites__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -239,7 +245,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue></stringValue>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -250,7 +256,8 @@
             </processMetadataValues>
             <field>Event_Subtype__c</field>
             <value>
-                <elementReference>myVariable_current.Event_Subtype__c</elementReference>
+                <elementReference
+        >myVariable_current.Event_Subtype__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -286,7 +293,8 @@
             </processMetadataValues>
             <field>Leader__c</field>
             <value>
-                <elementReference>myVariable_current.Event_Leader__c</elementReference>
+                <elementReference
+        >myVariable_current.Event_Leader__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -311,7 +319,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue></stringValue>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -413,7 +421,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue></stringValue>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -449,7 +457,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue></stringValue>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -460,7 +468,8 @@
             </processMetadataValues>
             <field>Public__c</field>
             <value>
-                <elementReference>myVariable_current.IsVisibleInSelfService</elementReference>
+                <elementReference
+        >myVariable_current.IsVisibleInSelfService</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -521,7 +530,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue></stringValue>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -532,7 +541,8 @@
             </processMetadataValues>
             <field>Registration_Type__c</field>
             <value>
-                <elementReference>myVariable_current.Registration_Type__c</elementReference>
+                <elementReference
+        >myVariable_current.Registration_Type__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -557,7 +567,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue></stringValue>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -568,7 +578,8 @@
             </processMetadataValues>
             <field>Repeats__c</field>
             <value>
-                <elementReference>myVariable_current.IsRecurrence2</elementReference>
+                <elementReference
+        >myVariable_current.IsRecurrence2</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -593,7 +604,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue></stringValue>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -604,7 +615,8 @@
             </processMetadataValues>
             <field>Start__c</field>
             <value>
-                <elementReference>myVariable_current.StartDateTime</elementReference>
+                <elementReference
+        >myVariable_current.StartDateTime</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -629,7 +641,7 @@
             <processMetadataValues>
                 <name>leftHandSideReferenceTo</name>
                 <value>
-                    <stringValue></stringValue>
+                    <stringValue />
                 </value>
             </processMetadataValues>
             <processMetadataValues>
