@@ -319,7 +319,7 @@ We're planning several improvements:
 5. **Image Support** - Include event images in Chatter posts
 6. **Multi-group Support** - Post to multiple groups if an event spans multiple activity types
 7. **Analytics** - Track engagement metrics (views, clicks, comments)
-8. **Service Account Integration** - Use dedicated Event Bot service account for consistent posting identity
+8. **Service Account Integration** - Use dedicated service account (`sm-client@prolocity.com`) for consistent posting identity
 
 ## Key Takeaways
 
