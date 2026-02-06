@@ -122,143 +122,39 @@
 
 ---
 
-### 5. (Optional) Create Event Bot Service Account
+### 5. Configure Service Account
 
-**Purpose**: Dedicated account for posting to Chatter groups with minimal permissions and no login access
+**Note**: This org uses `sm-client@prolocity.com` as the service account for Chatter posting. Ensure this user:
 
-#### Step 4a: Create Custom Profile
+- Has permissions to read/edit `Event_Registration__c` records
+- Is a member of all activity group Chatter groups
+- Is added to any new Chatter groups automatically via the `Add_Chatter_Service_To_New_Groups` flow
 
-1. Go to **Setup → Users → Profiles**
-2. Click **New Profile**
-3. Configure:
-    - **Profile Name**: `Event Bot`
-    - **Based on**: `Chatter Free User` (or `Minimum Access - Salesforce` if Chatter Free User doesn't exist)
-4. Click **Save**
+**Verify Service Account Setup**:
 
-#### Step 4b: Configure Profile Permissions
+1. Verify service account exists and is active:
 
-**Object Permissions**:
+    ```bash
+    sf data query --target-org smi \
+        --query "SELECT Id, Username, IsActive FROM User WHERE Username = 'sm-client@prolocity.com'"
+    ```
 
-- **Event Registration** (`Event_Registration__c`):
-    - ✅ Read
-    - ✅ Edit (needed to update `Chatter_Posted__c` field)
+2. Add service account to all existing Chatter groups:
+    - Open **Developer Console** (Setup → Developer Console)
+    - Go to **Debug → Open Execute Anonymous Window**
+    - Copy and paste the contents of `scripts/apex/add_sm_client_to_all_chatter_groups.apex`
+    - Check **Open Log** and click **Execute**
+    - Review the debug logs to confirm the service account was added to all groups
 
-**System Permissions**:
-
-- ✅ **API Enabled** (required for batch jobs)
-- ✅ **Chatter Internal User** (enables Chatter access)
-- ✅ **Use ConnectApi** (required for ConnectApi.ChatterFeeds)
-
-**User Permissions**:
-
-- ❌ **Login** (disable - prevents user from logging in)
-- ✅ **API Enabled** (already enabled in System Permissions above - allows API access for batch jobs)
-
-**Chatter Settings**:
-
-- ✅ **Chatter Enabled**
-- ✅ **Post to Groups** (if available)
-
-**Note**: If "Chatter Free User" profile doesn't exist, start with "Minimum Access - Salesforce" and enable only the permissions listed above.
-
-**Important Notes**:
-
-- With **Login** permission disabled, the user cannot access the Salesforce UI
-- The user can still execute Apex code (batch jobs, scheduled jobs) when running in that user's context
-- This is a security best practice for service accounts - they can perform automated tasks but cannot be used for interactive login
-
-**Verification**: After creating the profile, verify:
-
-- User cannot log in (test by attempting login with the username)
-- User can execute Apex (batch jobs will run when configured to run as this user)
-- User has access to Chatter groups (verified when adding to groups)
-
-#### Step 4c: Create Service Account User
-
-1. Go to **Setup → Users → Users**
-2. Click **New User**
-3. Configure:
-    - **First Name**: `Event`
-    - **Last Name**: `Bot`
-    - **Alias**: `eventbot`
-    - **Email**: `eventbot@spokanemountaineers.org`
-    - **Username**: `eventbot@spokanemountaineers.org.smi` (note: `.smi` suffix is a convention used in this org)
-    - **Profile**: `Event Bot` (the custom profile created above)
-    - **User License**: Chatter Free
-    - **Generate new password**: Unchecked (user won't log in)
-4. Click **Save**
-
-#### Step 4d: Add User to Experience Cloud Site and Chatter Groups
-
-The service account needs to be added to the Experience Cloud site first (to access site-specific Chatter groups), then to all Chatter groups.
-
-**Step 4d.1: Add to Experience Cloud Site**
-
-> **Important**: Regular Salesforce users (Chatter Free, Salesforce licenses) **cannot** be added to Experience Cloud sites. Only Community Users can be site members.
->
-> **Option A: If Event Bot is a Community User** (recommended for site-specific groups):
->
-> 1. Ensure Event Bot was created from a Contact record with a Community license (e.g., "SM Community Plus Login")
-> 2. Open **Developer Console** (Setup → Developer Console)
-> 3. Go to **Debug → Open Execute Anonymous Window**
-> 4. Copy and paste the contents of `scripts/apex/add_event_bot_to_experience_site.apex`
-> 5. Check **Open Log** and click **Execute**
-> 6. Review the debug logs to confirm the service account was added to the Experience Cloud site(s)
->
-> **Option B: If Event Bot is a Regular User** (Chatter Free license):
->
-> - The script will detect this and provide guidance
-> - You can still proceed to Step 4d.2 - regular Chatter groups will work
-> - Site-specific groups will be skipped (Event Bot can't be added to them)
-> - If you need site-specific groups, convert Event Bot to a Community User:
->     1. Create a Contact record for Event Bot (if one doesn't exist)
->     2. Go to Setup → Users → Users → Edit Event Bot
->     3. Change User License to a Community license (e.g., "SM Community Plus Login")
->     4. Link to the Contact record
->     5. Then run the script again
-
-**Step 4d.2: Add to All Existing Chatter Groups**
-
-1. In the same **Execute Anonymous Window** (or open a new one)
-2. Copy and paste the contents of `scripts/apex/add_chatter_service_to_all_groups.apex`
-3. Check **Open Log** and click **Execute**
-4. Review the debug logs to confirm the service account was added to all groups
-
-**Step 4d.3: Deploy Flow for Automatic Addition to New Groups**
-
-1. Deploy the Flow `Add_Chatter_Service_To_New_Groups.flow-meta.xml`:
+3. Deploy Flow for automatic addition to new groups:
     ```bash
     sf project deploy start --target-org smi --source-dir force-app/main/default/flows/Add_Chatter_Service_To_New_Groups.flow-meta.xml
     ```
-2. Verify the Flow is **Active** in Setup → Flows
-3. The Flow will automatically add the service account to any new Chatter groups created in the future
 
-**What This Does**:
+    - Verify the Flow is **Active** in Setup → Flows
+    - The Flow will automatically add the service account to any new Chatter groups created in the future
 
-- Step 4d.1 adds Event Bot as a member of the Experience Cloud site(s), which is required for site-specific Chatter groups
-- Step 4d.2 adds Event Bot to all existing Chatter groups (both regular and site-specific)
-- Step 4d.3 deploys a Flow that automatically adds Event Bot to any new Chatter groups when they're created
-- No manual intervention needed for future groups
-
-**Testing**:
-
-- After Step 4d.1, verify Event Bot appears in Experience Cloud site member lists
-- After Step 4d.2, verify Event Bot is a member of all Chatter groups
-- After Step 4d.3, create a test Chatter group to verify the Flow automatically adds the service account
-- Check group members to confirm the service account was added
-
-**Important Notes**:
-
-- **Order matters**: You must run Step 4d.1 (add to site) before Step 4d.2 (add to groups)
-- Site-specific groups require Experience Cloud site membership first
-- The script in Step 4d.2 will check site membership and skip site-specific groups if the user isn't a site member
-- Regular Chatter groups (not site-specific) will be added regardless of site membership
-
-#### Step 4e: (Optional) Configure Batch to Run as Service Account
-
-To run the batch job as the service account, modify `EventChatterBatchPoster` to implement `Database.Batchable<SObject>` with a constructor that accepts a User ID, or use `System.runAs()` in the schedulable execute method. This is optional - the batch can also run as the user who scheduled it.
-
-**Time**: ~15-20 minutes
+**Time**: ~5-10 minutes
 
 ---
 
