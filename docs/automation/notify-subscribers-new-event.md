@@ -443,17 +443,17 @@ See: [EventChatterPostHelper.cls](https://github.com/jasonkradams/smi/blob/main/
 
 ## 🚀 Future Enhancements
 
-|         **Feature**         |                                **Notes**                                |
-| :-------------------------: | :---------------------------------------------------------------------: |
-|      Reset Posted Flag      | Allow admins to reset `Chatter_Posted__c` to reprocess events if needed |
-|   Multiple Schedule Times   |    Run multiple times per day if needed (e.g., morning and evening)     |
-| Service Account Integration | Use dedicated Event Bot service account for consistent posting identity |
-|     Email Notifications     |     Add email notifications in addition to Chatter posts (Phase 2)      |
-|  Custom Message Templates   |        Allow customization of message format per activity group         |
-|        Image Support        |                  Include event images in Chatter posts                  |
-|     Multi-group Support     |    Post to multiple groups if an event spans multiple activity types    |
-|    Engagement Analytics     |            Track views, clicks, and comments on event posts             |
-|  Batch Size Configuration   |            Allow configuration of batch size (currently 200)            |
+|         **Feature**         |                                         **Notes**                                         |
+| :-------------------------: | :---------------------------------------------------------------------------------------: |
+|      Reset Posted Flag      |          Allow admins to reset `Chatter_Posted__c` to reprocess events if needed          |
+|   Multiple Schedule Times   |             Run multiple times per day if needed (e.g., morning and evening)              |
+| Service Account Integration | Use dedicated service account (`sm-client@prolocity.com`) for consistent posting identity |
+|     Email Notifications     |              Add email notifications in addition to Chatter posts (Phase 2)               |
+|  Custom Message Templates   |                 Allow customization of message format per activity group                  |
+|        Image Support        |                           Include event images in Chatter posts                           |
+|     Multi-group Support     |             Post to multiple groups if an event spans multiple activity types             |
+|    Engagement Analytics     |                     Track views, clicks, and comments on event posts                      |
+|  Batch Size Configuration   |                     Allow configuration of batch size (currently 200)                     |
 
 ---
 
