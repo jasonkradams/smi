@@ -64,18 +64,18 @@ If you see errors like:
 "INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY"
 ```
 
-This means the **"Add Chatter Service To New Groups"** flow is trying to automatically add the Event Bot service account to new groups, but it's failing because:
+This means the **"Add Chatter Service To New Groups"** flow is trying to automatically add the service account (`sm-client@prolocity.com`) to new groups, but it's failing because:
 
-1. **The Event Bot service account doesn't exist** in staging, OR
+1. **The service account doesn't exist** in staging, OR
 2. **The service account exists but isn't a member** of the Experience Cloud site (for site-specific groups)
 
 #### Solution Options
 
-**Option 1: Create the Event Bot Service Account (Recommended)**
+**Option 1: Ensure Service Account Exists (Recommended)**
 
-1. Create a user with username: `eventbot@spokanemountaineers.org.smi`
+1. Verify the user `sm-client@prolocity.com` exists and is active in your staging org
 2. Add the user to your Experience Cloud site (if groups are site-specific)
-3. See `scripts/apex/add_event_bot_to_experience_site.apex` for help adding the bot to the site
+3. Use `scripts/apex/add_sm_client_to_all_chatter_groups.apex` to add the user to existing groups
 
 **Option 2: Temporarily Deactivate the Flow**
 
@@ -83,9 +83,7 @@ This means the **"Add Chatter Service To New Groups"** flow is trying to automat
 2. Find **"Add Chatter Service To New Groups"**
 3. Click **Deactivate**
 4. Create the groups manually
-5. After groups are created, you can:
-    - Reactivate the flow, OR
-    - Add the service account using `scripts/apex/add_chatter_service_to_all_groups.apex`
+5. After groups are created, reactivate the flow
 
 ---
 
@@ -210,8 +208,8 @@ Or use the Salesforce CLI to deploy specific components.
 
 If groups fail to create due to the "Add Chatter Service To New Groups" flow:
 
-1. **Check if Event Bot exists**: Query `SELECT Id, Username FROM User WHERE Username = 'eventbot@spokanemountaineers.org.smi'`
-2. **Create the service account** if missing (see deployment guide), OR
+1. **Check if service account exists**: Query `SELECT Id, Username FROM User WHERE Username = 'sm-client@prolocity.com'`
+2. **Verify the service account is active** and has proper permissions, OR
 3. **Temporarily deactivate the flow** (Setup → Flows → "Add Chatter Service To New Groups" → Deactivate)
 
 ---
