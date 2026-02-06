@@ -33,7 +33,7 @@ This document provides a step-by-step plan for deploying the Event Chatter Batch
 
 **New Flow**:
 
-- `Add_Chatter_Service_To_New_Groups.flow-meta.xml` - Auto-adds Event Bot to new Chatter groups
+- `Add_Chatter_Service_To_New_Groups.flow-meta.xml` - Auto-adds service account to new Chatter groups
 
 **New Custom Field**:
 
@@ -51,7 +51,7 @@ Before deploying, verify:
 - [ ] No existing scheduled jobs with name "Event Chatter Batch Posting - Hourly"
 - [ ] `Event_Registration__c` object exists
 - [ ] Activity group Chatter groups exist (Hiking, Climbing, etc.)
-- [ ] Event Bot service account exists (if using service account approach)
+- [ ] Service account `sm-client@prolocity.com` exists and is active
 
 ---
 
@@ -237,28 +237,6 @@ sf apex run --target-org smi -f scripts/apex/schedule_event_chatter_batch.apex
 
 ---
 
-### Step 6: (Optional) Verify Event Bot Service Account
-
-If you're using a service account to post to Chatter:
-
-**Verify Event Bot Exists**:
-
-```bash
-sf data query --target-org smi \
-    --query "SELECT Id, Username, IsActive FROM User WHERE Username = 'eventbot@spokanemountaineers.org.smi'"
-```
-
-**Verify Event Bot is in Chatter Groups**:
-
-- Check that Event Bot is a member of all activity group Chatter groups
-- If not, run `scripts/apex/add_chatter_service_to_all_groups.apex` (if it exists)
-
-**Note**: In production, the batch job will run as the user who scheduled it. If you want it to run as the Event Bot service account, you'll need to schedule it as that user (which may require logging in as that user or using a different approach).
-
-**Time**: ~2-3 minutes
-
----
-
 ## Post-Deployment Verification
 
 ### 1. Verify Deployment
@@ -430,8 +408,8 @@ AND Chatter_Posted__c != true
 **Common Issues**:
 
 1. **Batch job fails with "INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY"**:
-    - Verify Event Bot service account has proper permissions
-    - Check that Event Bot is a member of all Chatter groups
+    - Verify service account (`sm-client@prolocity.com`) has proper permissions
+    - Check that service account is a member of all Chatter groups
 
 2. **Events not being posted**:
     - Verify `Chatter_Posted__c` field exists and is accessible
