@@ -507,7 +507,7 @@
           <p><strong>New to the Mountaineers?</strong></p>
           <p>
             <a
-              href="https://donorbox.org/spokane-mountaineers-membership-2"
+              href="{!$Label.Community_Join_URL}"
               class="link"
               target="_blank"
               rel="noopener noreferrer"
@@ -520,7 +520,7 @@
           </p>
           <p>
             <a
-              href="https://donorbox.org/spokane-mountaineers-membership"
+              href="{!$Label.Community_Renew_URL}"
               class="link"
               target="_blank"
               rel="noopener noreferrer"
@@ -533,8 +533,8 @@
           </p>
           <p>
             Contact us at
-            <a href="mailto:membership@spokanemountaineers.org" class="link"
-              >membership@spokanemountaineers.org</a
+            <a href="mailto:{!$Label.Community_Support_Email}" class="link"
+              >{!$Label.Community_Support_Email}</a
             >
           </p>
 
