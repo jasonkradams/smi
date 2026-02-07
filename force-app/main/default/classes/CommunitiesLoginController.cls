@@ -111,7 +111,11 @@ public without sharing class CommunitiesLoginController {
    * @return URL to forgot password page
    */
   public String getForgotPasswordUrl() {
-    return Site.getForgotPasswordUrl();
+    String communityUrl = Site.getBaseUrl();
+    if (String.isNotBlank(communityUrl)) {
+      return communityUrl + '/s/login/ForgotPassword';
+    }
+    return '/s/login/ForgotPassword';
   }
 
   /**
@@ -120,7 +124,12 @@ public without sharing class CommunitiesLoginController {
    * @return URL to self registration page
    */
   public String getSelfRegisterUrl() {
-    return System.Label.Community_Self_Register_URL;
+    // Return hardcoded URL until custom label is created
+    String communityUrl = Site.getBaseUrl();
+    if (String.isNotBlank(communityUrl)) {
+      return communityUrl + '/signup';
+    }
+    return 'https://www.spokanemountaineers.org/s/signup';
   }
 
   /**
@@ -142,5 +151,19 @@ public without sharing class CommunitiesLoginController {
     }
 
     return googleUrl;
+  }
+
+  /**
+   * Get the admin/internal Salesforce login URL
+   * This allows system admins to access the internal org from the community login page
+   *
+   * @return URL to internal Salesforce login
+   */
+  public String getAdminLoginUrl() {
+    // Get the org's base URL (e.g., https://mydomain.my.salesforce.com)
+    String orgUrl = URL.getOrgDomainUrl().toExternalForm();
+
+    // Return the standard login page
+    return orgUrl;
   }
 }
