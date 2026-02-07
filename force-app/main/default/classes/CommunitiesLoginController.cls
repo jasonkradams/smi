@@ -9,7 +9,6 @@ public without sharing class CommunitiesLoginController {
   // Form inputs
   public String username { get; set; }
   public String password { get; set; }
-  public Boolean rememberMe { get; set; }
 
   // Page state
   public String startUrl { get; set; }
@@ -20,7 +19,6 @@ public without sharing class CommunitiesLoginController {
    */
   public CommunitiesLoginController() {
     this.hasError = false;
-    this.rememberMe = false;
     this.startUrl = System.currentPageReference()
       .getParameters()
       .get('startURL');
@@ -72,7 +70,6 @@ public without sharing class CommunitiesLoginController {
         return null;
       }
     } catch (Exception e) {
-      System.debug('Login error: ' + e.getMessage());
       ApexPages.addMessage(
         new ApexPages.Message(
           ApexPages.Severity.ERROR,
@@ -107,29 +104,20 @@ public without sharing class CommunitiesLoginController {
 
   /**
    * Get the forgot password URL for the community
+   * Returns the direct path to the CommunitiesForgotPassword Visualforce page
+   *
+   * Note: We use the direct Visualforce page path instead of the generic /ForgotPassword
+   * route due to a known Salesforce platform limitation where Experience Cloud's Login &
+   * Registration settings don't reliably override authentication routes for Visualforce pages.
    *
    * @return URL to forgot password page
    */
   public String getForgotPasswordUrl() {
     String communityUrl = Site.getBaseUrl();
     if (String.isNotBlank(communityUrl)) {
-      return communityUrl + '/s/login/ForgotPassword';
+      return communityUrl + '/CommunitiesForgotPassword';
     }
-    return '/s/login/ForgotPassword';
-  }
-
-  /**
-   * Get the self registration URL for the community
-   *
-   * @return URL to self registration page
-   */
-  public String getSelfRegisterUrl() {
-    // Return hardcoded URL until custom label is created
-    String communityUrl = Site.getBaseUrl();
-    if (String.isNotBlank(communityUrl)) {
-      return communityUrl + '/signup';
-    }
-    return 'https://www.spokanemountaineers.org/s/signup';
+    return '/CommunitiesForgotPassword';
   }
 
   /**
