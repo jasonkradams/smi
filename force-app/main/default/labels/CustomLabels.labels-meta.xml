@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>Community_Join_URL</fullName>
+        <categories>Community</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription
+    >URL for new member registration/join</shortDescription>
+        <value>https://donorbox.org/spokane-mountaineers-membership-2</value>
+    </labels>
+    <labels>
+        <fullName>Community_Renew_URL</fullName>
+        <categories>Community</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>URL for membership renewal</shortDescription>
+        <value>https://donorbox.org/spokane-mountaineers-membership</value>
+    </labels>
+    <labels>
+        <fullName>Community_Support_Email</fullName>
+        <categories>Community</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription
+    >Support email address for member questions</shortDescription>
+        <value>membership@spokanemountaineers.org</value>
+    </labels>
+</CustomLabels>
