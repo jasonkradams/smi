@@ -9,7 +9,6 @@ The custom login page provides:
 - Modern, responsive UI design
 - Loading spinner during authentication
 - Password visibility toggle
-- "Remember me" checkbox
 - Alpine.js-powered interactivity
 - Automatic `.smi` suffix stripping for backward compatibility
 
@@ -41,7 +40,6 @@ The controller automatically strips the `.smi` suffix from usernames:
 
 - **Loading State**: Spinner appears during login, button disabled
 - **Password Toggle**: Eye icon to show/hide password
-- **Remember Me**: Checkbox for extended session (30 days)
 - **Google OAuth**: Styled button for Google sign-in
 - **Responsive**: Works on mobile, tablet, and desktop
 
@@ -151,13 +149,6 @@ Expected: Login succeeds as normal
 2. Authenticate with Google
 3. Verify redirect to startURL
 
-**Test Remember Me:**
-
-1. Check "Remember me" checkbox
-2. Login successfully
-3. Close browser and reopen
-4. Verify still logged in (session persists)
-
 **Test Password Toggle:**
 
 1. Enter password
@@ -191,7 +182,6 @@ Before deploying to production, verify:
 - [ ] Sign up link works
 - [ ] Renew link works
 - [ ] Password toggle works
-- [ ] Remember me checkbox works
 - [ ] Loading spinner appears
 - [ ] Error messages display properly
 - [ ] Mobile responsive design works
@@ -247,37 +237,29 @@ Replace the SVG logo in the page with your image:
 
 ### Add Custom Labels
 
-Create custom labels in Setup → Custom Labels:
+Custom labels have been created for commonly changing URLs and email addresses.
 
-**Community_Self_Register_URL**
+**Available Custom Labels**
 
-- **Name:** `Community_Self_Register_URL`
-- **Value:** `https://www.spokanemountaineers.org/s/signup`
-- **Description:** URL for new user registration/signup page
-- **Category:** Community
-- **Protected:** No
+| Label Name                | Value                                                    | Description                                |
+| ------------------------- | -------------------------------------------------------- | ------------------------------------------ |
+| `Community_Join_URL`      | `https://donorbox.org/spokane-mountaineers-membership-2` | URL for new member registration/join       |
+| `Community_Renew_URL`     | `https://donorbox.org/spokane-mountaineers-membership`   | URL for membership renewal                 |
+| `Community_Support_Email` | `membership@spokanemountaineers.org`                     | Support email address for member questions |
 
-**Community_Renew_Membership_URL**
+**To modify these values:**
 
-- **Name:** `Community_Renew_Membership_URL`
-- **Value:** `https://www.spokanemountaineers.org/s/renew`
-- **Description:** URL for membership renewal page
-- **Category:** Community
-- **Protected:** No
+1. Setup → Custom Labels
+2. Find the label by name
+3. Click **Edit**
+4. Update the **Value** field
+5. Click **Save**
 
-**Community_Support_Email**
+Changes take effect immediately without code deployment.
 
-- **Name:** `Community_Support_Email`
-- **Value:** `info@spokanemountaineers.org`
-- **Description:** Support email address for user inquiries
-- **Category:** Community
-- **Protected:** No
+### Modify Session Duration
 
-**Note:** These labels are optional as the page currently uses hardcoded values. Create them for future flexibility if you want to easily change these URLs without modifying the page code.
-
-### Modify Remember Me Duration
-
-The "Remember me" feature uses Salesforce's session settings:
+Salesforce session duration is controlled by session settings:
 
 1. Setup → Session Settings
 2. Configure **Session Timeout** value
@@ -333,30 +315,28 @@ The "Remember me" feature uses Salesforce's session settings:
 
 **Possible Causes:**
 
-1. Alpine.js not loaded
-2. JavaScript error
-3. Input type binding issue
+1. JavaScript error
+2. Input type binding issue
 
 **Resolution:**
 
-1. Check browser console for Alpine.js errors
-2. Verify CDN is accessible
-3. Check `x-data` initialization in HTML
+1. Check browser console for errors
+2. Verify password field ID is correct
 
-### Issue: Remember me doesn't persist
+### Issue: Forgot Password routing with Visualforce pages
 
-**Possible Causes:**
+**Known Platform Limitation:**
 
-1. Session timeout too short
-2. Cookie settings
-3. Browser blocking cookies
+Experience Cloud's Login & Registration settings don't reliably override authentication routes (`/ForgotPassword`) when using Visualforce pages. This is a known Salesforce platform limitation where hardcoded authentication servlet routes don't respect Experience Builder configuration for Visualforce pages.
 
-**Resolution:**
+**Current Implementation:**
 
-1. Check Setup → Session Settings
-2. Verify "Disable session timeout warning popup" setting
-3. Check browser cookie settings
-4. Test with browser cookies enabled
+The `CommunitiesLoginController.getForgotPasswordUrl()` method uses the direct Visualforce page path (`/CommunitiesForgotPassword`) instead of the generic route (`/ForgotPassword`). This ensures users always see the custom branded forgot password page.
+
+**Alternative Solutions (if needed in the future):**
+
+- Convert to Lightning Web Component (LWC) - Experience Builder routing works properly with Lightning components
+- Use the direct URL pattern as the canonical approach for authentication flows
 
 ## Testing Commands
 
