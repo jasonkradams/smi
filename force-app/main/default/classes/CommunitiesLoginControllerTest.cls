@@ -31,11 +31,6 @@ private class CommunitiesLoginControllerTest {
       controller.hasError,
       'Has error should be false initially'
     );
-    System.assertEquals(
-      false,
-      controller.rememberMe,
-      'Remember me should be false initially'
-    );
   }
 
   /**
@@ -208,6 +203,8 @@ private class CommunitiesLoginControllerTest {
 
   /**
    * Test forgot password URL retrieval
+   * Should return direct path to CommunitiesForgotPassword Visualforce page
+   * (not the generic /ForgotPassword route due to platform limitations)
    */
   @IsTest
   static void testGetForgotPasswordUrl() {
@@ -217,32 +214,16 @@ private class CommunitiesLoginControllerTest {
     String forgotPasswordUrl = controller.getForgotPasswordUrl();
     Test.stopTest();
 
-    // Verify URL is returned (actual URL depends on site configuration)
+    // Verify URL is returned and points to the custom VF page
     System.assertNotEquals(
       null,
       forgotPasswordUrl,
       'Forgot password URL should not be null'
     );
-  }
-
-  /**
-   * Test self registration URL retrieval
-   * Note: This requires a custom label to be defined
-   */
-  @IsTest
-  static void testGetSelfRegisterUrl() {
-    CommunitiesLoginController controller = new CommunitiesLoginController();
-
-    Test.startTest();
-    try {
-      String selfRegisterUrl = controller.getSelfRegisterUrl();
-      // If custom label exists, URL should be returned
-      System.assert(true, 'Should execute without throwing exception');
-    } catch (Exception e) {
-      // If custom label doesn't exist, that's okay in unit test context
-      System.assert(true, 'Custom label may not exist in test context');
-    }
-    Test.stopTest();
+    System.assert(
+      forgotPasswordUrl.contains('CommunitiesForgotPassword'),
+      'URL should point to CommunitiesForgotPassword Visualforce page'
+    );
   }
 
   /**
@@ -287,26 +268,6 @@ private class CommunitiesLoginControllerTest {
     System.assert(
       googleLoginUrl.contains('startURL='),
       'Google login URL should include startURL parameter when provided'
-    );
-  }
-
-  /**
-   * Test remember me checkbox functionality
-   */
-  @IsTest
-  static void testRememberMeCheckbox() {
-    CommunitiesLoginController controller = new CommunitiesLoginController();
-
-    Test.startTest();
-    // Set remember me to true
-    controller.rememberMe = true;
-    Test.stopTest();
-
-    // Verify property can be set
-    System.assertEquals(
-      true,
-      controller.rememberMe,
-      'Remember me should be settable'
     );
   }
 }
