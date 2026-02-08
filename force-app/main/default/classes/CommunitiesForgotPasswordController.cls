@@ -42,7 +42,7 @@ public without sharing class CommunitiesForgotPasswordController {
         return null;
       }
 
-      // Normalize username: strip .smi suffix if present (for consistency with login)
+      // Normalize username: append .smi suffix if not present (for consistency with login)
       String normalizedUsername = normalizeUsername(username.trim());
 
       // Call Site.forgotPassword which sends the reset email
@@ -69,11 +69,11 @@ public without sharing class CommunitiesForgotPasswordController {
   }
 
   /**
-   * Normalize username by removing .smi suffix
-   * Supports legacy login behavior where users enter username.smi
+   * Normalize username by appending .smi suffix if not present
+   * Allows users to reset password with just their email address
    *
    * @param rawUsername The username entered by user
-   * @return Normalized username without .smi suffix
+   * @return Normalized username with .smi suffix
    */
   @TestVisible
   private String normalizeUsername(String rawUsername) {
@@ -81,9 +81,9 @@ public without sharing class CommunitiesForgotPasswordController {
       return rawUsername;
     }
 
-    // Strip .smi suffix (case insensitive)
-    if (rawUsername.endsWithIgnoreCase('.smi')) {
-      return rawUsername.substring(0, rawUsername.length() - 4);
+    // Append .smi suffix if not already present (case insensitive)
+    if (!rawUsername.endsWithIgnoreCase('.smi')) {
+      return rawUsername + '.smi';
     }
 
     return rawUsername;
