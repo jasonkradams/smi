@@ -1,0 +1,74 @@
+---
+description: MkDocs documentation maintenance standards
+globs: docs/**/*.md
+alwaysApply: false
+---
+
+# MkDocs Documentation Maintenance
+
+When adding, moving, or removing documentation files, always maintain the MkDocs configuration and verify the build.
+
+## Required Steps
+
+### 1. Update mkdocs.yml
+
+After adding or modifying documentation files, update `mkdocs.yml` to include the new content in the navigation structure:
+
+```yaml
+nav:
+  - Home: index.md
+  - Section:
+    - New Article: section/new-article.md
+```
+
+### 2. Run mkdocs build
+
+Always run `mkdocs build` after documentation changes:
+
+```bash
+mkdocs build
+```
+
+### 3. Resolve All Issues
+
+Fix **all** issues reported by mkdocs build, including:
+
+- **ERROR**: Must be fixed (broken links, missing files)
+- **WARNING**: Must be fixed (invalid config, deprecated syntax)
+- **INFO**: Must be resolved (missing nav entries, unreferenced files)
+
+## Common Issues
+
+### Missing Nav Configuration
+
+```
+INFO - Doc file 'articles/new-article.md' is not included in the 'nav' configuration.
+```
+
+**Fix**: Add the file to the `nav` section in mkdocs.yml
+
+### Broken Links
+
+```
+WARNING - Doc file 'guide.md' contains a link to 'missing.md' which does not exist.
+```
+
+**Fix**: Correct the link or create the missing file
+
+### Duplicate Paths
+
+```
+WARNING - A 'nav' item 'Guide' defined in the config contains a path '...' that is already used by another item.
+```
+
+**Fix**: Remove duplicate entries or use unique paths
+
+## Checklist
+
+When adding documentation:
+
+- [ ] New .md file created in appropriate docs/ subdirectory
+- [ ] mkdocs.yml updated with nav entry
+- [ ] `mkdocs build` executed successfully
+- [ ] All ERROR, WARNING, and INFO messages resolved
+- [ ] Build output shows "Documentation built successfully"
