@@ -1,0 +1,57 @@
+---
+description: Documentation style guide - minimal emoji usage
+alwaysApply: true
+---
+
+# Documentation Style Guide
+
+Use minimal or no emojis when creating documentation. Documentation should maintain a professional, accessible, and timeless tone.
+
+## Emoji Usage
+
+```markdown
+❌ BAD - Excessive emojis
+# 🚀 Getting Started 🎉
+
+Welcome to our amazing project! 👋 Let's get you set up! 💪
+
+## 📦 Installation
+
+Run this command to install: 🎯
+
+## ✨ Features ✨
+
+- 🔥 Fast performance
+- 💎 Beautiful UI
+- 🎨 Customizable themes
+
+✅ GOOD - Professional and clean
+# Getting Started
+
+Welcome to the project. This guide will help you get set up.
+
+## Installation
+
+Run this command to install:
+
+## Features
+
+- Fast performance
+- Beautiful UI
+- Customizable themes
+```
+
+## When Emojis May Be Acceptable
+
+In rare cases, minimal emoji use is acceptable for:
+- **Status indicators**: ✅ ❌ ⚠️ (sparingly)
+- **Lists comparing approaches**: ✅ GOOD / ❌ BAD patterns
+
+Even in these cases, prefer text alternatives like "GOOD:", "BAD:", "NOTE:", "WARNING:".
+
+## Rationale
+
+- **Accessibility**: Screen readers may not convey emoji meaning clearly
+- **Professionalism**: Technical documentation should maintain formal tone
+- **Longevity**: Emoji trends change; text remains clear
+- **Clarity**: Plain text is universally understood
