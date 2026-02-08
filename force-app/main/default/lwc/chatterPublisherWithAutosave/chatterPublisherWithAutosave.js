@@ -7,8 +7,10 @@ import postPollToChatter from "@salesforce/apex/ChatterPublisherController.postP
 // Constants
 const DRAFT_KEY_PREFIX = "chatterDraft_";
 const POLL_DRAFT_KEY_PREFIX = "chatterPollDraft_";
-const AUTOSAVE_DELAY = 1000; // 1 second
+const AUTOSAVE_DELAY_MS = 1000;
+const DRAFT_SAVED_MESSAGE_DURATION_MS = 1000;
 const DRAFT_EXPIRATION_DAYS = 7;
+const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
 export default class ChatterPublisherWithAutosave extends LightningElement {
   @api groupId; // Collaboration Group ID
@@ -213,7 +215,7 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
     // eslint-disable-next-line @lwc/lwc/no-async-operation
     this.pollSaveTimeout = setTimeout(() => {
       this.savePollDraftToLocalStorage();
-    }, AUTOSAVE_DELAY);
+    }, AUTOSAVE_DELAY_MS);
   }
 
   savePollDraftToLocalStorage() {
@@ -245,7 +247,7 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
       this.savedPollMessageTimeout = setTimeout(() => {
         this.lastPollSavedText = "";
         this.savedPollMessageTimeout = null;
-      }, 1000);
+      }, DRAFT_SAVED_MESSAGE_DURATION_MS);
     } catch (error) {
       console.error("Error saving poll draft:", error);
     } finally {
@@ -358,7 +360,7 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
     // eslint-disable-next-line @lwc/lwc/no-async-operation
     this.saveTimeout = setTimeout(() => {
       this.saveDraftToLocalStorage();
-    }, AUTOSAVE_DELAY);
+    }, AUTOSAVE_DELAY_MS);
   }
 
   saveDraftToLocalStorage() {
@@ -389,7 +391,7 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
       this.savedMessageTimeout = setTimeout(() => {
         this.lastSavedText = "";
         this.savedMessageTimeout = null;
-      }, 1000);
+      }, DRAFT_SAVED_MESSAGE_DURATION_MS);
     } catch (error) {
       console.error("Error saving draft to localStorage:", error);
       this.showToast("Error", "Unable to save draft locally", "error");
@@ -564,7 +566,7 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
   isDraftExpired(timestamp) {
     const draftDate = new Date(timestamp);
     const now = new Date();
-    const daysDiff = (now - draftDate) / (1000 * 60 * 60 * 24);
+    const daysDiff = (now - draftDate) / MS_PER_DAY;
 
     return daysDiff > DRAFT_EXPIRATION_DAYS;
   }
