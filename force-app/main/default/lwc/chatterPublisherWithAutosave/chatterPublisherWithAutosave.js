@@ -33,6 +33,8 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
 
   saveTimeout = null;
   pollSaveTimeout = null;
+  savedMessageTimeout = null;
+  savedPollMessageTimeout = null;
   hasUnsavedChanges = false;
   _internalGroupId = null;
   lastPollSavedText = "";
@@ -235,6 +237,15 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
       localStorage.setItem(key, JSON.stringify(draft));
       this.lastPollSavedText =
         "Draft saved " + this.getRelativeTime(draft.timestamp);
+
+      if (this.savedPollMessageTimeout) {
+        clearTimeout(this.savedPollMessageTimeout);
+      }
+      // eslint-disable-next-line @lwc/lwc/no-async-operation
+      this.savedPollMessageTimeout = setTimeout(() => {
+        this.lastPollSavedText = "";
+        this.savedPollMessageTimeout = null;
+      }, 1000);
     } catch (error) {
       console.error("Error saving poll draft:", error);
     } finally {
@@ -370,6 +381,15 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
       this.lastSavedText =
         "Draft saved " + this.getRelativeTime(draft.timestamp);
       this.hasUnsavedChanges = false;
+
+      if (this.savedMessageTimeout) {
+        clearTimeout(this.savedMessageTimeout);
+      }
+      // eslint-disable-next-line @lwc/lwc/no-async-operation
+      this.savedMessageTimeout = setTimeout(() => {
+        this.lastSavedText = "";
+        this.savedMessageTimeout = null;
+      }, 1000);
     } catch (error) {
       console.error("Error saving draft to localStorage:", error);
       this.showToast("Error", "Unable to save draft locally", "error");
