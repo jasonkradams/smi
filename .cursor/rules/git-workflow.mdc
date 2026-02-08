@@ -1,0 +1,114 @@
+---
+description: Git workflow standards for feature development
+alwaysApply: true
+---
+
+# Git Workflow Standards
+
+When working on any new plan or feature, follow this git workflow consistently.
+
+## Branch Naming Convention
+
+Create new branches with conventional prefixes:
+
+```bash
+# ✅ GOOD
+git checkout -b feature/user-authentication
+git checkout -b chore/update-dependencies
+git checkout -b fix/login-validation-bug
+git checkout -b docs/api-documentation
+
+# ❌ BAD
+git checkout -b my-changes
+git checkout -b update
+```
+
+**Prefixes:**
+
+- `feature/` - New features or capabilities
+- `fix/` - Bug fixes
+- `chore/` - Maintenance tasks (deps, config, tooling)
+- `docs/` - Documentation updates
+- `refactor/` - Code refactoring without behavior changes
+- `test/` - Test additions or updates
+
+## Commit Practice
+
+### Atomic Commits
+
+Make small, focused commits that change one thing at a time:
+
+```bash
+# ✅ GOOD - Each commit is atomic
+git commit -m "feat: add user authentication endpoint"
+git commit -m "test: add tests for authentication"
+git commit -m "docs: update API docs with auth endpoints"
+
+# ❌ BAD - Too many changes in one commit
+git commit -m "add auth, fix bugs, update docs"
+```
+
+### Conventional Commits
+
+Follow the [Conventional Commits](https://www.conventionalcommits.org/) format:
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+**Common types:**
+
+- `feat:` - New feature
+- `fix:` - Bug fix
+- `docs:` - Documentation changes
+- `chore:` - Maintenance tasks
+- `refactor:` - Code refactoring
+- `test:` - Test changes
+- `perf:` - Performance improvements
+- `ci:` - CI/CD changes
+
+**Examples:**
+
+```bash
+# ✅ GOOD
+git commit -m "feat(auth): add JWT token validation"
+git commit -m "fix(api): handle null response in user endpoint"
+git commit -m "chore(deps): update lodash to 4.17.21"
+git commit -m "docs: update README with setup instructions"
+
+# ❌ BAD
+git commit -m "changes"
+git commit -m "fixed stuff"
+git commit -m "WIP"
+```
+
+## Pull Request Workflow
+
+After completing your work:
+
+1. **Push your branch:**
+
+   ```bash
+   git push -u origin feature/your-feature-name
+   ```
+
+2. **Create a Pull Request:**
+   - Use descriptive PR title following conventional commit format
+   - Include summary of changes
+   - Reference related issues if applicable
+   - Request reviews from team members
+
+## Workflow Checklist
+
+Before creating a PR, ensure:
+
+- [ ] Branch follows naming convention
+- [ ] All commits are atomic and focused
+- [ ] All commits follow conventional commit format
+- [ ] Code has been tested
+- [ ] Branch is pushed to origin
+- [ ] PR is created with clear description
