@@ -7,6 +7,7 @@ and technical documentation to support club operations, technology tools, and vo
 ## What You'll Find Here
 
 - In-depth technical articles and solution case studies
+- Detailed implementation documentation for major features
 - Step-by-step guides for common workflows
 - Reference documentation for club systems
 - Walkthroughs for maintaining Salesforce and our public-facing site
@@ -17,7 +18,8 @@ and technical documentation to support club operations, technology tools, and vo
 Use the sidebar to explore topics by category. If you're not sure where to begin, here are a few helpful starting points:
 
 - [Technical Articles](articles/index.md)
-- [Latest Update: Fixing Missing Approval Email Notifications](articles/fixing-approval-email-notifications.md)
+- [Latest Update: Migrating to Email-Based Login](articles/simplifying-custom-login-experience.md)
+- [Implementation Details](implementation/index.md)
 - [How To Guides](how-to-guides/index.md)
 - [Automations](automation/index.md)
 - [Proposals](proposals/index.md)
