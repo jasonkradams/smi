@@ -1,0 +1,4060 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://jasonkradams.github.io/smi/articles/event-participant-redirect/">
+      
+      
+        <link rel="prev" href="../event-participant-privacy-solution/">
+      
+      
+        <link rel="next" href="../../implementation/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Event Participant Privacy (Technical) - Spokane Mountaineers Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#solving-event-participant-privacy-in-experience-cloud" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Spokane Mountaineers Docs" class="md-header__button md-logo" aria-label="Spokane Mountaineers Docs" data-md-component="logo">
+      
+  <img src="../../assets/images/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Spokane Mountaineers Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Event Participant Privacy (Technical)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="green" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jasonkradams/smi" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Articles
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../implementation/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Implementation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../how-to-guides/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  How-To Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../automation/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Automation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../proposals/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Proposals
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../google-workspace/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Google Workspace
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../about/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Spokane Mountaineers Docs" class="md-nav__button md-logo" aria-label="Spokane Mountaineers Docs" data-md-component="logo">
+      
+  <img src="../../assets/images/logo.png" alt="logo">
+
+    </a>
+    Spokane Mountaineers Docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jasonkradams/smi" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Articles
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Articles
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../simplifying-custom-login-experience/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migrating to Email-Based Login
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../activity-group-event-notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Activity Group Event Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fixing-approval-email-notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fixing Approval Email Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../experience-cloud-account-access-restriction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Restricting Account Access
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../enable-google-login/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enabling Google Login
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../event-participant-follow-handler-update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Participant Follow Handler Update
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../event-participant-privacy-solution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Participant Privacy (Overview)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Participant Privacy (Technical)
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Participant Privacy (Technical)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-privacy-puzzle-we-faced" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Privacy Puzzle We Faced
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#our-approach-bridge-dont-replace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Our Approach: Bridge, Don't Replace
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Our Approach: Bridge, Don&#39;t Replace">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-creating-the-connection-bridge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Creating the Connection Bridge
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-automating-the-synchronization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Automating the Synchronization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-the-smart-related-list-component" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. The Smart Related List Component
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-enhanced-user-experience" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Enhanced User Experience
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#technical-deep-dive-what-we-built" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Technical Deep Dive: What We Built
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Technical Deep Dive: What We Built">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lightning-web-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lightning Web Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apex-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apex Classes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-strategy-minimal-disruption" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deployment Strategy: Minimal Disruption
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-results-privacy-preserved-experience-enhanced" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Results: Privacy Preserved, Experience Enhanced
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lessons-from-the-trenches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lessons from the Trenches
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What's Next?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-takeaway" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Takeaway
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-guide-deploying-the-solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation Guide: Deploying the Solution
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Guide: Deploying the Solution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-fields-we-created" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Fields We Created
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Custom Fields We Created">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contactuser_lookup__c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contact.User_Lookup__c
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flows-for-automation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flows for Automation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Flows for Automation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sync_user_to_contact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sync_User_to_Contact
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#user_to_contact_sync_trigger" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        User_to_Contact_Sync_Trigger
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apex-classes-for-core-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apex Classes for Core Logic
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Apex Classes for Core Logic">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#eventparticipantredirecthelper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EventParticipantRedirectHelper
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lightning-web-component" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lightning Web Component
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lightning Web Component">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#eventparticipantrelatedlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        eventParticipantRelatedList
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-by-step-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step-by-Step Deployment
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step-by-Step Deployment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-deploy-custom-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Deploy Custom Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-deploy-apex-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Deploy Apex Classes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-deploy-flows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Deploy Flows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-deploy-lightning-web-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Deploy Lightning Web Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-alternative-deploy-all-components-at-once" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Alternative: Deploy All Components at Once
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#post-deployment-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Post-Deployment Setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Post-Deployment Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-run-the-backfill-batch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Run the Backfill Batch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-update-event-page-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Update Event Page Layout
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-test-everything" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Test Everything
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bulk-sync-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bulk Sync Operations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Bulk Sync Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#efficient-bulk-sync-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Efficient Bulk Sync Method
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bulk-sync-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bulk Sync Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Bulk Sync Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-sync-specific-contacts-by-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Sync Specific Contacts by ID
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-sync-contacts-in-batches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Sync Contacts in Batches
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-sync-all-event-participants-for-a-specific-event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Sync All Event Participants for a Specific Event
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance Monitoring
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#matching-logic-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Matching Logic Details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Matching Logic Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prioritized-matching-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prioritized Matching Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-privacy-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security &amp; Privacy Considerations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting-common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting Common Issues
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting Common Issues">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bulk-sync-performance-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bulk Sync Performance Issues?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#redirects-not-working" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Redirects Not Working?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#batch-sync-not-finding-matches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Batch Sync Not Finding Matches?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flow-trigger-not-firing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flow Trigger Not Firing?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#component-not-displaying" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component Not Displaying?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring-maintenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Monitoring &amp; Maintenance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#future-enhancement-ideas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Future Enhancement Ideas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#backout-plan-rolling-back-the-solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backout Plan: Rolling Back the Solution
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Backout Plan: Rolling Back the Solution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#when-to-consider-rollback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When to Consider Rollback
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-by-step-rollback-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step-by-Step Rollback Process
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step-by-Step Rollback Process">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-disable-new-functionality" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1: Disable New Functionality
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-revert-data-model-changes-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2: Revert Data Model Changes (Optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-remove-custom-components-optional-destructive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3: Remove Custom Components (Optional - Destructive)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rollback-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rollback Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../implementation/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Implementation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation/custom-login-page-implementation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Login Page
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation/chatter-publisher-autosave/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chatter Publisher with Autosave
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../how-to-guides/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How-To Guides
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    How-To Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/configure-custom-login-page/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configure Custom Login Page
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/setup-staging-sandbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup Staging Sandbox
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/update-experience-cloud-favicon/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Customize Favicon
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/keepalive-sessions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Preventing Logout With KeepAlives
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/website-editing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Website Editing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/bulk-delete-events-in-salesforce/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bulk Delete Events in Salesforce
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/salesforce-development-console-cheatsheet/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Salesforce Development Console Cheatsheet
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../automation/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Automation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/event-approval-email-alerts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Approval Email Alerts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/event-chatter-batch-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Chatter Batch Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/event-chatter-batch-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Chatter Batch Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/event-chatter-batch-production-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Chatter Batch Production Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/google-login-automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Google Login Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/notify-leader-on-rsvp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notify Leader on RSVP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/notify-subscribers-new-event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notify Subscribers of New Event
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/scheduled-add-members-to-conservation-group/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scheduled Add Aembers to Conservation Group
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../proposals/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Proposals
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Proposals
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../proposals/automate-member-license-sorting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automate Member License Sorting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../google-workspace/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Google Workspace
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Google Workspace
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../google-workspace/querying-custom-user-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Querying Custom User Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-privacy-puzzle-we-faced" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Privacy Puzzle We Faced
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#our-approach-bridge-dont-replace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Our Approach: Bridge, Don't Replace
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Our Approach: Bridge, Don&#39;t Replace">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-creating-the-connection-bridge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Creating the Connection Bridge
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-automating-the-synchronization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Automating the Synchronization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-the-smart-related-list-component" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. The Smart Related List Component
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-enhanced-user-experience" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Enhanced User Experience
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#technical-deep-dive-what-we-built" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Technical Deep Dive: What We Built
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Technical Deep Dive: What We Built">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lightning-web-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lightning Web Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apex-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apex Classes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-strategy-minimal-disruption" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deployment Strategy: Minimal Disruption
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-results-privacy-preserved-experience-enhanced" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Results: Privacy Preserved, Experience Enhanced
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lessons-from-the-trenches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lessons from the Trenches
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What's Next?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-takeaway" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Takeaway
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-guide-deploying-the-solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation Guide: Deploying the Solution
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Guide: Deploying the Solution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-fields-we-created" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Fields We Created
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Custom Fields We Created">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contactuser_lookup__c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contact.User_Lookup__c
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flows-for-automation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flows for Automation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Flows for Automation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sync_user_to_contact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sync_User_to_Contact
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#user_to_contact_sync_trigger" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        User_to_Contact_Sync_Trigger
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apex-classes-for-core-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apex Classes for Core Logic
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Apex Classes for Core Logic">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#eventparticipantredirecthelper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EventParticipantRedirectHelper
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lightning-web-component" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lightning Web Component
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lightning Web Component">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#eventparticipantrelatedlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        eventParticipantRelatedList
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-by-step-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step-by-Step Deployment
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step-by-Step Deployment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-deploy-custom-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Deploy Custom Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-deploy-apex-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Deploy Apex Classes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-deploy-flows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Deploy Flows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-deploy-lightning-web-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Deploy Lightning Web Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-alternative-deploy-all-components-at-once" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Alternative: Deploy All Components at Once
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#post-deployment-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Post-Deployment Setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Post-Deployment Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-run-the-backfill-batch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Run the Backfill Batch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-update-event-page-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Update Event Page Layout
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-test-everything" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Test Everything
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bulk-sync-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bulk Sync Operations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Bulk Sync Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#efficient-bulk-sync-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Efficient Bulk Sync Method
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bulk-sync-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bulk Sync Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Bulk Sync Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-sync-specific-contacts-by-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Sync Specific Contacts by ID
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-sync-contacts-in-batches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Sync Contacts in Batches
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-sync-all-event-participants-for-a-specific-event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Sync All Event Participants for a Specific Event
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance Monitoring
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#matching-logic-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Matching Logic Details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Matching Logic Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prioritized-matching-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prioritized Matching Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-privacy-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security &amp; Privacy Considerations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting-common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting Common Issues
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting Common Issues">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bulk-sync-performance-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bulk Sync Performance Issues?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#redirects-not-working" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Redirects Not Working?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#batch-sync-not-finding-matches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Batch Sync Not Finding Matches?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flow-trigger-not-firing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flow Trigger Not Firing?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#component-not-displaying" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component Not Displaying?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring-maintenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Monitoring &amp; Maintenance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#future-enhancement-ideas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Future Enhancement Ideas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#backout-plan-rolling-back-the-solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backout Plan: Rolling Back the Solution
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Backout Plan: Rolling Back the Solution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#when-to-consider-rollback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When to Consider Rollback
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-by-step-rollback-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step-by-Step Rollback Process
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step-by-Step Rollback Process">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-disable-new-functionality" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1: Disable New Functionality
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-revert-data-model-changes-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2: Revert Data Model Changes (Optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-remove-custom-components-optional-destructive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3: Remove Custom Components (Optional - Destructive)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rollback-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rollback Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/jasonkradams/smi/edit/main/docs/articles/event-participant-redirect.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/jasonkradams/smi/raw/main/docs/articles/event-participant-redirect.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
+    </a>
+  
+
+
+<h1 id="solving-event-participant-privacy-in-experience-cloud">Solving Event Participant Privacy in Experience Cloud<a class="headerlink" href="#solving-event-participant-privacy-in-experience-cloud" title="Permanent link">&para;</a></h1>
+<p><em>Published: November 5, 2025 | Category: Salesforce Solutions</em></p>
+<h2 id="the-privacy-puzzle-we-faced">The Privacy Puzzle We Faced<a class="headerlink" href="#the-privacy-puzzle-we-faced" title="Permanent link">&para;</a></h2>
+<p>Picture this: A community member is browsing our upcoming Events in Experience Cloud, curious about who else is attending. They click on an Event Participant's name, expecting to see a public profile. Instead, they land on a full Contact record - complete with phone numbers, addresses, and other information that should remain private.</p>
+<p>This wasn't just a theoretical concern. As the Spokane Mountaineers grew, we realized our Event Participant links were creating an unintended privacy loophole. The core issue was architectural: Salesforce's Event data model requires Event Participants to relate to Contact records, not User records. But Contact visibility isn't governed by User privacy settings, creating a disconnect between what we wanted (privacy-respecting profile views) and what we had (unrestricted Contact access).</p>
+<h2 id="our-approach-bridge-dont-replace">Our Approach: Bridge, Don't Replace<a class="headerlink" href="#our-approach-bridge-dont-replace" title="Permanent link">&para;</a></h2>
+<p>Instead of fighting Salesforce's data model, we decided to work with it. The solution? Build a smart bridge between Contacts and Users, then use that bridge to make intelligent routing decisions.</p>
+<p>Here's how we tackled it step by step:</p>
+<h3 id="1-creating-the-connection-bridge">1. Creating the Connection Bridge<a class="headerlink" href="#1-creating-the-connection-bridge" title="Permanent link">&para;</a></h3>
+<p>First, we extended the Contact object with a custom lookup field:</p>
+<div class="highlight"><pre><span></span><code><span class="cm">&lt;!-- Contact.User_Lookup__c --&gt;</span>
+<span class="nt">&lt;CustomField</span><span class="w"> </span><span class="na">xmlns=</span><span class="s">&quot;http://soap.sforce.com/2006/04/metadata&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;fullName&gt;</span>User_Lookup__c<span class="nt">&lt;/fullName&gt;</span>
+<span class="w">    </span><span class="nt">&lt;label&gt;</span>Related<span class="w"> </span>User<span class="nt">&lt;/label&gt;</span>
+<span class="w">    </span><span class="nt">&lt;referenceTo&gt;</span>User<span class="nt">&lt;/referenceTo&gt;</span>
+<span class="w">    </span><span class="nt">&lt;type&gt;</span>Lookup<span class="nt">&lt;/type&gt;</span>
+<span class="nt">&lt;/CustomField&gt;</span>
+</code></pre></div>
+<p>This simple field creates a 1:1 relationship where possible, linking Contacts to their corresponding User records. It's the foundation of our entire solution.</p>
+<h3 id="2-automating-the-synchronization">2. Automating the Synchronization<a class="headerlink" href="#2-automating-the-synchronization" title="Permanent link">&para;</a></h3>
+<p>Manual data entry wasn't an option - we needed automation. We implemented a three-layered sync strategy:</p>
+<p><strong>Real-time Sync</strong>: A record-triggered Flow that automatically updates the Contact lookup when Users are created or modified. This catches new users and any changes to existing ones.</p>
+<p><strong>Batch Backfill</strong>: For our existing data, we created a batch Apex class that processes contacts in batches of 200, matching Contacts to Users based on a prioritized approach:</p>
+<ol>
+<li><strong>Email Match</strong> (most reliable): <code>Contact.Email = User.Email</code></li>
+<li><strong>FederationIdentifier Match</strong>: <code>Contact.Email</code> (transformed) = <code>User.FederationIdentifier</code><ul>
+<li>Transformation: Replace <code>@</code> with <code>_</code> and append <code>@spokanemountaineers.org</code></li>
+<li>Example: <code>jason@example.com</code> → <code>jason_example.com@spokanemountaineers.org</code></li>
+</ul>
+</li>
+<li><strong>Username Match</strong>: <code>Contact.Email + '.smi' = User.Username</code><ul>
+<li>Example: <code>jason@example.com</code> → <code>jason@example.com.smi</code></li>
+</ul>
+</li>
+</ol>
+<p>This prioritized approach ensures we match the most reliable identifier first, avoiding duplicate email matches while handling various User naming conventions.</p>
+<p><strong>Manual Sync</strong>: Apex methods available for administrators to manually trigger syncs when needed (via Anonymous Apex or custom automation).</p>
+<h3 id="3-the-smart-related-list-component">3. The Smart Related List Component<a class="headerlink" href="#3-the-smart-related-list-component" title="Permanent link">&para;</a></h3>
+<p>Since Event Participants in our org use the custom <code>Event_Participant__c</code> object (which links to <code>Event_Registration__c</code>), we created a custom Lightning Web Component that replaces the standard related list:</p>
+<ul>
+<li><strong>Custom Related List</strong>: <code>eventParticipantRelatedList</code> component that queries <code>Event_Participant__c</code> records</li>
+<li><strong>Smart Click Handling</strong>: Participants with linked Users redirect to User profiles, others show plain text</li>
+<li><strong>Rich Display</strong>: Shows participant Contact name and response information</li>
+<li><strong>Graceful Degradation</strong>: Handles missing User relationships elegantly</li>
+<li><strong>Visual Consistency</strong>: Styled to match Salesforce standard related list appearance</li>
+</ul>
+<p>The component checks each participant's <code>Contact.User_Lookup__c</code> field and creates conditional links:</p>
+<ul>
+<li>If a related User exists → Create a clickable link to their profile page (<code>/s/profile/{UserId}</code>)</li>
+<li>If no User exists → Show plain text (no link, just the name)</li>
+</ul>
+<h3 id="4-enhanced-user-experience">4. Enhanced User Experience<a class="headerlink" href="#4-enhanced-user-experience" title="Permanent link">&para;</a></h3>
+<p>We built a Lightning Web Component that handles the redirect gracefully:</p>
+<ul>
+<li>Shows a loading state while checking for User profile availability</li>
+<li>Displays participant names with proper styling matching Salesforce standards</li>
+<li>Respects Experience Cloud visibility rules automatically</li>
+<li>Provides smooth navigation without jarring page reloads</li>
+<li>Matches the visual appearance of standard Salesforce related lists</li>
+</ul>
+<h2 id="technical-deep-dive-what-we-built">Technical Deep Dive: What We Built<a class="headerlink" href="#technical-deep-dive-what-we-built" title="Permanent link">&para;</a></h2>
+<h3 id="custom-fields">Custom Fields<a class="headerlink" href="#custom-fields" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Contact.User_Lookup__c</strong> - The bridge field linking Contacts to Users (Lookup relationship)</li>
+</ul>
+<h3 id="lightning-web-components">Lightning Web Components<a class="headerlink" href="#lightning-web-components" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>eventParticipantRelatedList</strong> - Custom related list that replaces standard Event Participants list with smart redirect functionality<ul>
+<li>Queries <code>Event_Participant__c</code> records for a given <code>Event_Registration__c</code></li>
+<li>Displays Contact names with conditional links to User profiles</li>
+<li>Styled to match Salesforce standard related list appearance</li>
+</ul>
+</li>
+</ul>
+<h3 id="flows">Flows<a class="headerlink" href="#flows" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Sync_User_to_Contact</strong> - Manual sync operations for administrators</li>
+<li><strong>User_to_Contact_Sync_Trigger</strong> - Automatic real-time sync when Users change (Before Save trigger)</li>
+</ul>
+<h3 id="apex-classes">Apex Classes<a class="headerlink" href="#apex-classes" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>EventParticipantRedirectHelper</strong> - Core business logic and utility methods<ul>
+<li><code>getEventParticipants(String eventId)</code> - Retrieves participants for an Event or Event_Registration__c</li>
+<li><code>bulkSyncContactsToUsers(List&lt;String&gt; contactIds)</code> - Efficient bulk sync method (2 SOQL queries total)</li>
+<li><code>syncContactToUser(String contactId)</code> - Single contact sync method</li>
+</ul>
+</li>
+</ul>
+<h2 id="deployment-strategy-minimal-disruption">Deployment Strategy: Minimal Disruption<a class="headerlink" href="#deployment-strategy-minimal-disruption" title="Permanent link">&para;</a></h2>
+<p>We rolled this out carefully to avoid breaking anything:</p>
+<ol>
+<li><strong>Deploy metadata</strong> - All custom fields, classes, and components</li>
+<li><strong>Run batch sync</strong> - Backfill existing Contact-User relationships (achieved 99.14% sync rate)</li>
+<li><strong>Update layouts</strong> - Replace standard related list with our custom component</li>
+<li><strong>Test thoroughly</strong> - Verify both linked and unlinked scenarios work perfectly</li>
+</ol>
+<h2 id="the-results-privacy-preserved-experience-enhanced">The Results: Privacy Preserved, Experience Enhanced<a class="headerlink" href="#the-results-privacy-preserved-experience-enhanced" title="Permanent link">&para;</a></h2>
+<p><strong>Privacy Protection</strong>: Community users now see User profile pages that respect privacy settings instead of unrestricted Contact records.</p>
+<p><strong>Seamless Experience</strong>: The redirect is completely transparent - users click a name and get the appropriate view based on data availability.</p>
+<p><strong>Data Integrity</strong>: We maintained Salesforce's standard Event data model while adding the necessary intelligence.</p>
+<p><strong>Scalability</strong>: The batch processing and automated sync ensure this works as our organization continues to grow. Our initial sync processed 1,732 out of 1,747 contacts (99.14% success rate).</p>
+<p><strong>Performance</strong>: The bulk sync method uses only 2-3 SOQL queries regardless of contact count, making it highly efficient for large-scale operations.</p>
+<h2 id="lessons-from-the-trenches">Lessons from the Trenches<a class="headerlink" href="#lessons-from-the-trenches" title="Permanent link">&para;</a></h2>
+<p><strong>Think Beyond the Obvious</strong>: Initially, we considered overriding the standard related list entirely. But a custom LWC approach was cleaner, more maintainable, and less disruptive.</p>
+<p><strong>Multiple Sync Strategies</strong>: Real-time sync is great for new data, but batch processing is essential for existing records. You need both.</p>
+<p><strong>Prioritized Matching</strong>: Using a prioritized matching approach (Email → FederationIdentifier → Username) ensures we match the most reliable identifier first while handling various User naming conventions.</p>
+<p><strong>Graceful Degradation</strong>: Not every Contact will have a corresponding User. The solution handles this elegantly with plain text display rather than broken links.</p>
+<p><strong>Test Edge Cases</strong>: We discovered scenarios where Users exist but aren't community-enabled, requiring additional validation in our logic.</p>
+<h2 id="whats-next">What's Next?<a class="headerlink" href="#whats-next" title="Permanent link">&para;</a></h2>
+<p>We're already thinking about enhancements:</p>
+<ol>
+<li><strong>Platform Events</strong> for real-time sync across multiple systems</li>
+<li><strong>Enhanced Matching</strong> algorithms for Contact-User relationships</li>
+<li><strong>Audit Trail</strong> to track sync history and changes over time</li>
+<li><strong>Admin Dashboard</strong> for monitoring sync status and statistics</li>
+</ol>
+<h2 id="the-takeaway">The Takeaway<a class="headerlink" href="#the-takeaway" title="Permanent link">&para;</a></h2>
+<p>This solution shows how thoughtful Salesforce architecture can solve complex privacy and user experience challenges. By extending the standard data model rather than replacing it, we achieved our goals while maintaining system integrity and future compatibility.</p>
+<p>The approach balances technical elegance with practical considerations, providing a robust solution that scales with our organization's needs while keeping our members' privacy intact.</p>
+<hr />
+<p><strong>Technical Implementation</strong>: All code and metadata for this solution is available in the SMI repository under <code>force-app/main/default/</code>. See below for deployment instructions.</p>
+<hr />
+<h2 id="implementation-guide-deploying-the-solution">Implementation Guide: Deploying the Solution<a class="headerlink" href="#implementation-guide-deploying-the-solution" title="Permanent link">&para;</a></h2>
+<p>Here's everything you need to deploy this privacy-enhancing solution to your own org:</p>
+<h3 id="custom-fields-we-created">Custom Fields We Created<a class="headerlink" href="#custom-fields-we-created" title="Permanent link">&para;</a></h3>
+<h4 id="contactuser_lookup__c">Contact.User_Lookup__c<a class="headerlink" href="#contactuser_lookup__c" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Type</strong>: Lookup (User)</li>
+<li><strong>Purpose</strong>: The bridge field linking Contacts to Users</li>
+<li><strong>Location</strong>: <code>/objects/Contact/fields/User_Lookup__c.field-meta.xml</code></li>
+</ul>
+<h3 id="flows-for-automation">Flows for Automation<a class="headerlink" href="#flows-for-automation" title="Permanent link">&para;</a></h3>
+<h4 id="sync_user_to_contact">Sync_User_to_Contact<a class="headerlink" href="#sync_user_to_contact" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Type</strong>: Autolaunched Flow</li>
+<li><strong>Purpose</strong>: Utility Flow for syncing a Contact to its matching User record</li>
+<li><strong>Input</strong>: <code>recordId</code> (Contact ID)</li>
+<li><strong>Note</strong>: This Flow exists but is not currently configured as a button or action on Contact records. For manual sync, use the Apex methods <code>syncContactToUser()</code> or <code>bulkSyncContactsToUsers()</code> via Anonymous Apex.</li>
+<li><strong>Location</strong>: <code>/flows/Sync_User_to_Contact.flow-meta.xml</code></li>
+</ul>
+<h4 id="user_to_contact_sync_trigger">User_to_Contact_Sync_Trigger<a class="headerlink" href="#user_to_contact_sync_trigger" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Type</strong>: Record-Triggered Flow (User, Before Save)</li>
+<li><strong>Purpose</strong>: Automatically syncs User to Contact when Users are created/updated</li>
+<li><strong>Location</strong>: <code>/flows/User_to_Contact_Sync_Trigger.flow-meta.xml</code></li>
+</ul>
+<h3 id="apex-classes-for-core-logic">Apex Classes for Core Logic<a class="headerlink" href="#apex-classes-for-core-logic" title="Permanent link">&para;</a></h3>
+<h4 id="eventparticipantredirecthelper">EventParticipantRedirectHelper<a class="headerlink" href="#eventparticipantredirecthelper" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Purpose</strong>: Provides methods for redirect logic and batch sync operations</li>
+<li><strong>Key Methods</strong>:<ul>
+<li><code>getEventParticipants(String eventId)</code> - Returns list of participants for an Event or Event_Registration__c</li>
+<li><code>bulkSyncContactsToUsers(List&lt;String&gt; contactIds)</code> - <strong>Recommended</strong>: Efficient bulk sync method (2-3 SOQL queries total)</li>
+<li><code>syncContactToUser(String contactId)</code> - Single contact sync method (legacy, use bulk method for multiple contacts)</li>
+</ul>
+</li>
+<li><strong>Performance</strong>: The <code>bulkSyncContactsToUsers</code> method reduces SOQL queries from ~3 per contact to just 2-3 total queries regardless of contact count</li>
+<li><strong>Location</strong>: <code>/classes/EventParticipantRedirectHelper.cls</code></li>
+</ul>
+<h3 id="lightning-web-component">Lightning Web Component<a class="headerlink" href="#lightning-web-component" title="Permanent link">&para;</a></h3>
+<h4 id="eventparticipantrelatedlist">eventParticipantRelatedList<a class="headerlink" href="#eventparticipantrelatedlist" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Purpose</strong>: Custom related list component for Event Participants in Experience Cloud</li>
+<li><strong>Features</strong>:<ul>
+<li>Queries <code>Event_Participant__c</code> records for <code>Event_Registration__c</code></li>
+<li>Displays Contact names with conditional links to User profiles</li>
+<li>Styled to match Salesforce standard related list appearance</li>
+<li>Handles loading states and errors gracefully</li>
+</ul>
+</li>
+<li><strong>Location</strong>: <code>/lwc/eventParticipantRelatedList/</code></li>
+</ul>
+<h2 id="step-by-step-deployment">Step-by-Step Deployment<a class="headerlink" href="#step-by-step-deployment" title="Permanent link">&para;</a></h2>
+<h3 id="1-deploy-custom-fields">1. Deploy Custom Fields<a class="headerlink" href="#1-deploy-custom-fields" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Deploy Contact custom field</span>
+sf<span class="w"> </span>project<span class="w"> </span>deploy<span class="w"> </span>start<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source-dir<span class="w"> </span>force-app/main/default/objects/Contact/fields/User_Lookup__c.field-meta.xml<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--target-org<span class="w"> </span>your-org-alias
+</code></pre></div>
+<h3 id="2-deploy-apex-classes">2. Deploy Apex Classes<a class="headerlink" href="#2-deploy-apex-classes" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Deploy Apex classes with tests</span>
+sf<span class="w"> </span>project<span class="w"> </span>deploy<span class="w"> </span>start<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source-dir<span class="w"> </span>force-app/main/default/classes/EventParticipantRedirectHelper.cls<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source-dir<span class="w"> </span>force-app/main/default/classes/EventParticipantRedirectHelperTest.cls<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--test-level<span class="w"> </span>RunSpecifiedTests<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--tests<span class="w"> </span>EventParticipantRedirectHelperTest<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--target-org<span class="w"> </span>your-org-alias
+</code></pre></div>
+<h3 id="3-deploy-flows">3. Deploy Flows<a class="headerlink" href="#3-deploy-flows" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sf<span class="w"> </span>project<span class="w"> </span>deploy<span class="w"> </span>start<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source-dir<span class="w"> </span>force-app/main/default/flows/Sync_User_to_Contact.flow-meta.xml<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source-dir<span class="w"> </span>force-app/main/default/flows/User_to_Contact_Sync_Trigger.flow-meta.xml<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--target-org<span class="w"> </span>your-org-alias
+</code></pre></div>
+<h3 id="4-deploy-lightning-web-components">4. Deploy Lightning Web Components<a class="headerlink" href="#4-deploy-lightning-web-components" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sf<span class="w"> </span>project<span class="w"> </span>deploy<span class="w"> </span>start<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source-dir<span class="w"> </span>force-app/main/default/lwc/eventParticipantRelatedList<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--target-org<span class="w"> </span>your-org-alias
+</code></pre></div>
+<h3 id="5-alternative-deploy-all-components-at-once">5. Alternative: Deploy All Components at Once<a class="headerlink" href="#5-alternative-deploy-all-components-at-once" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Deploy all Event Participant Redirect components at once</span>
+sf<span class="w"> </span>project<span class="w"> </span>deploy<span class="w"> </span>start<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source-dir<span class="w"> </span>force-app/main/default/classes<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source-dir<span class="w"> </span>force-app/main/default/flows<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source-dir<span class="w"> </span>force-app/main/default/lwc<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source-dir<span class="w"> </span>force-app/main/default/objects<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--test-level<span class="w"> </span>RunSpecifiedTests<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--tests<span class="w"> </span>EventParticipantRedirectHelperTest<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--target-org<span class="w"> </span>your-org-alias
+</code></pre></div>
+<h2 id="post-deployment-setup">Post-Deployment Setup<a class="headerlink" href="#post-deployment-setup" title="Permanent link">&para;</a></h2>
+<h3 id="1-run-the-backfill-batch">1. Run the Backfill Batch<a class="headerlink" href="#1-run-the-backfill-batch" title="Permanent link">&para;</a></h3>
+<p>Execute this in Developer Console or Anonymous Apex to sync existing data:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// Sync existing Contacts using bulk method</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">Contact</span><span class="o">&gt;</span><span class="w"> </span><span class="n">contactsToSync</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span>
+<span class="w">    </span><span class="n">SELECT</span><span class="w"> </span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">Email</span><span class="p">,</span><span class="w"> </span><span class="n">User_Lookup__c</span>
+<span class="w">    </span><span class="n">FROM</span><span class="w"> </span><span class="n">Contact</span>
+<span class="w">    </span><span class="n">WHERE</span><span class="w"> </span><span class="n">Email</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">NULL</span>
+<span class="w">    </span><span class="n">AND</span><span class="w"> </span><span class="n">User_Lookup__c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NULL</span>
+<span class="w">    </span><span class="n">LIMIT</span><span class="w"> </span><span class="mi">200</span>
+<span class="o">]</span><span class="p">;</span>
+
+<span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">contactIds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Contact</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">contactsToSync</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">contactIds</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">c</span><span class="p">.</span><span class="na">Id</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">List</span><span class="o">&lt;</span><span class="n">EventParticipantRedirectHelper</span><span class="p">.</span><span class="na">SyncResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">results</span><span class="w"> </span><span class="o">=</span>
+<span class="w">    </span><span class="n">EventParticipantRedirectHelper</span><span class="p">.</span><span class="na">bulkSyncContactsToUsers</span><span class="p">(</span><span class="n">contactIds</span><span class="p">);</span>
+
+<span class="n">Integer</span><span class="w"> </span><span class="n">successCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">EventParticipantRedirectHelper</span><span class="p">.</span><span class="na">SyncResult</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">results</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="na">success</span><span class="p">)</span><span class="w"> </span><span class="n">successCount</span><span class="o">++</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">System</span><span class="p">.</span><span class="na">debug</span><span class="p">(</span><span class="err">&#39;</span><span class="n">Synced</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">successCount</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="n">out</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">results</span><span class="p">.</span><span class="na">size</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="n">contacts</span><span class="err">&#39;</span><span class="p">);</span>
+</code></pre></div>
+<p><strong>Expected Results</strong>: In our org, we achieved a 99.14% sync rate (1,732 out of 1,747 contacts successfully synced).</p>
+<h3 id="2-update-event-page-layout">2. Update Event Page Layout<a class="headerlink" href="#2-update-event-page-layout" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Navigate to Experience Cloud Builder</li>
+<li>Edit the Event Registration page layout</li>
+<li>Remove the standard Event Participants related list (if present)</li>
+<li>Add the custom <code>eventParticipantRelatedList</code> component</li>
+<li>Configure the component to show on Event Registration records</li>
+<li>Save and publish the layout</li>
+</ol>
+<h3 id="3-test-everything">3. Test Everything<a class="headerlink" href="#3-test-everything" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Create a test Event Registration with multiple participants</li>
+<li>Verify some participants have linked User accounts</li>
+<li>Test clicking participant names in Experience Cloud</li>
+<li>Confirm redirects work correctly for both linked and unlinked participants</li>
+<li>Verify the component styling matches standard Salesforce related lists</li>
+</ol>
+<h2 id="bulk-sync-operations">Bulk Sync Operations<a class="headerlink" href="#bulk-sync-operations" title="Permanent link">&para;</a></h2>
+<h3 id="efficient-bulk-sync-method">Efficient Bulk Sync Method<a class="headerlink" href="#efficient-bulk-sync-method" title="Permanent link">&para;</a></h3>
+<p>We've implemented a high-performance bulk sync method that dramatically reduces SOQL query usage:</p>
+<p><strong>Performance Comparison:</strong></p>
+<ul>
+<li><strong>Legacy Method</strong>: ~3 SOQL queries per contact</li>
+<li><strong>New Bulk Method</strong>: Only 2-3 SOQL queries total regardless of contact count</li>
+<li><strong>Efficiency Gain</strong>: 1,000 contacts = 3,000 queries → 3 queries (99.9% reduction!)</li>
+</ul>
+<h3 id="bulk-sync-examples">Bulk Sync Examples<a class="headerlink" href="#bulk-sync-examples" title="Permanent link">&para;</a></h3>
+<h4 id="1-sync-specific-contacts-by-id">1. Sync Specific Contacts by ID<a class="headerlink" href="#1-sync-specific-contacts-by-id" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1">// Sync specific contacts by ID (most efficient)</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">contactIds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="p">{</span>
+<span class="w">    </span><span class="err">&#39;</span><span class="mo">0031</span><span class="n">N00001K1hLJQAZ</span><span class="err">&#39;</span><span class="p">,</span><span class="w">  </span><span class="c1">// Contact 1</span>
+<span class="w">    </span><span class="err">&#39;</span><span class="mo">003</span><span class="n">Um00000jXt3pIAC</span><span class="err">&#39;</span><span class="p">,</span><span class="w">  </span><span class="c1">// Contact 2</span>
+<span class="w">    </span><span class="err">&#39;</span><span class="mo">0032</span><span class="n">G00002sd32kQAA</span><span class="err">&#39;</span><span class="w">   </span><span class="c1">// Contact 3</span>
+<span class="p">};</span>
+
+<span class="n">List</span><span class="o">&lt;</span><span class="n">EventParticipantRedirectHelper</span><span class="p">.</span><span class="na">SyncResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">results</span><span class="w"> </span><span class="o">=</span>
+<span class="w">    </span><span class="n">EventParticipantRedirectHelper</span><span class="p">.</span><span class="na">bulkSyncContactsToUsers</span><span class="p">(</span><span class="n">contactIds</span><span class="p">);</span>
+
+<span class="c1">// Check results</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">EventParticipantRedirectHelper</span><span class="p">.</span><span class="na">SyncResult</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">results</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">System</span><span class="p">.</span><span class="na">debug</span><span class="p">(</span><span class="err">&#39;</span><span class="n">Contact</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="na">contactId</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="n">sync</span><span class="w"> </span><span class="n">result</span><span class="p">:</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="na">success</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<h4 id="2-sync-contacts-in-batches">2. Sync Contacts in Batches<a class="headerlink" href="#2-sync-contacts-in-batches" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1">// Sync contacts in batches of 50 (optimal for governor limits)</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">Contact</span><span class="o">&gt;</span><span class="w"> </span><span class="n">contactsToSync</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span>
+<span class="w">    </span><span class="n">SELECT</span><span class="w"> </span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">Email</span><span class="p">,</span><span class="w"> </span><span class="n">User_Lookup__c</span>
+<span class="w">    </span><span class="n">FROM</span><span class="w"> </span><span class="n">Contact</span>
+<span class="w">    </span><span class="n">WHERE</span><span class="w"> </span><span class="n">Email</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">NULL</span>
+<span class="w">    </span><span class="n">AND</span><span class="w"> </span><span class="n">User_Lookup__c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NULL</span>
+<span class="w">    </span><span class="n">ORDER</span><span class="w"> </span><span class="n">BY</span><span class="w"> </span><span class="n">CreatedDate</span>
+<span class="w">    </span><span class="n">LIMIT</span><span class="w"> </span><span class="mi">400</span>
+<span class="o">]</span><span class="p">;</span>
+
+<span class="n">Integer</span><span class="w"> </span><span class="n">totalContacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">contactsToSync</span><span class="p">.</span><span class="na">size</span><span class="p">();</span>
+<span class="n">System</span><span class="p">.</span><span class="na">debug</span><span class="p">(</span><span class="err">&#39;</span><span class="n">Found</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">totalContacts</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="n">contacts</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">sync</span><span class="err">&#39;</span><span class="p">);</span>
+
+<span class="n">Integer</span><span class="w"> </span><span class="n">successCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="n">Integer</span><span class="w"> </span><span class="n">failureCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="n">Integer</span><span class="w"> </span><span class="n">batchSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">50</span><span class="p">;</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">currentBatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Integer</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">contactsToSync</span><span class="p">.</span><span class="na">size</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Contact</span><span class="w"> </span><span class="n">contact</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">contactsToSync</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">;</span>
+<span class="w">    </span><span class="n">currentBatch</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">contact</span><span class="p">.</span><span class="na">Id</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">currentBatch</span><span class="p">.</span><span class="na">size</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">batchSize</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">contactsToSync</span><span class="p">.</span><span class="na">size</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">debug</span><span class="p">(</span><span class="err">&#39;</span><span class="n">Processing</span><span class="w"> </span><span class="n">batch</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">currentBatch</span><span class="p">.</span><span class="na">size</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="n">contacts</span><span class="err">&#39;</span><span class="p">);</span>
+
+<span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">EventParticipantRedirectHelper</span><span class="p">.</span><span class="na">SyncResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">batchResults</span><span class="w"> </span><span class="o">=</span>
+<span class="w">            </span><span class="n">EventParticipantRedirectHelper</span><span class="p">.</span><span class="na">bulkSyncContactsToUsers</span><span class="p">(</span><span class="n">currentBatch</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">EventParticipantRedirectHelper</span><span class="p">.</span><span class="na">SyncResult</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">batchResults</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="na">success</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">successCount</span><span class="o">++</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">failureCount</span><span class="o">++</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="n">currentBatch</span><span class="p">.</span><span class="na">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">System</span><span class="p">.</span><span class="na">debug</span><span class="p">(</span><span class="err">&#39;</span><span class="n">Sync</span><span class="w"> </span><span class="n">completed</span><span class="p">:</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">successCount</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="n">successful</span><span class="p">,</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">failureCount</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="n">failed</span><span class="err">&#39;</span><span class="p">);</span>
+<span class="n">System</span><span class="p">.</span><span class="na">debug</span><span class="p">(</span><span class="err">&#39;</span><span class="n">SOQL</span><span class="w"> </span><span class="n">queries</span><span class="w"> </span><span class="n">used</span><span class="p">:</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Limits</span><span class="p">.</span><span class="na">getQueries</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="sc">&#39;/&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Limits</span><span class="p">.</span><span class="na">getLimitQueries</span><span class="p">());</span>
+</code></pre></div>
+<h4 id="3-sync-all-event-participants-for-a-specific-event">3. Sync All Event Participants for a Specific Event<a class="headerlink" href="#3-sync-all-event-participants-for-a-specific-event" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1">// Sync all participants for a specific Event_Registration__c</span>
+<span class="n">String</span><span class="w"> </span><span class="n">eventRegistrationId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">&#39;</span><span class="n">a122G000008VdzJQAS</span><span class="err">&#39;</span><span class="p">;</span><span class="w"> </span><span class="c1">// Replace with your Event_Registration__c ID</span>
+
+<span class="c1">// Get all Event_Participant__c records for this Event_Registration__c</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">Event_Participant__c</span><span class="o">&gt;</span><span class="w"> </span><span class="n">participants</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span>
+<span class="w">    </span><span class="n">SELECT</span><span class="w"> </span><span class="n">Contact__c</span>
+<span class="w">    </span><span class="n">FROM</span><span class="w"> </span><span class="n">Event_Participant__c</span>
+<span class="w">    </span><span class="n">WHERE</span><span class="w"> </span><span class="n">Event_Registration__c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">eventRegistrationId</span>
+<span class="w">    </span><span class="n">AND</span><span class="w"> </span><span class="n">Contact__c</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span>
+<span class="o">]</span><span class="p">;</span>
+
+<span class="c1">// Extract Contact IDs</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">contactIds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Event_Participant__c</span><span class="w"> </span><span class="n">participant</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">participants</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">contactIds</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">participant</span><span class="p">.</span><span class="na">Contact__c</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">contactIds</span><span class="p">.</span><span class="na">isEmpty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">System</span><span class="p">.</span><span class="na">debug</span><span class="p">(</span><span class="err">&#39;</span><span class="n">Syncing</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">contactIds</span><span class="p">.</span><span class="na">size</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="n">Event</span><span class="w"> </span><span class="n">participants</span><span class="p">...</span><span class="err">&#39;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">List</span><span class="o">&lt;</span><span class="n">EventParticipantRedirectHelper</span><span class="p">.</span><span class="na">SyncResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">results</span><span class="w"> </span><span class="o">=</span>
+<span class="w">        </span><span class="n">EventParticipantRedirectHelper</span><span class="p">.</span><span class="na">bulkSyncContactsToUsers</span><span class="p">(</span><span class="n">contactIds</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">Integer</span><span class="w"> </span><span class="n">successCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">EventParticipantRedirectHelper</span><span class="p">.</span><span class="na">SyncResult</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">results</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="na">success</span><span class="p">)</span><span class="w"> </span><span class="n">successCount</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">System</span><span class="p">.</span><span class="na">debug</span><span class="p">(</span><span class="err">&#39;</span><span class="n">Event</span><span class="w"> </span><span class="n">participant</span><span class="w"> </span><span class="n">sync</span><span class="w"> </span><span class="n">completed</span><span class="p">:</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">successCount</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="sc">&#39;/&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">results</span><span class="p">.</span><span class="na">size</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="n">successful</span><span class="err">&#39;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="performance-monitoring">Performance Monitoring<a class="headerlink" href="#performance-monitoring" title="Permanent link">&para;</a></h3>
+<p>The bulk sync method includes built-in performance monitoring:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// Monitor SOQL usage during bulk sync</span>
+<span class="n">System</span><span class="p">.</span><span class="na">debug</span><span class="p">(</span><span class="err">&#39;</span><span class="n">SOQL</span><span class="w"> </span><span class="n">queries</span><span class="w"> </span><span class="n">used</span><span class="p">:</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Limits</span><span class="p">.</span><span class="na">getQueries</span><span class="p">());</span>
+<span class="n">System</span><span class="p">.</span><span class="na">debug</span><span class="p">(</span><span class="err">&#39;</span><span class="n">SOQL</span><span class="w"> </span><span class="n">queries</span><span class="w"> </span><span class="n">remaining</span><span class="p">:</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">Limits</span><span class="p">.</span><span class="na">getLimitQueries</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Limits</span><span class="p">.</span><span class="na">getQueries</span><span class="p">()));</span>
+</code></pre></div>
+<p><strong>Expected Results:</strong></p>
+<ul>
+<li>Small batches (50 contacts): ~3 SOQL queries total</li>
+<li>Large batches (1,000+ contacts): ~3 SOQL queries total</li>
+<li>Query limit usage: &lt;5% regardless of contact count</li>
+</ul>
+<h2 id="matching-logic-details">Matching Logic Details<a class="headerlink" href="#matching-logic-details" title="Permanent link">&para;</a></h2>
+<h3 id="prioritized-matching-strategy">Prioritized Matching Strategy<a class="headerlink" href="#prioritized-matching-strategy" title="Permanent link">&para;</a></h3>
+<p>The sync process uses a three-tier matching approach:</p>
+<ol>
+<li>
+<p><strong>Email Match</strong> (Highest Priority)</p>
+<ul>
+<li><code>Contact.Email = User.Email</code></li>
+<li>Most reliable match, used first</li>
+</ul>
+</li>
+<li>
+<p><strong>FederationIdentifier Match</strong> (Second Priority)</p>
+<ul>
+<li>Transformation: <code>Contact.Email.replace('@', '_') + '@spokanemountaineers.org'</code></li>
+<li>Example: <code>jason@example.com</code> → <code>jason_example.com@spokanemountaineers.org</code></li>
+<li>Matches against <code>User.FederationIdentifier</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Username Match</strong> (Third Priority)</p>
+<ul>
+<li>Pattern: <code>Contact.Email + '.smi'</code></li>
+<li>Example: <code>jason@example.com</code> → <code>jason@example.com.smi</code></li>
+<li>Matches against <code>User.Username</code></li>
+</ul>
+</li>
+</ol>
+<p>This prioritized approach ensures:</p>
+<ul>
+<li>Most reliable matches are found first</li>
+<li>Handles various User naming conventions</li>
+<li>Avoids duplicate matches when multiple Users share the same email</li>
+</ul>
+<h2 id="security-privacy-considerations">Security &amp; Privacy Considerations<a class="headerlink" href="#security-privacy-considerations" title="Permanent link">&para;</a></h2>
+<ul>
+<li>✅ Respects User privacy settings by redirecting to User profile pages</li>
+<li>✅ Shows plain text (no link) when no related User exists</li>
+<li>✅ Community users only see User profiles that respect Experience Cloud visibility rules</li>
+<li>✅ Internal users retain standard Contact access for business operations</li>
+<li>✅ No sensitive Contact data exposed to community users</li>
+</ul>
+<h2 id="troubleshooting-common-issues">Troubleshooting Common Issues<a class="headerlink" href="#troubleshooting-common-issues" title="Permanent link">&para;</a></h2>
+<h3 id="bulk-sync-performance-issues">Bulk Sync Performance Issues?<a class="headerlink" href="#bulk-sync-performance-issues" title="Permanent link">&para;</a></h3>
+<p><strong>High SOQL Query Usage:</strong></p>
+<ul>
+<li>Ensure you're using <code>bulkSyncContactsToUsers()</code> instead of individual <code>syncContactToUser()</code> calls</li>
+<li>Check that you're processing contacts in batches of 50 or fewer</li>
+<li>Monitor query usage: <code>System.debug('Queries used: ' + Limits.getQueries());</code></li>
+</ul>
+<p><strong>Memory Limit Errors:</strong></p>
+<ul>
+<li>Reduce batch size from 50 to 25 if processing contacts with large data</li>
+<li>Use QueryLocator for very large datasets (&gt;10,000 contacts)</li>
+<li>Clear collections between batches: <code>currentBatch.clear();</code></li>
+</ul>
+<p><strong>Slow Performance:</strong></p>
+<ul>
+<li>The bulk sync method should complete 1,000 contacts in &lt;30 seconds</li>
+<li>If slower, check for custom triggers on Contact objects</li>
+<li>Verify User lookup indexes are in place</li>
+</ul>
+<h3 id="redirects-not-working">Redirects Not Working?<a class="headerlink" href="#redirects-not-working" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Verify <code>Contact.User_Lookup__c</code> field is populated</li>
+<li>Check that User records are active and have Community licenses</li>
+<li>Ensure Experience Cloud profile URL format matches <code>/s/profile/{UserId}</code></li>
+<li>Verify the <code>eventParticipantRelatedList</code> component is properly added to the page layout</li>
+</ul>
+<h3 id="batch-sync-not-finding-matches">Batch Sync Not Finding Matches?<a class="headerlink" href="#batch-sync-not-finding-matches" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Verify User email addresses match Contact emails exactly (for Email match)</li>
+<li>Check for FederationIdentifier matches if email sync fails</li>
+<li>Review the transformation logic: <code>email.replace('@', '_') + '@spokanemountaineers.org'</code></li>
+<li>Check for Username pattern matches: <code>email + '.smi'</code></li>
+<li>Review batch job completion email for statistics</li>
+</ul>
+<h3 id="flow-trigger-not-firing">Flow Trigger Not Firing?<a class="headerlink" href="#flow-trigger-not-firing" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Verify <code>User_to_Contact_Sync_Trigger</code> Flow is active</li>
+<li>Check that User records have email addresses</li>
+<li>Ensure Contact records exist with matching emails</li>
+<li>Review Flow debug logs for any errors</li>
+</ul>
+<h3 id="component-not-displaying">Component Not Displaying?<a class="headerlink" href="#component-not-displaying" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Verify <code>eventParticipantRelatedList</code> component is added to the page layout</li>
+<li>Check that the component has access to the Event_Registration__c record</li>
+<li>Review browser console for JavaScript errors</li>
+<li>Ensure the <code>Event_Registration__c</code> has <code>Event_Participant__c</code> records</li>
+</ul>
+<h2 id="monitoring-maintenance">Monitoring &amp; Maintenance<a class="headerlink" href="#monitoring-maintenance" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Monitor batch job completion emails for sync statistics</li>
+<li>Check Flow debug logs for any sync errors</li>
+<li>Review Experience Cloud access logs for redirect patterns</li>
+<li>Periodically verify Contact-User relationships are staying in sync</li>
+<li>Monitor SOQL query usage during bulk sync operations</li>
+</ul>
+<h2 id="future-enhancement-ideas">Future Enhancement Ideas<a class="headerlink" href="#future-enhancement-ideas" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Real-time sync</strong>: Consider Platform Events for immediate Contact-User sync across systems</li>
+<li><strong>Multiple User matching</strong>: Add logic for handling multiple matching Users intelligently</li>
+<li><strong>Custom matching rules</strong>: Extend sync logic to include additional matching criteria beyond email</li>
+<li><strong>Audit trail</strong>: Add custom object to track Contact-User sync history and changes</li>
+<li><strong>Admin dashboard</strong>: Create a Lightning component for monitoring sync status and statistics</li>
+</ol>
+<hr />
+<h2 id="backout-plan-rolling-back-the-solution">Backout Plan: Rolling Back the Solution<a class="headerlink" href="#backout-plan-rolling-back-the-solution" title="Permanent link">&para;</a></h2>
+<p>This section provides a comprehensive rollback plan in case the Event Participant Redirect solution needs to be reverted.</p>
+<h3 id="when-to-consider-rollback">When to Consider Rollback<a class="headerlink" href="#when-to-consider-rollback" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Performance Issues</strong>: Significant slowdown in Event page loads or related list performance</li>
+<li><strong>Sync Problems</strong>: Large-scale data corruption or incorrect Contact-User relationships</li>
+<li><strong>User Experience</strong>: Negative feedback from community users or navigation issues</li>
+<li><strong>Security Concerns</strong>: Unexpected privacy breaches or access control problems</li>
+<li><strong>Business Requirements</strong>: Change in privacy policies or Event management approach</li>
+</ul>
+<h3 id="step-by-step-rollback-process">Step-by-Step Rollback Process<a class="headerlink" href="#step-by-step-rollback-process" title="Permanent link">&para;</a></h3>
+<h4 id="phase-1-disable-new-functionality">Phase 1: Disable New Functionality<a class="headerlink" href="#phase-1-disable-new-functionality" title="Permanent link">&para;</a></h4>
+<p><strong>1. Deactivate Flows</strong></p>
+<ul>
+<li>Navigate to Setup → Flows</li>
+<li>Find <code>User_to_Contact_Sync_Trigger</code> and <code>Sync_User_to_Contact</code></li>
+<li>Click "Deactivate" for each Flow</li>
+</ul>
+<p><strong>2. Remove Lightning Component</strong></p>
+<ul>
+<li>Edit Event Registration page layouts in Experience Cloud Builder</li>
+<li>Remove the <code>eventParticipantRelatedList</code> component</li>
+<li>Replace with standard related list if needed</li>
+<li>Save and publish the layout</li>
+</ul>
+<h4 id="phase-2-revert-data-model-changes-optional">Phase 2: Revert Data Model Changes (Optional)<a class="headerlink" href="#phase-2-revert-data-model-changes-optional" title="Permanent link">&para;</a></h4>
+<p><strong>3. Clear Contact User Lookups (Optional)</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1">// Execute in Anonymous Apex to clear all User lookups</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">Contact</span><span class="o">&gt;</span><span class="w"> </span><span class="n">contactsToUpdate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span>
+<span class="w">    </span><span class="n">SELECT</span><span class="w"> </span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">User_Lookup__c</span>
+<span class="w">    </span><span class="n">FROM</span><span class="w"> </span><span class="n">Contact</span>
+<span class="w">    </span><span class="n">WHERE</span><span class="w"> </span><span class="n">User_Lookup__c</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">    </span><span class="n">LIMIT</span><span class="w"> </span><span class="mi">50000</span>
+<span class="o">]</span><span class="p">;</span>
+
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Contact</span><span class="w"> </span><span class="n">contact</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">contactsToUpdate</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">contact</span><span class="p">.</span><span class="na">User_Lookup__c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">update</span><span class="w"> </span><span class="n">contactsToUpdate</span><span class="p">;</span>
+<span class="n">System</span><span class="p">.</span><span class="na">debug</span><span class="p">(</span><span class="err">&#39;</span><span class="n">Cleared</span><span class="w"> </span><span class="n">User</span><span class="w"> </span><span class="n">lookup</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">contactsToUpdate</span><span class="p">.</span><span class="na">size</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="err">&#39;</span><span class="w"> </span><span class="n">Contacts</span><span class="err">&#39;</span><span class="p">);</span>
+</code></pre></div>
+<h4 id="phase-3-remove-custom-components-optional-destructive">Phase 3: Remove Custom Components (Optional - Destructive)<a class="headerlink" href="#phase-3-remove-custom-components-optional-destructive" title="Permanent link">&para;</a></h4>
+<p><strong>4. Delete Custom Fields</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># WARNING: This is destructive!</span>
+sf<span class="w"> </span>project<span class="w"> </span>delete<span class="w"> </span><span class="nb">source</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source-dir<span class="w"> </span>force-app/main/default/objects/Contact/fields/User_Lookup__c.field-meta.xml<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--target-org<span class="w"> </span>your-org-alias
+</code></pre></div>
+<p><strong>5. Delete Apex Classes</strong></p>
+<div class="highlight"><pre><span></span><code>sf<span class="w"> </span>project<span class="w"> </span>delete<span class="w"> </span><span class="nb">source</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source-dir<span class="w"> </span>force-app/main/default/classes/EventParticipantRedirectHelper.cls<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source-dir<span class="w"> </span>force-app/main/default/classes/EventParticipantRedirectHelperTest.cls<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--target-org<span class="w"> </span>your-org-alias
+</code></pre></div>
+<p><strong>6. Delete Flows</strong></p>
+<div class="highlight"><pre><span></span><code>sf<span class="w"> </span>project<span class="w"> </span>delete<span class="w"> </span><span class="nb">source</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source-dir<span class="w"> </span>force-app/main/default/flows/Sync_User_to_Contact.flow-meta.xml<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source-dir<span class="w"> </span>force-app/main/default/flows/User_to_Contact_Sync_Trigger.flow-meta.xml<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--target-org<span class="w"> </span>your-org-alias
+</code></pre></div>
+<p><strong>7. Delete Lightning Component</strong></p>
+<div class="highlight"><pre><span></span><code>sf<span class="w"> </span>project<span class="w"> </span>delete<span class="w"> </span><span class="nb">source</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source-dir<span class="w"> </span>force-app/main/default/lwc/eventParticipantRelatedList<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--target-org<span class="w"> </span>your-org-alias
+</code></pre></div>
+<h3 id="rollback-validation">Rollback Validation<a class="headerlink" href="#rollback-validation" title="Permanent link">&para;</a></h3>
+<p><strong>Functionality Testing</strong></p>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Event pages load normally</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Event Participants related list shows standard Contact names</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Clicking participant names opens Contact records (original behavior)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> No broken links or error messages</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Performance returns to baseline levels</li>
+</ul>
+<p><strong>Data Integrity Checks</strong></p>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Contact records are unchanged</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Event relationships remain intact</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> No orphaned lookup relationships</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> User data is preserved</li>
+</ul>
+<hr />
+<p><strong>Remember</strong>: Test rollback procedures in a sandbox environment before executing in production. Always have a recent backup available before making destructive changes.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../event-participant-privacy-solution/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Event Participant Privacy (Overview)">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Event Participant Privacy (Overview)
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../implementation/" class="md-footer__link md-footer__link--next" aria-label="Next: Implementation Details">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Implementation Details
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/jasonkradams/smi" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["announce.dismiss", "content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.tooltips", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
