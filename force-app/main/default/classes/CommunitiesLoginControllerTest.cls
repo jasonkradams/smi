@@ -55,7 +55,7 @@ private class CommunitiesLoginControllerTest {
   }
 
   /**
-   * Test username normalization - removing .smi suffix
+   * Test username normalization - appending .smi suffix
    */
   @IsTest
   static void testUsernameNormalization() {
@@ -63,28 +63,28 @@ private class CommunitiesLoginControllerTest {
 
     Test.startTest();
 
-    // Test with .smi suffix
-    String normalized1 = controller.normalizeUsername('user@example.com.smi');
+    // Test without .smi suffix - should append it
+    String normalized1 = controller.normalizeUsername('user@example.com');
     System.assertEquals(
-      'user@example.com',
+      'user@example.com.smi',
       normalized1,
-      'Should strip .smi suffix'
+      'Should append .smi suffix'
     );
 
-    // Test with .SMI suffix (case insensitive)
-    String normalized2 = controller.normalizeUsername('user@example.com.SMI');
+    // Test with .smi suffix already present - should not double-append
+    String normalized2 = controller.normalizeUsername('user@example.com.smi');
     System.assertEquals(
-      'user@example.com',
+      'user@example.com.smi',
       normalized2,
-      'Should strip .SMI suffix (case insensitive)'
+      'Should not double-append .smi suffix'
     );
 
-    // Test without .smi suffix
-    String normalized3 = controller.normalizeUsername('user@example.com');
+    // Test with .SMI suffix (case insensitive) - should not double-append
+    String normalized3 = controller.normalizeUsername('user@example.com.SMI');
     System.assertEquals(
-      'user@example.com',
+      'user@example.com.SMI',
       normalized3,
-      'Should not modify username without .smi suffix'
+      'Should not double-append .SMI suffix (case insensitive)'
     );
 
     // Test with null
