@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>65.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Chatter Publisher with Autosave</masterLabel>
+    <description
+  >A custom Chatter publisher component with automatic draft saving to localStorage, supporting rich text formatting and navigation warnings for unsaved content.</description>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property
+        name="groupId"
+        type="String"
+        label="Chatter Group ID"
+        description="ID of the Chatter group to post to (leave blank to auto-detect from page)"
+      />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

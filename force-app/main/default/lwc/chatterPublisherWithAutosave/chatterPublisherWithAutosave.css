@@ -1,0 +1,45 @@
+.publisher-container {
+  padding: 12px;
+}
+
+.rich-text-editor {
+  width: 100%;
+}
+
+.action-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.status-container {
+  display: flex;
+  align-items: center;
+}
+
+.button-container {
+  display: flex;
+  align-items: center;
+}
+
+.saved-indicator {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.saving-indicator {
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+/* Modal styling overrides for better appearance */
+.slds-modal__container {
+  max-width: 500px;
+}
+
+.slds-modal__content {
+  line-height: 1.5;
+}

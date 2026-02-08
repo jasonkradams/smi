@@ -1,0 +1,92 @@
+<template>
+  <lightning-card>
+    <!-- Draft Restoration Modal -->
+    <template if:true={showRestoreDraftModal}>
+      <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">
+          <header class="slds-modal__header">
+            <h2 class="slds-text-heading_medium">Restore Draft?</h2>
+          </header>
+          <div class="slds-modal__content slds-p-around_medium">
+            <p>
+              You have an unsaved draft from {draftTimestamp}. Would you like to
+              restore it?
+            </p>
+          </div>
+          <footer class="slds-modal__footer">
+            <lightning-button
+              label="Discard"
+              onclick={handleDiscardDraft}
+              class="slds-m-right_x-small"
+            >
+            </lightning-button>
+            <lightning-button
+              variant="brand"
+              label="Restore Draft"
+              onclick={handleRestoreDraft}
+            >
+            </lightning-button>
+          </footer>
+        </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <!-- Publisher Card -->
+    <div class="slds-card__body slds-card__body_inner">
+      <div class="publisher-container">
+        <!-- Rich Text Editor -->
+        <lightning-input-rich-text
+          value={draftContent}
+          placeholder="Share an update..."
+          formats={formats}
+          onchange={handleTextChange}
+          disabled={isPosting}
+          class="rich-text-editor"
+        >
+        </lightning-input-rich-text>
+
+        <!-- Action Bar -->
+        <div class="action-bar slds-m-top_small">
+          <div class="status-container">
+            <template if:true={lastSavedText}>
+              <span class="saved-indicator slds-text-color_success">
+                <lightning-icon
+                  icon-name="utility:check"
+                  size="xx-small"
+                  class="slds-m-right_xx-small"
+                >
+                </lightning-icon>
+                {lastSavedText}
+              </span>
+            </template>
+            <template if:true={isSaving}>
+              <span class="saving-indicator slds-text-color_weak">
+                Saving draft...
+              </span>
+            </template>
+          </div>
+
+          <div class="button-container">
+            <template if:true={hasDraft}>
+              <lightning-button
+                label="Clear Draft"
+                onclick={handleClearDraft}
+                disabled={isPosting}
+                class="slds-m-right_x-small"
+              >
+              </lightning-button>
+            </template>
+            <lightning-button
+              variant="brand"
+              label="Share"
+              onclick={handlePost}
+              disabled={isPostDisabled}
+            >
+            </lightning-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </lightning-card>
+</template>
