@@ -1,6 +1,6 @@
 # Querying Custom Schema: Mountaineers.PublicEmail
 
-This document explains how to access and query the custom schema field `Mountaineers.PublicEmail` that is populated by the [user sync](../automation/user-sync-google-workspace/google-app-script/appsscript.json) script.
+This document explains how to access and query the custom schema field `Mountaineers.PublicEmail` that is populated by the user sync script.
 
 ---
 
