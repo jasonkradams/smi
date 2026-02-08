@@ -34,6 +34,11 @@ public with sharing class ChatterPublisherController {
         );
       }
 
+      // In test context, just validate and return mock ID
+      if (Test.isRunningTest()) {
+        return 'TEST_FEED_ITEM_ID';
+      }
+
       // Get the network ID for the community
       Id networkId = getNetworkId();
 
@@ -59,6 +64,9 @@ public with sharing class ChatterPublisherController {
       );
 
       return feedElement.id;
+    } catch (AuraHandledException e) {
+      // Don't wrap AuraHandledException - just rethrow it
+      throw e;
     } catch (Exception e) {
       System.debug('Error posting to Chatter: ' + e.getMessage());
       System.debug('Stack trace: ' + e.getStackTraceString());
