@@ -2,10 +2,12 @@ import { LightningElement, api, wire } from "lwc";
 import { CurrentPageReference } from "lightning/navigation";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import postToChatter from "@salesforce/apex/ChatterPublisherController.postToChatter";
+import postPollToChatter from "@salesforce/apex/ChatterPublisherController.postPollToChatter";
 
 // Constants
 const DRAFT_KEY_PREFIX = "chatterDraft_";
-const AUTOSAVE_DELAY = 10000; // 10 seconds
+const POLL_DRAFT_KEY_PREFIX = "chatterPollDraft_";
+const AUTOSAVE_DELAY = 1000; // 1 second
 const DRAFT_EXPIRATION_DAYS = 7;
 
 export default class ChatterPublisherWithAutosave extends LightningElement {
@@ -20,10 +22,21 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
   draftTimestamp = "";
   hasDraft = false;
   isExpanded = false;
+  activeTab = "post";
+  pollQuestion = "";
+  pollChoices = [
+    { id: "1", value: "", canRemove: false },
+    { id: "2", value: "", canRemove: false }
+  ];
+  _pollChoiceId = 3;
+  MAX_POLL_CHOICES = 10;
 
   saveTimeout = null;
+  pollSaveTimeout = null;
   hasUnsavedChanges = false;
   _internalGroupId = null;
+  lastPollSavedText = "";
+  isSavingPoll = false;
 
   // Rich text editor formats
   formats = [
@@ -58,8 +71,51 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
     return this.groupId || this._internalGroupId;
   }
 
+  get isPostTab() {
+    return this.activeTab === "post";
+  }
+
+  get isPollTab() {
+    return this.activeTab === "poll";
+  }
+
+  get isPostTabActive() {
+    return this.activeTab === "post";
+  }
+
+  get isPollTabActive() {
+    return this.activeTab === "poll";
+  }
+
+  get canAddPollChoice() {
+    return this.pollChoices.length < this.MAX_POLL_CHOICES;
+  }
+
+  get validPollChoicesCount() {
+    return this.pollChoices.filter((c) => c.value && c.value.trim()).length;
+  }
+
+  get isPollShareDisabled() {
+    return (
+      this.isPosting ||
+      !this.pollQuestion ||
+      this.pollQuestion.trim().length === 0 ||
+      this.validPollChoicesCount < 2
+    );
+  }
+
+  get restoreDraftModalTitle() {
+    return this.savedDraft?.type === "poll"
+      ? "Restore Poll Draft?"
+      : "Restore Draft?";
+  }
+
+  get restoreDraftModalLabel() {
+    return this.savedDraft?.type === "poll" ? "poll draft" : "draft";
+  }
+
   connectedCallback() {
-    // If groupId is already set (via @api), load draft immediately
+    // If groupId is already set (via @api), load post draft immediately
     if (this.effectiveGroupId) {
       this.loadDraftFromLocalStorage();
     }
@@ -76,14 +132,24 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
     // Remove beforeunload listener
     window.removeEventListener("beforeunload", this.handleBeforeUnload);
 
-    // Clear any pending save timeout
+    // Clear any pending save timeouts
     if (this.saveTimeout) {
       clearTimeout(this.saveTimeout);
+    }
+    if (this.pollSaveTimeout) {
+      clearTimeout(this.pollSaveTimeout);
     }
   }
 
   beforeUnloadHandler(event) {
-    if (this.hasUnsavedChanges && this.isContentNotEmpty(this.draftContent)) {
+    const hasPostDraft =
+      this.hasUnsavedChanges && this.isContentNotEmpty(this.draftContent);
+    const hasPollDraft =
+      this.activeTab === "poll" &&
+      this.isExpanded &&
+      (this.pollQuestion?.trim() ||
+        this.pollChoices.some((c) => c.value && c.value.trim()));
+    if (hasPostDraft || hasPollDraft) {
       event.preventDefault();
       event.returnValue =
         "You have unsaved changes. Are you sure you want to leave?";
@@ -97,8 +163,173 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
   }
 
   handleCollapsePublisher() {
-    if (!this.isContentNotEmpty(this.draftContent)) {
+    if (
+      this.activeTab === "post" &&
+      !this.isContentNotEmpty(this.draftContent)
+    ) {
       this.isExpanded = false;
+    }
+    if (this.activeTab === "poll") {
+      this.isExpanded = false;
+      this.pollQuestion = "";
+      this.pollChoices = [
+        { id: "1", value: "", canRemove: false },
+        { id: "2", value: "", canRemove: false }
+      ];
+      this._pollChoiceId = 3;
+      this.clearPollDraftFromLocalStorage();
+    }
+  }
+
+  handleTabClick(event) {
+    const tab = event.currentTarget.dataset.tab;
+    if (tab === this.activeTab) return;
+    this.activeTab = tab;
+    if (tab === "poll") {
+      this.loadPollDraftFromLocalStorage();
+    }
+  }
+
+  handlePollQuestionChange(event) {
+    this.pollQuestion = event.target.value;
+    this.schedulePollDraftSave();
+  }
+
+  handlePollChoiceChange(event) {
+    const id = event.target.dataset.choiceId;
+    const value = event.target.value;
+    this.pollChoices = this.pollChoices.map((c) => {
+      return c.id === id ? { ...c, value } : c;
+    });
+    this.schedulePollDraftSave();
+  }
+
+  schedulePollDraftSave() {
+    if (this.pollSaveTimeout) {
+      clearTimeout(this.pollSaveTimeout);
+    }
+    // eslint-disable-next-line @lwc/lwc/no-async-operation
+    this.pollSaveTimeout = setTimeout(() => {
+      this.savePollDraftToLocalStorage();
+    }, AUTOSAVE_DELAY);
+  }
+
+  savePollDraftToLocalStorage() {
+    if (!this.effectiveGroupId) return;
+    const hasQuestion = this.pollQuestion && this.pollQuestion.trim();
+    const validChoices = this.pollChoices
+      .map((c) => c.value && c.value.trim())
+      .filter(Boolean);
+    if (!hasQuestion && validChoices.length === 0) return;
+
+    this.isSavingPoll = true;
+    try {
+      const key = this.getPollDraftKey();
+      const draft = {
+        type: "poll",
+        question: this.pollQuestion || "",
+        choices: this.pollChoices.map((c) => c.value || ""),
+        timestamp: new Date().toISOString(),
+        groupId: this.effectiveGroupId
+      };
+      localStorage.setItem(key, JSON.stringify(draft));
+      this.lastPollSavedText =
+        "Draft saved " + this.getRelativeTime(draft.timestamp);
+    } catch (error) {
+      console.error("Error saving poll draft:", error);
+    } finally {
+      this.isSavingPoll = false;
+    }
+  }
+
+  loadPollDraftFromLocalStorage() {
+    if (!this.effectiveGroupId) return;
+    try {
+      const key = this.getPollDraftKey();
+      const draftJson = localStorage.getItem(key);
+      if (!draftJson) return;
+      const draft = JSON.parse(draftJson);
+      if (this.isDraftExpired(draft.timestamp)) {
+        this.clearPollDraftFromLocalStorage();
+        return;
+      }
+      this.savedDraft = draft;
+      this.draftTimestamp = this.getRelativeTime(draft.timestamp);
+      this.showRestoreDraftModal = true;
+    } catch (error) {
+      console.error("Error loading poll draft:", error);
+    }
+  }
+
+  clearPollDraftFromLocalStorage() {
+    try {
+      localStorage.removeItem(this.getPollDraftKey());
+    } catch (error) {
+      console.error("Error clearing poll draft:", error);
+    }
+  }
+
+  getPollDraftKey() {
+    return POLL_DRAFT_KEY_PREFIX + this.effectiveGroupId;
+  }
+
+  handleAddPollChoice() {
+    if (this.pollChoices.length >= this.MAX_POLL_CHOICES) return;
+    const id = String(this._pollChoiceId++);
+    this.pollChoices = [
+      ...this.pollChoices.map((c) => ({
+        ...c,
+        canRemove: true
+      })),
+      { id, value: "", canRemove: true }
+    ];
+  }
+
+  handleRemovePollChoice(event) {
+    const id = event.target.dataset.choiceId;
+    const next = this.pollChoices.filter((c) => c.id !== id);
+    if (next.length < 2) return;
+    this.pollChoices = next.map((c) => ({
+      ...c,
+      canRemove: next.length > 2
+    }));
+  }
+
+  async handlePostPoll() {
+    if (this.isPollShareDisabled || !this.effectiveGroupId) return;
+    const choices = this.pollChoices
+      .map((c) => c.value && c.value.trim())
+      .filter(Boolean);
+    if (choices.length < 2) {
+      this.showToast("Error", "At least 2 choices are required", "error");
+      return;
+    }
+    this.isPosting = true;
+    try {
+      await postPollToChatter({
+        groupId: this.effectiveGroupId,
+        question: this.pollQuestion.trim(),
+        choices
+      });
+      this.showToast("Success", "Your poll has been shared", "success");
+      this.isExpanded = false;
+      this.pollQuestion = "";
+      this.pollChoices = [
+        { id: "1", value: "", canRemove: false },
+        { id: "2", value: "", canRemove: false }
+      ];
+      this._pollChoiceId = 3;
+      this.clearPollDraftFromLocalStorage();
+      this.dispatchEvent(new CustomEvent("postpublished"));
+      window.location.reload();
+    } catch (error) {
+      const errorMessage =
+        error.body?.message ||
+        error.message ||
+        "An error occurred while posting the poll";
+      this.showToast("Error", errorMessage, "error");
+    } finally {
+      this.isPosting = false;
     }
   }
 
@@ -148,27 +379,19 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
   }
 
   loadDraftFromLocalStorage() {
-    if (!this.effectiveGroupId) {
-      return;
-    }
-
+    if (!this.effectiveGroupId) return;
     try {
       const draftKey = this.getDraftKey();
       const draftJson = localStorage.getItem(draftKey);
-
-      if (draftJson) {
-        const draft = JSON.parse(draftJson);
-
-        // Check if draft is expired
-        if (this.isDraftExpired(draft.timestamp)) {
-          this.clearDraftFromLocalStorage();
-          return;
-        }
-
-        this.savedDraft = draft;
-        this.draftTimestamp = this.getRelativeTime(draft.timestamp);
-        this.showRestoreDraftModal = true;
+      if (!draftJson) return;
+      const draft = JSON.parse(draftJson);
+      if (this.isDraftExpired(draft.timestamp)) {
+        this.clearDraftFromLocalStorage();
+        return;
       }
+      this.savedDraft = { type: "post", ...draft };
+      this.draftTimestamp = this.getRelativeTime(draft.timestamp);
+      this.showRestoreDraftModal = true;
     } catch (error) {
       console.error("Error loading draft from localStorage:", error);
     }
@@ -176,17 +399,34 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
 
   handleRestoreDraft() {
     if (this.savedDraft) {
-      this.draftContent = this.savedDraft.content;
-      this.hasDraft = true;
-      this.hasUnsavedChanges = false;
-      this.lastSavedText = "Draft restored from " + this.draftTimestamp;
+      if (this.savedDraft.type === "poll") {
+        this.pollQuestion = this.savedDraft.question || "";
+        const choices = this.savedDraft.choices || ["", ""];
+        this.pollChoices = choices.map((val, i) => ({
+          id: String(i + 1),
+          value: val,
+          canRemove: choices.length > 2
+        }));
+        this._pollChoiceId = choices.length + 1;
+        this.activeTab = "poll";
+        this.lastPollSavedText = "Draft restored from " + this.draftTimestamp;
+      } else {
+        this.draftContent = this.savedDraft.content || "";
+        this.hasDraft = true;
+        this.hasUnsavedChanges = false;
+        this.lastSavedText = "Draft restored from " + this.draftTimestamp;
+      }
       this.isExpanded = true;
     }
     this.showRestoreDraftModal = false;
   }
 
   handleDiscardDraft() {
-    this.clearDraftFromLocalStorage();
+    if (this.savedDraft && this.savedDraft.type === "poll") {
+      this.clearPollDraftFromLocalStorage();
+    } else {
+      this.clearDraftFromLocalStorage();
+    }
     this.showRestoreDraftModal = false;
   }
 
@@ -258,24 +498,24 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
   cleanupExpiredDrafts() {
     try {
       const keysToRemove = [];
+      const prefixes = [DRAFT_KEY_PREFIX, POLL_DRAFT_KEY_PREFIX];
 
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-
-        if (key && key.startsWith(DRAFT_KEY_PREFIX)) {
-          const draftJson = localStorage.getItem(key);
-
-          if (draftJson) {
-            const draft = JSON.parse(draftJson);
-
-            if (this.isDraftExpired(draft.timestamp)) {
-              keysToRemove.push(key);
-            }
+        if (!key) continue;
+        const matchPrefix = prefixes.find((p) => key.startsWith(p));
+        if (!matchPrefix) continue;
+        const draftJson = localStorage.getItem(key);
+        if (!draftJson) continue;
+        try {
+          const draft = JSON.parse(draftJson);
+          if (this.isDraftExpired(draft.timestamp)) {
+            keysToRemove.push(key);
           }
+        } catch (e) {
+          keysToRemove.push(key);
         }
       }
-
-      // Remove expired drafts
       keysToRemove.forEach((key) => localStorage.removeItem(key));
     } catch (error) {
       console.error("Error cleaning up expired drafts:", error);

@@ -7,6 +7,51 @@
   padding: 0;
 }
 
+/* Tabs: Post | Poll */
+.tabs-container {
+  display: flex;
+  border-bottom: 2px solid #e5e5e5;
+  margin-bottom: 0.5rem;
+}
+
+.tab-item {
+  background: none;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.8125rem;
+  color: #3e3e3c;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+}
+
+.tab-item:hover {
+  color: #0176d3;
+}
+
+.tab-item[aria-selected="true"] {
+  color: #2e844a;
+  font-weight: 600;
+  border-bottom-color: #2e844a;
+}
+
+/* Poll editor */
+.poll-editor .poll-choice-row {
+  display: flex;
+  align-items: center;
+}
+
+.poll-editor .poll-choice-row lightning-input {
+  flex-grow: 1;
+}
+
+.poll-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
 /* Collapsed state: single row, "Share an update..." + Share button */
 .publisher-collapsed {
   gap: 0.5rem;
