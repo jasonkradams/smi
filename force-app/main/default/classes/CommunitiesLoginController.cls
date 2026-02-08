@@ -1,6 +1,6 @@
 /**
  * Controller for custom Community login page with username normalization.
- * Automatically strips .smi suffix from usernames to support legacy login habits.
+ * Automatically appends .smi suffix to usernames to support email-based login.
  *
  * @author Spokane Mountaineers
  * @date 2026-02-05
@@ -31,7 +31,7 @@ public without sharing class CommunitiesLoginController {
 
   /**
    * Handle login form submission
-   * Normalizes username by stripping .smi suffix and authenticates user
+   * Normalizes username by appending .smi suffix if not present and authenticates user
    *
    * @return PageReference to redirect after successful login, null on error
    */
@@ -49,7 +49,7 @@ public without sharing class CommunitiesLoginController {
         return null;
       }
 
-      // Normalize username: strip .smi suffix if present
+      // Normalize username: append .smi suffix if not present
       String normalizedUsername = normalizeUsername(username.trim());
 
       // Attempt authentication with normalized username
@@ -82,11 +82,11 @@ public without sharing class CommunitiesLoginController {
   }
 
   /**
-   * Normalize username by removing .smi suffix
-   * Supports legacy login behavior where users enter username.smi
+   * Normalize username by appending .smi suffix if not present
+   * Allows users to login with just their email address
    *
    * @param rawUsername The username entered by user
-   * @return Normalized username without .smi suffix
+   * @return Normalized username with .smi suffix
    */
   @TestVisible
   private String normalizeUsername(String rawUsername) {
@@ -94,9 +94,9 @@ public without sharing class CommunitiesLoginController {
       return rawUsername;
     }
 
-    // Strip .smi suffix (case insensitive)
-    if (rawUsername.endsWithIgnoreCase('.smi')) {
-      return rawUsername.substring(0, rawUsername.length() - 4);
+    // Append .smi suffix if not already present (case insensitive)
+    if (!rawUsername.endsWithIgnoreCase('.smi')) {
+      return rawUsername + '.smi';
     }
 
     return rawUsername;
