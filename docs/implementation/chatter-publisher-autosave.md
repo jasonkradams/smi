@@ -29,13 +29,14 @@ The standard Salesforce Chatter publisher in Experience Cloud provides no draft 
 
 A custom Lightning Web Component (`chatterPublisherWithAutosave`) that provides:
 
-1. **Automatic Draft Saving** - Saves to browser localStorage every 10 seconds after typing stops
-2. **Rich Text Support** - Full formatting preservation (bold, italic, lists, links, etc.)
-3. **Draft Restoration** - Prompts users to restore saved drafts when returning to pages
-4. **Navigation Warnings** - Warns users before leaving with unsaved changes
-5. **Visual Feedback** - Shows "Draft saved" with relative timestamps
-6. **Draft Expiration** - Auto-expires drafts older than 7 days
-7. **Per-Group Drafts** - Each Chatter group maintains its own separate draft
+1. **Automatic Draft Saving** - Saves to browser localStorage after typing stops (configurable delay, default 3 seconds)
+2. **Post and Poll Tabs** - Post (rich text) and Poll (question + 2–10 choices) with separate drafts per tab
+3. **Rich Text Support** - Full formatting preservation for posts (bold, italic, lists, links, etc.)
+4. **Draft Restoration** - Prompts users to restore saved post or poll drafts when returning to pages
+5. **Navigation Warnings** - Warns users before leaving with unsaved changes
+6. **Visual Feedback** - Shows "Draft saved" briefly; message disappears after a short delay (configurable, default 3 seconds)
+7. **Draft Expiration** - Auto-expires drafts older than 7 days
+8. **Per-Group Drafts** - Each Chatter group maintains its own separate post and poll drafts
 
 ### Goals
 
@@ -83,7 +84,7 @@ Chatter Autosave System
 - Simpler implementation and faster user experience
 - Drafts automatically scoped to device/browser (privacy benefit)
 
-**Debounced Autosave**: Draft saving uses a 10-second debounce to:
+**Debounced Autosave**: Draft saving uses a configurable debounce (see `AUTOSAVE_DELAY_MS` in the LWC, default 3 seconds) to:
 
 - Avoid excessive localStorage writes
 - Balance responsiveness with performance
@@ -101,13 +102,14 @@ Chatter Autosave System
 
 Drafts are stored with keys in the format:
 
-```
-chatterDraft_<groupId>
-```
+- **Post drafts**: `chatterDraft_<groupId>`
+- **Poll drafts**: `chatterPollDraft_<groupId>`
 
-Each Chatter group maintains its own separate draft, allowing users to have in-progress posts for multiple groups simultaneously.
+Each Chatter group maintains its own separate post and poll drafts, allowing users to have in-progress posts and polls for multiple groups simultaneously.
 
 ### Draft Data Structure
+
+**Post draft**:
 
 ```javascript
 {
@@ -117,16 +119,32 @@ Each Chatter group maintains its own separate draft, allowing users to have in-p
 }
 ```
 
+**Poll draft**:
+
+```javascript
+{
+  "type": "poll",
+  "question": "Poll question text",
+  "choices": ["Choice 1", "Choice 2", "Choice 3"],
+  "timestamp": "2026-02-08T10:30:00.000Z",
+  "groupId": "0F9xxxxxxxxxx"
+}
+```
+
 ### Autosave Flow
 
-1. User types in rich text editor
+**Post tab**:
+
+1. User types in rich text editor (or edits in Poll tab: question or choices)
 2. Component detects change via `onchange` event
-3. Debounce timer starts (10 seconds)
+3. Debounce timer starts (duration from `AUTOSAVE_DELAY_MS`, default 3 seconds)
 4. If user stops typing, timer fires and saves to localStorage
-5. Visual indicator shows "Draft saved X minutes ago"
-6. On page load, component checks for existing draft
+5. Visual indicator shows "Draft saved" briefly, then disappears after `DRAFT_SAVED_MESSAGE_DURATION_MS` (default 3 seconds)
+6. On page load, component checks for existing draft (post or poll)
 7. If found and not expired, shows restoration modal
 8. User can restore or discard draft
+
+**Poll tab**: Same debounce and save flow; poll drafts use `chatterPollDraft_<groupId>` and include question and choices.
 
 ### Navigation Warning Flow
 
@@ -149,12 +167,19 @@ Each Chatter group maintains its own separate draft, allowing users to have in-p
 
 **Purpose**: Provides custom Chatter publisher with autosave functionality
 
+**Key constants** (in component JS):
+
+- `AUTOSAVE_DELAY_MS` - Debounce delay before saving draft (default 3000 ms)
+- `DRAFT_SAVED_MESSAGE_DURATION_MS` - How long "Draft saved" stays visible (default 3000 ms)
+- `DRAFT_EXPIRATION_DAYS` - Drafts older than this are expired (7)
+
 **Key Properties**:
 
 ```javascript
 @api groupId; // Can be set explicitly or auto-detected from page
 _internalGroupId; // Auto-detected from CurrentPageReference
 effectiveGroupId; // Computed property that returns groupId || _internalGroupId
+activeTab; // "post" | "poll"
 ```
 
 **Key Methods**:
@@ -163,35 +188,37 @@ effectiveGroupId; // Computed property that returns groupId || _internalGroupId
 handleTextChange(event);
 ```
 
-Responds to text changes in the rich text editor:
+Responds to text changes in the rich text editor (Post tab):
 
 1. Updates `draftContent` with new value
 2. Sets `hasUnsavedChanges` flag
 3. Clears existing debounce timeout
-4. Sets new 10-second timeout for autosave
+4. Sets new timeout for autosave (duration from `AUTOSAVE_DELAY_MS`)
 
 ```javascript
 saveDraftToLocalStorage();
 ```
 
-Saves current draft to browser localStorage:
+Saves current post draft to browser localStorage:
 
 1. Validates content is not empty
 2. Creates draft object with content, timestamp, groupId
 3. Stores in localStorage with prefixed key
-4. Updates visual indicator with "Draft saved" message
+4. Shows "Draft saved" briefly (cleared after `DRAFT_SAVED_MESSAGE_DURATION_MS`)
 5. Clears `hasUnsavedChanges` flag
+
+Poll drafts use `schedulePollDraftSave()` and `savePollDraftToLocalStorage()` with the same debounce and temporary message behavior.
 
 ```javascript
 loadDraftFromLocalStorage();
 ```
 
-Loads existing draft from localStorage:
+Loads existing draft from localStorage (post and/or poll):
 
-1. Retrieves draft by groupId key
+1. Retrieves draft by groupId key (post: `chatterDraft_`, poll: `chatterPollDraft_`)
 2. Checks if draft is expired (>7 days)
 3. If expired, deletes and returns
-4. If valid, shows restoration modal with relative timestamp
+4. If valid, shows restoration modal with relative timestamp (restore or discard)
 
 ```javascript
 handlePost();
@@ -217,11 +244,11 @@ Warns user before leaving with unsaved changes:
 
 **Helper Methods**:
 
-- `cleanupExpiredDrafts()` - Removes drafts older than 7 days
-- `getDraftKey()` - Returns localStorage key for current group
+- `cleanupExpiredDrafts()` - Removes expired post and poll drafts (checks both key prefixes)
+- `getDraftKey()` / `getPollDraftKey()` - Return localStorage keys for current group
 - `isContentNotEmpty()` - Strips HTML and checks for actual text
 - `isDraftExpired()` - Checks if draft is older than 7 days
-- `getRelativeTime()` - Formats timestamp as "X minutes ago"
+- `getRelativeTime()` - Formats timestamp as "just now", "X minutes ago", etc.
 - `showToast()` - Displays lightning toast messages
 
 ### ChatterPublisherController (Apex)
@@ -235,7 +262,7 @@ Warns user before leaving with unsaved changes:
 public static String postToChatter(String groupId, String content)
 ```
 
-Posts a message to a Chatter group:
+Posts a text message to a Chatter group:
 
 1. Validates groupId and content are provided
 2. Verifies Chatter group exists and user has access
@@ -243,6 +270,19 @@ Posts a message to a Chatter group:
 4. Builds ConnectApi.FeedItemInput
 5. Posts via `ConnectApi.ChatterFeeds.postFeedElement`
 6. Returns feed item ID on success
+
+```apex
+@AuraEnabled
+public static String postPollToChatter(String groupId, String question, List<String> choices)
+```
+
+Posts a poll to a Chatter group:
+
+1. Validates groupId, question, and at least 2 non-empty choices (max 10)
+2. Verifies Chatter group exists and user has access
+3. Builds ConnectApi.FeedItemInput with body (question) and PollCapabilityInput (choices)
+4. Posts via `ConnectApi.ChatterFeeds.postFeedElement`
+5. Returns feed element ID on success (or mock ID in test context)
 
 ```apex
 private static Id getNetworkId()
@@ -274,7 +314,7 @@ Converts rich text HTML to plain text:
 
 **Test Scenarios Covered**:
 
-1. **Successful Posting**:
+1. **Successful post and poll posting**:
     - Plain text content
     - Rich text with formatting
     - Content with HTML entities
@@ -282,6 +322,7 @@ Converts rich text HTML to plain text:
     - Content with lists
     - Long content
     - Content with special characters
+    - Poll: valid question and 2–10 choices; blank choices filtered out
 
 2. **Error Handling**:
     - Null group ID
@@ -289,6 +330,7 @@ Converts rich text HTML to plain text:
     - Null content
     - Empty content
     - Invalid/non-existent group ID
+    - Poll: null/blank groupId, blank question, too few choices, too many choices
 
 3. **Edge Cases**:
     - Group ID validation
@@ -403,16 +445,16 @@ Expected output:
 
 1. **Draft Saving**:
     - Navigate to a Chatter group page in staging
-    - Start typing a message with formatting
-    - Wait 10 seconds
-    - Verify "Draft saved" indicator appears
-    - Check browser console: `localStorage.getItem('chatterDraft_<groupId>')`
+    - Start typing a message with formatting (Post tab) or question/choices (Poll tab)
+    - Wait a few seconds (autosave delay, default 3 seconds)
+    - Verify "Draft saved" appears briefly, then disappears
+    - Check browser console: `localStorage.getItem('chatterDraft_<groupId>')` or `chatterPollDraft_<groupId>` for poll
 
 2. **Draft Restoration**:
-    - With a saved draft, refresh the page
-    - Verify restoration modal appears
+    - With a saved post or poll draft, refresh the page
+    - Verify restoration modal appears (post or poll wording)
     - Click "Restore Draft"
-    - Confirm content is restored with formatting intact
+    - Confirm content is restored (post formatting or poll question/choices intact)
 
 3. **Navigation Warning**:
     - Start typing without waiting for autosave
@@ -420,11 +462,10 @@ Expected output:
     - Verify browser shows confirmation dialog
 
 4. **Posting**:
-    - Compose a message with rich text formatting
-    - Click "Share" button
-    - Verify post appears in Chatter feed
+    - Compose a message (Post) or poll (Poll tab), then click "Share"
+    - Verify post or poll appears in Chatter feed
     - Confirm draft is cleared from localStorage
-    - Verify "Draft saved" indicator is gone
+    - "Draft saved" message is temporary and clears on its own after the configured duration
 
 5. **Draft Expiration**:
     - Manually create expired draft in console:
@@ -489,7 +530,7 @@ If issues arise:
 
 **localStorage for Persistence**: Using browser localStorage provided instant saves with no network latency and survived browser crashes perfectly. The approach proved more reliable than we initially expected, with no storage quota issues even with rich HTML content.
 
-**Debounced Autosave**: The 10-second debounce struck the right balance between responsiveness and performance. Users appreciated seeing the "Draft saved" confirmation without being distracted by constant saves.
+**Debounced Autosave**: The configurable debounce (e.g. 3 seconds) strikes a balance between responsiveness and performance. Users see a brief "Draft saved" confirmation that disappears after a short delay, avoiding clutter.
 
 **Rich Text Component**: The `lightning-input-rich-text` component provided robust formatting out of the box. The toolbar was familiar to users from other editing tools, reducing the learning curve.
 
