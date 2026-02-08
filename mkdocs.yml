@@ -6,14 +6,21 @@ nav:
   - Home: index.md
   - Articles:
       - articles/index.md
+      - Migrating to Email-Based Login: articles/simplifying-custom-login-experience.md
+      - Activity Group Event Notifications: articles/activity-group-event-notifications.md
       - Fixing Approval Email Notifications: articles/fixing-approval-email-notifications.md
       - Restricting Account Access: articles/experience-cloud-account-access-restriction.md
       - Enabling Google Login: articles/enable-google-login.md
       - Event Participant Follow Handler Update: articles/event-participant-follow-handler-update.md
       - Event Participant Privacy (Overview): articles/event-participant-privacy-solution.md
       - Event Participant Privacy (Technical): articles/event-participant-redirect.md
+  - Implementation:
+      - implementation/index.md
+      - Custom Login Page: implementation/custom-login-page-implementation.md
   - How-To Guides:
       - how-to-guides/index.md
+      - Configure Custom Login Page: how-to-guides/configure-custom-login-page.md
+      - Setup Staging Sandbox: how-to-guides/setup-staging-sandbox.md
       - Customize Favicon: how-to-guides/update-experience-cloud-favicon.md
       - Preventing Logout With KeepAlives: how-to-guides/keepalive-sessions.md
       - Website Editing: how-to-guides/website-editing.md
@@ -22,12 +29,19 @@ nav:
   - Automation:
       - automation/index.md
       - Event Approval Email Alerts: automation/event-approval-email-alerts.md
+      - Event Chatter Batch Setup: automation/event-chatter-batch-setup.md
+      - Event Chatter Batch Deployment: automation/event-chatter-batch-deployment.md
+      - Event Chatter Batch Production Deployment: automation/event-chatter-batch-production-deployment.md
       - Google Login Automation: automation/google-login-automation.md
-      - Scheduled Add Aembers to Conservation Group: automation/scheduled-add-members-to-conservation-group.md
       - Notify Leader on RSVP: automation/notify-leader-on-rsvp.md
+      - Notify Subscribers of New Event: automation/notify-subscribers-new-event.md
+      - Scheduled Add Aembers to Conservation Group: automation/scheduled-add-members-to-conservation-group.md
   - Proposals:
       - proposals/index.md
       - Automate Member License Sorting: proposals/automate-member-license-sorting.md
+  - Google Workspace:
+      - google-workspace/index.md
+      - Querying Custom User Schema: google-workspace/querying-custom-user-schema.md
   - About: about.md # We'll add this page later.
 
 # Custom branding
