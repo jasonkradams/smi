@@ -1,0 +1,112 @@
+---
+description: Salesforce test class and code coverage requirements
+globs: **/*.cls
+alwaysApply: false
+---
+
+# Salesforce Test Coverage Standards
+
+When creating new Salesforce classes, you MUST create corresponding test classes with >75% code coverage.
+
+## Test Class Requirements
+
+### Naming Convention
+
+Test classes must follow this pattern:
+
+```apex
+// ❌ BAD
+public class MyClassTests { }
+public class TestMyClass { }
+
+// ✅ GOOD
+public class MyClassTest { }
+```
+
+### Test Class Structure
+
+```apex
+@isTest
+private class MyClassTest {
+    
+    @TestSetup
+    static void setupTestData() {
+        // Create test data once for all test methods
+    }
+    
+    @isTest
+    static void testPositiveScenario() {
+        // Test the happy path
+        Test.startTest();
+        // Your test code
+        Test.stopTest();
+        
+        // Assertions
+        System.assertEquals(expected, actual, 'Description');
+    }
+    
+    @isTest
+    static void testNegativeScenario() {
+        // Test edge cases and error handling
+    }
+    
+    @isTest
+    static void testBulkScenario() {
+        // Test with 200+ records for bulk operations
+    }
+}
+```
+
+## Coverage Requirements
+
+- **Minimum**: 75% code coverage per class
+- **Target**: Aim for 85%+ coverage
+- **Every line matters**: Cover all branches, exception handlers, and edge cases
+
+### What Must Be Covered
+
+```apex
+// ❌ BAD - Uncovered exception handler
+try {
+    performOperation();
+} catch (Exception e) {
+    // No test covers this branch
+    Logger.error(e);
+}
+
+// ✅ GOOD - Test both paths
+@isTest
+static void testExceptionHandling() {
+    Test.startTest();
+    try {
+        // Force exception
+        MyClass.performOperationWithInvalidData();
+        System.assert(false, 'Expected exception');
+    } catch (MyException e) {
+        System.assert(true, 'Exception handled correctly');
+    }
+    Test.stopTest();
+}
+```
+
+## Best Practices
+
+1. **Use @TestSetup**: Create test data once, reuse in all test methods
+2. **Test.startTest() / Test.stopTest()**: Reset governor limits
+3. **Bulk Testing**: Always test with 200+ records
+4. **Assertions**: Every test must have meaningful assertions
+5. **Isolation**: Tests should not depend on each other
+6. **Mock External Calls**: Use Test.setMock() for callouts
+
+## Checklist for New Classes
+
+Before deploying any new Salesforce class:
+
+- [ ] Test class created with naming convention `[ClassName]Test`
+- [ ] Test class marked with `@isTest`
+- [ ] All methods are `static` and marked with `@isTest`
+- [ ] Code coverage is >75% (verify with `sfdx force:apex:test:run`)
+- [ ] Positive scenarios tested
+- [ ] Negative scenarios and error handling tested
+- [ ] Bulk scenarios tested (200+ records)
+- [ ] All assertions include descriptive messages
