@@ -7,8 +7,8 @@ import postPollToChatter from "@salesforce/apex/ChatterPublisherController.postP
 // Constants
 const DRAFT_KEY_PREFIX = "chatterDraft_";
 const POLL_DRAFT_KEY_PREFIX = "chatterPollDraft_";
-const AUTOSAVE_DELAY_MS = 1000;
-const DRAFT_SAVED_MESSAGE_DURATION_MS = 1000;
+const AUTOSAVE_DELAY_MS = 3000;
+const DRAFT_SAVED_MESSAGE_DURATION_MS = 3000;
 const DRAFT_EXPIRATION_DAYS = 7;
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
