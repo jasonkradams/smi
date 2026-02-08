@@ -279,4 +279,83 @@ private class ChatterPublisherControllerTest {
     // Verify the method completed without exceptions
     System.assertNotEquals(null, feedItemId, 'Feed item ID should not be null');
   }
+
+  @IsTest
+  static void testPostPollToChatter_Success() {
+    CollaborationGroup testGroup = getOrCreateTestGroup('TestGroup');
+    String question = 'What is your favorite activity?';
+    List<String> choices = new List<String>{ 'Hiking', 'Climbing', 'Skiing' };
+
+    Test.startTest();
+    String feedItemId = ChatterPublisherController.postPollToChatter(
+      testGroup.Id,
+      question,
+      choices
+    );
+    Test.stopTest();
+
+    System.assertNotEquals(null, feedItemId, 'Feed item ID should not be null');
+  }
+
+  @IsTest
+  static void testPostPollToChatter_NullGroupId() {
+    List<String> choices = new List<String>{ 'A', 'B' };
+    Test.startTest();
+    Boolean exceptionThrown = false;
+    try {
+      ChatterPublisherController.postPollToChatter(null, 'Question?', choices);
+    } catch (AuraHandledException e) {
+      exceptionThrown = true;
+    }
+    Test.stopTest();
+    System.assert(exceptionThrown, 'Expected AuraHandledException');
+  }
+
+  @IsTest
+  static void testPostPollToChatter_BlankQuestion() {
+    CollaborationGroup testGroup = getOrCreateTestGroup('TestGroup');
+    List<String> choices = new List<String>{ 'A', 'B' };
+    Test.startTest();
+    Boolean exceptionThrown = false;
+    try {
+      ChatterPublisherController.postPollToChatter(testGroup.Id, '', choices);
+    } catch (AuraHandledException e) {
+      exceptionThrown = true;
+    }
+    Test.stopTest();
+    System.assert(exceptionThrown, 'Expected AuraHandledException');
+  }
+
+  @IsTest
+  static void testPostPollToChatter_TooFewChoices() {
+    CollaborationGroup testGroup = getOrCreateTestGroup('TestGroup');
+    List<String> choices = new List<String>{ 'Only one' };
+    Test.startTest();
+    Boolean exceptionThrown = false;
+    try {
+      ChatterPublisherController.postPollToChatter(
+        testGroup.Id,
+        'Question?',
+        choices
+      );
+    } catch (AuraHandledException e) {
+      exceptionThrown = true;
+    }
+    Test.stopTest();
+    System.assert(exceptionThrown, 'Expected AuraHandledException');
+  }
+
+  @IsTest
+  static void testPostPollToChatter_BlankChoicesFiltered() {
+    CollaborationGroup testGroup = getOrCreateTestGroup('TestGroup');
+    List<String> choices = new List<String>{ 'Choice 1', '  ', 'Choice 2' };
+    Test.startTest();
+    String feedItemId = ChatterPublisherController.postPollToChatter(
+      testGroup.Id,
+      'Question?',
+      choices
+    );
+    Test.stopTest();
+    System.assertNotEquals(null, feedItemId, 'Feed item ID should not be null');
+  }
 }

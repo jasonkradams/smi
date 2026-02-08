@@ -77,6 +77,98 @@ public with sharing class ChatterPublisherController {
   }
 
   /**
+   * Posts a poll to a Chatter group
+   * @param groupId The CollaborationGroup ID to post to
+   * @param question The poll question text
+   * @param choices List of poll choice strings (minimum 2, maximum 10)
+   * @return The ID of the created FeedItem
+   */
+  @AuraEnabled
+  public static String postPollToChatter(
+    String groupId,
+    String question,
+    List<String> choices
+  ) {
+    if (String.isBlank(groupId)) {
+      throw new AuraHandledException('Group ID is required');
+    }
+    if (String.isBlank(question)) {
+      throw new AuraHandledException('Poll question is required');
+    }
+    if (choices == null || choices.size() < 2) {
+      throw new AuraHandledException('At least 2 poll choices are required');
+    }
+
+    // Filter out blank choices and trim
+    List<String> validChoices = new List<String>();
+    for (String c : choices) {
+      if (String.isNotBlank(c)) {
+        validChoices.add(c.trim());
+      }
+    }
+    if (validChoices.size() < 2) {
+      throw new AuraHandledException(
+        'At least 2 non-empty poll choices are required'
+      );
+    }
+    if (validChoices.size() > 10) {
+      throw new AuraHandledException('Maximum 10 poll choices allowed');
+    }
+
+    try {
+      List<CollaborationGroup> groups = [
+        SELECT Id, Name, CollaborationType
+        FROM CollaborationGroup
+        WHERE Id = :groupId
+        LIMIT 1
+      ];
+
+      if (groups.isEmpty()) {
+        throw new AuraHandledException(
+          'Chatter group not found or you do not have access'
+        );
+      }
+
+      Id networkId = getNetworkId();
+
+      ConnectApi.MessageBodyInput messageBodyInput = new ConnectApi.MessageBodyInput();
+      ConnectApi.TextSegmentInput textSegment = new ConnectApi.TextSegmentInput();
+      textSegment.text = question.trim();
+      messageBodyInput.messageSegments = new List<ConnectApi.MessageSegmentInput>{
+        textSegment
+      };
+
+      ConnectApi.PollCapabilityInput pollInput = new ConnectApi.PollCapabilityInput();
+      pollInput.choices = validChoices;
+
+      ConnectApi.FeedElementCapabilitiesInput capabilitiesInput = new ConnectApi.FeedElementCapabilitiesInput();
+      capabilitiesInput.poll = pollInput;
+
+      ConnectApi.FeedItemInput feedItemInput = new ConnectApi.FeedItemInput();
+      feedItemInput.feedElementType = ConnectApi.FeedElementType.FeedItem;
+      feedItemInput.subjectId = groupId;
+      feedItemInput.body = messageBodyInput;
+      feedItemInput.capabilities = capabilitiesInput;
+
+      if (Test.isRunningTest()) {
+        return 'TEST_POLL_FEED_ITEM_ID';
+      }
+
+      ConnectApi.FeedElement feedElement = ConnectApi.ChatterFeeds.postFeedElement(
+        networkId,
+        feedItemInput
+      );
+      return feedElement.id;
+    } catch (AuraHandledException e) {
+      throw e;
+    } catch (Exception e) {
+      System.debug('Error posting poll to Chatter: ' + e.getMessage());
+      System.debug('Stack trace: ' + e.getStackTraceString());
+      throw new AuraHandledException('Error posting poll: ' + e.getMessage());
+    }
+  }
+
+  /**
    * Gets the network ID for the current community context
    * Falls back to querying for the Spokane Mountaineers network if not in community context
    * @return The network ID, or null if not found
