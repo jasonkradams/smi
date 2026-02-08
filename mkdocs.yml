@@ -17,6 +17,7 @@ nav:
   - Implementation:
       - implementation/index.md
       - Custom Login Page: implementation/custom-login-page-implementation.md
+      - Chatter Publisher with Autosave: implementation/chatter-publisher-autosave.md
   - How-To Guides:
       - how-to-guides/index.md
       - Configure Custom Login Page: how-to-guides/configure-custom-login-page.md
