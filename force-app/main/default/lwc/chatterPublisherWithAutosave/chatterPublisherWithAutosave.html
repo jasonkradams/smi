@@ -1,5 +1,5 @@
 <template>
-  <lightning-card>
+  <lightning-card class="chatter-publisher-card">
     <!-- Draft Restoration Modal -->
     <template if:true={showRestoreDraftModal}>
       <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
@@ -32,60 +32,97 @@
       <div class="slds-backdrop slds-backdrop_open"></div>
     </template>
 
-    <!-- Publisher Card -->
+    <!-- Publisher: compact collapsed state -->
     <div class="slds-card__body slds-card__body_inner">
       <div class="publisher-container">
-        <!-- Rich Text Editor -->
-        <lightning-input-rich-text
-          value={draftContent}
-          placeholder="Share an update..."
-          formats={formats}
-          onchange={handleTextChange}
-          disabled={isPosting}
-          class="rich-text-editor"
-        >
-        </lightning-input-rich-text>
-
-        <!-- Action Bar -->
-        <div class="action-bar slds-m-top_small">
-          <div class="status-container">
-            <template if:true={lastSavedText}>
-              <span class="saved-indicator slds-text-color_success">
-                <lightning-icon
-                  icon-name="utility:check"
-                  size="xx-small"
-                  class="slds-m-right_xx-small"
-                >
-                </lightning-icon>
-                {lastSavedText}
-              </span>
-            </template>
-            <template if:true={isSaving}>
-              <span class="saving-indicator slds-text-color_weak">
-                Saving draft...
-              </span>
-            </template>
-          </div>
-
-          <div class="button-container">
-            <template if:true={hasDraft}>
-              <lightning-button
-                label="Clear Draft"
-                onclick={handleClearDraft}
-                disabled={isPosting}
-                class="slds-m-right_x-small"
-              >
-              </lightning-button>
-            </template>
+        <!-- Collapsed: single row, "Share an update..." + Share button -->
+        <template if:false={isExpanded}>
+          <div
+            class="publisher-collapsed slds-grid slds-grid_vertical-align-center"
+          >
+            <button
+              type="button"
+              class="slds-button slds-button_neutral publisher-trigger slds-grow"
+              onclick={handleExpandPublisher}
+              title="Share an update..."
+              aria-label="Share an update..."
+            >
+              <span class="publisher-trigger-label">Share an update...</span>
+            </button>
             <lightning-button
               variant="brand"
               label="Share"
-              onclick={handlePost}
-              disabled={isPostDisabled}
+              disabled
+              class="publisher-share-collapsed"
             >
             </lightning-button>
           </div>
-        </div>
+        </template>
+
+        <!-- Expanded: rich text editor and action bar -->
+        <template if:true={isExpanded}>
+          <div class="publisher-expanded">
+            <lightning-input-rich-text
+              value={draftContent}
+              placeholder="Share an update..."
+              formats={formats}
+              onchange={handleTextChange}
+              disabled={isPosting}
+              class="rich-text-editor"
+              data-editor
+            >
+            </lightning-input-rich-text>
+
+            <div class="action-bar slds-m-top_small">
+              <div class="status-container">
+                <template if:true={lastSavedText}>
+                  <span class="saved-indicator slds-text-color_success">
+                    <lightning-icon
+                      icon-name="utility:check"
+                      size="xx-small"
+                      class="slds-m-right_xx-small"
+                    >
+                    </lightning-icon>
+                    {lastSavedText}
+                  </span>
+                </template>
+                <template if:true={isSaving}>
+                  <span class="saving-indicator slds-text-color_weak">
+                    Saving draft...
+                  </span>
+                </template>
+                <template if:true={showCollapseOption}>
+                  <button
+                    type="button"
+                    class="slds-button collapse-trigger slds-text-color_weak"
+                    onclick={handleCollapsePublisher}
+                  >
+                    Cancel
+                  </button>
+                </template>
+              </div>
+
+              <div class="button-container">
+                <template if:true={hasDraft}>
+                  <lightning-button
+                    label="Clear Draft"
+                    onclick={handleClearDraft}
+                    disabled={isPosting}
+                    class="slds-m-right_x-small"
+                  >
+                  </lightning-button>
+                </template>
+                <lightning-button
+                  variant="brand"
+                  label="Share"
+                  onclick={handlePost}
+                  disabled={isPostDisabled}
+                >
+                </lightning-button>
+              </div>
+            </div>
+          </div>
+        </template>
       </div>
     </div>
   </lightning-card>

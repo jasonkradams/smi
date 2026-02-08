@@ -19,6 +19,7 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
   savedDraft = null;
   draftTimestamp = "";
   hasDraft = false;
+  isExpanded = false;
 
   saveTimeout = null;
   hasUnsavedChanges = false;
@@ -89,6 +90,16 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
       return event.returnValue;
     }
     return undefined;
+  }
+
+  handleExpandPublisher() {
+    this.isExpanded = true;
+  }
+
+  handleCollapsePublisher() {
+    if (!this.isContentNotEmpty(this.draftContent)) {
+      this.isExpanded = false;
+    }
   }
 
   handleTextChange(event) {
@@ -169,6 +180,7 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
       this.hasDraft = true;
       this.hasUnsavedChanges = false;
       this.lastSavedText = "Draft restored from " + this.draftTimestamp;
+      this.isExpanded = true;
     }
     this.showRestoreDraftModal = false;
   }
@@ -184,6 +196,7 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
     this.hasUnsavedChanges = false;
     this.lastSavedText = "";
     this.clearDraftFromLocalStorage();
+    this.isExpanded = false;
     this.showToast("Success", "Draft cleared", "success");
   }
 
@@ -208,11 +221,12 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
 
       this.showToast("Success", "Your post has been shared", "success");
 
-      // Clear draft after successful post
+      // Clear draft after successful post and collapse
       this.draftContent = "";
       this.hasDraft = false;
       this.hasUnsavedChanges = false;
       this.lastSavedText = "";
+      this.isExpanded = false;
       this.clearDraftFromLocalStorage();
 
       // Refresh the feed (dispatch event for parent components to listen)
@@ -329,5 +343,9 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
 
   get isPostDisabled() {
     return this.isPosting || !this.isContentNotEmpty(this.draftContent);
+  }
+
+  get showCollapseOption() {
+    return this.isExpanded && !this.isContentNotEmpty(this.draftContent);
   }
 }
