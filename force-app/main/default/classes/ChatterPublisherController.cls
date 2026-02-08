@@ -34,11 +34,6 @@ public with sharing class ChatterPublisherController {
         );
       }
 
-      // In test context, just validate and return mock ID
-      if (Test.isRunningTest()) {
-        return 'TEST_FEED_ITEM_ID';
-      }
-
       // Get the network ID for the community
       Id networkId = getNetworkId();
 
@@ -47,7 +42,7 @@ public with sharing class ChatterPublisherController {
       ConnectApi.MessageBodyInput messageBodyInput = new ConnectApi.MessageBodyInput();
       ConnectApi.TextSegmentInput textSegment = new ConnectApi.TextSegmentInput();
 
-      // Set the rich text content
+      // Set the rich text content (strip HTML tags)
       textSegment.text = stripHtmlTags(content);
 
       messageBodyInput.messageSegments = new List<ConnectApi.MessageSegmentInput>{
@@ -56,6 +51,11 @@ public with sharing class ChatterPublisherController {
       feedItemInput.body = messageBodyInput;
       feedItemInput.feedElementType = ConnectApi.FeedElementType.FeedItem;
       feedItemInput.subjectId = groupId;
+
+      // In test context, skip ConnectApi call and return mock ID
+      if (Test.isRunningTest()) {
+        return 'TEST_FEED_ITEM_ID';
+      }
 
       // Post to Chatter
       ConnectApi.FeedElement feedElement = ConnectApi.ChatterFeeds.postFeedElement(
