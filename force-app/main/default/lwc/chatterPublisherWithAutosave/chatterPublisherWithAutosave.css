@@ -1,5 +1,36 @@
+/* Compact card: smaller margins like original Feed Publisher */
+.chatter-publisher-card .slds-card__body_inner {
+  padding: 0.5rem 0.75rem;
+}
+
 .publisher-container {
-  padding: 12px;
+  padding: 0;
+}
+
+/* Collapsed state: single row, "Share an update..." + Share button */
+.publisher-collapsed {
+  gap: 0.5rem;
+  min-height: 2.25rem;
+}
+
+.publisher-trigger {
+  text-align: left;
+  justify-content: flex-start;
+  color: var(--slds-g-color-neutral-base-50, #3e3e3c);
+  font-size: 0.8125rem;
+}
+
+.publisher-trigger-label {
+  color: var(--slds-g-color-neutral-base-50, #3e3e3c);
+}
+
+.publisher-share-collapsed {
+  flex-shrink: 0;
+}
+
+/* Expanded state */
+.publisher-expanded {
+  padding-top: 0;
 }
 
 .rich-text-editor {
@@ -10,13 +41,22 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 8px;
+  padding-top: 0.5rem;
   border-top: 1px solid #e5e5e5;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .status-container {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.collapse-trigger {
+  font-size: 0.8125rem;
+  padding: 0 0.25rem;
 }
 
 .button-container {
@@ -27,11 +67,11 @@
 .saved-indicator {
   display: flex;
   align-items: center;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
 }
 
 .saving-indicator {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-style: italic;
 }
 
