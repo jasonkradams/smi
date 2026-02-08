@@ -5,12 +5,12 @@
       <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
         <div class="slds-modal__container">
           <header class="slds-modal__header">
-            <h2 class="slds-text-heading_medium">Restore Draft?</h2>
+            <h2 class="slds-text-heading_medium">{restoreDraftModalTitle}</h2>
           </header>
           <div class="slds-modal__content slds-p-around_medium">
             <p>
-              You have an unsaved draft from {draftTimestamp}. Would you like to
-              restore it?
+              You have an unsaved {restoreDraftModalLabel} from
+              {draftTimestamp}. Would you like to restore it?
             </p>
           </div>
           <footer class="slds-modal__footer">
@@ -32,96 +32,229 @@
       <div class="slds-backdrop slds-backdrop_open"></div>
     </template>
 
-    <!-- Publisher: compact collapsed state -->
+    <!-- Tabs: Post | Poll -->
     <div class="slds-card__body slds-card__body_inner">
       <div class="publisher-container">
-        <!-- Collapsed: single row, "Share an update..." + Share button -->
-        <template if:false={isExpanded}>
-          <div
-            class="publisher-collapsed slds-grid slds-grid_vertical-align-center"
+        <div class="tabs-container" role="tablist">
+          <button
+            type="button"
+            role="tab"
+            class="tab-item"
+            aria-selected={isPostTabActive}
+            data-tab="post"
+            onclick={handleTabClick}
           >
-            <button
-              type="button"
-              class="slds-button slds-button_neutral publisher-trigger slds-grow"
-              onclick={handleExpandPublisher}
-              title="Share an update..."
-              aria-label="Share an update..."
+            Post
+          </button>
+          <button
+            type="button"
+            role="tab"
+            class="tab-item"
+            aria-selected={isPollTabActive}
+            data-tab="poll"
+            onclick={handleTabClick}
+          >
+            Poll
+          </button>
+        </div>
+
+        <!-- Post tab content -->
+        <template if:true={isPostTab}>
+          <template if:false={isExpanded}>
+            <div
+              class="publisher-collapsed slds-grid slds-grid_vertical-align-center"
             >
-              <span class="publisher-trigger-label">Share an update...</span>
-            </button>
-            <lightning-button
-              variant="brand"
-              label="Share"
-              disabled
-              class="publisher-share-collapsed"
-            >
-            </lightning-button>
-          </div>
+              <button
+                type="button"
+                class="slds-button slds-button_neutral publisher-trigger slds-grow"
+                onclick={handleExpandPublisher}
+                title="Share an update..."
+                aria-label="Share an update..."
+              >
+                <span class="publisher-trigger-label">Share an update...</span>
+              </button>
+              <lightning-button
+                variant="brand"
+                label="Share"
+                disabled
+                class="publisher-share-collapsed"
+              >
+              </lightning-button>
+            </div>
+          </template>
+          <template if:true={isExpanded}>
+            <div class="publisher-expanded">
+              <lightning-input-rich-text
+                value={draftContent}
+                placeholder="Share an update..."
+                formats={formats}
+                onchange={handleTextChange}
+                disabled={isPosting}
+                class="rich-text-editor"
+                data-editor
+              >
+              </lightning-input-rich-text>
+              <div class="action-bar slds-m-top_small">
+                <div class="status-container">
+                  <template if:true={lastSavedText}>
+                    <span class="saved-indicator slds-text-color_success">
+                      <lightning-icon
+                        icon-name="utility:check"
+                        size="xx-small"
+                        class="slds-m-right_xx-small"
+                      >
+                      </lightning-icon>
+                      {lastSavedText}
+                    </span>
+                  </template>
+                  <template if:true={isSaving}>
+                    <span class="saving-indicator slds-text-color_weak">
+                      Saving draft...
+                    </span>
+                  </template>
+                  <template if:true={showCollapseOption}>
+                    <button
+                      type="button"
+                      class="slds-button collapse-trigger slds-text-color_weak"
+                      onclick={handleCollapsePublisher}
+                    >
+                      Cancel
+                    </button>
+                  </template>
+                </div>
+                <div class="button-container">
+                  <template if:true={hasDraft}>
+                    <lightning-button
+                      label="Clear Draft"
+                      onclick={handleClearDraft}
+                      disabled={isPosting}
+                      class="slds-m-right_x-small"
+                    >
+                    </lightning-button>
+                  </template>
+                  <lightning-button
+                    variant="brand"
+                    label="Share"
+                    onclick={handlePost}
+                    disabled={isPostDisabled}
+                  >
+                  </lightning-button>
+                </div>
+              </div>
+            </div>
+          </template>
         </template>
 
-        <!-- Expanded: rich text editor and action bar -->
-        <template if:true={isExpanded}>
-          <div class="publisher-expanded">
-            <lightning-input-rich-text
-              value={draftContent}
-              placeholder="Share an update..."
-              formats={formats}
-              onchange={handleTextChange}
-              disabled={isPosting}
-              class="rich-text-editor"
-              data-editor
+        <!-- Poll tab content -->
+        <template if:true={isPollTab}>
+          <template if:false={isExpanded}>
+            <div
+              class="publisher-collapsed slds-grid slds-grid_vertical-align-center"
             >
-            </lightning-input-rich-text>
-
-            <div class="action-bar slds-m-top_small">
-              <div class="status-container">
-                <template if:true={lastSavedText}>
-                  <span class="saved-indicator slds-text-color_success">
-                    <lightning-icon
-                      icon-name="utility:check"
-                      size="xx-small"
-                      class="slds-m-right_xx-small"
-                    >
-                    </lightning-icon>
-                    {lastSavedText}
-                  </span>
-                </template>
-                <template if:true={isSaving}>
-                  <span class="saving-indicator slds-text-color_weak">
-                    Saving draft...
-                  </span>
-                </template>
-                <template if:true={showCollapseOption}>
-                  <button
-                    type="button"
-                    class="slds-button collapse-trigger slds-text-color_weak"
-                    onclick={handleCollapsePublisher}
+              <button
+                type="button"
+                class="slds-button slds-button_neutral publisher-trigger slds-grow"
+                onclick={handleExpandPublisher}
+                title="Create a poll..."
+                aria-label="Create a poll..."
+              >
+                <span class="publisher-trigger-label">Create a poll...</span>
+              </button>
+              <lightning-button
+                variant="brand"
+                label="Share"
+                disabled
+                class="publisher-share-collapsed"
+              >
+              </lightning-button>
+            </div>
+          </template>
+          <template if:true={isExpanded}>
+            <div class="publisher-expanded poll-editor">
+              <lightning-input
+                label="Question"
+                value={pollQuestion}
+                placeholder="Ask a question..."
+                onchange={handlePollQuestionChange}
+                class="slds-m-bottom_small"
+              >
+              </lightning-input>
+              <div class="poll-choices">
+                <template for:each={pollChoices} for:item="choice">
+                  <div
+                    key={choice.id}
+                    class="poll-choice-row slds-m-bottom_x-small"
                   >
-                    Cancel
-                  </button>
+                    <lightning-input
+                      data-choice-id={choice.id}
+                      value={choice.value}
+                      placeholder="Choice"
+                      onchange={handlePollChoiceChange}
+                    >
+                    </lightning-input>
+                    <template if:true={choice.canRemove}>
+                      <lightning-button-icon
+                        icon-name="utility:delete"
+                        alternative-text="Remove choice"
+                        data-choice-id={choice.id}
+                        onclick={handleRemovePollChoice}
+                        class="slds-m-left_x-small"
+                      >
+                      </lightning-button-icon>
+                    </template>
+                  </div>
                 </template>
               </div>
-
-              <div class="button-container">
-                <template if:true={hasDraft}>
+              <div class="poll-actions slds-m-bottom_small">
+                <template if:true={canAddPollChoice}>
                   <lightning-button
-                    label="Clear Draft"
-                    onclick={handleClearDraft}
-                    disabled={isPosting}
+                    label="Add choice"
+                    onclick={handleAddPollChoice}
                     class="slds-m-right_x-small"
                   >
                   </lightning-button>
                 </template>
-                <lightning-button
-                  variant="brand"
-                  label="Share"
-                  onclick={handlePost}
-                  disabled={isPostDisabled}
-                >
-                </lightning-button>
+              </div>
+              <div class="action-bar slds-m-top_small">
+                <div class="status-container">
+                  <template if:true={lastPollSavedText}>
+                    <span class="saved-indicator slds-text-color_success">
+                      <lightning-icon
+                        icon-name="utility:check"
+                        size="xx-small"
+                        class="slds-m-right_xx-small"
+                      >
+                      </lightning-icon>
+                      {lastPollSavedText}
+                    </span>
+                  </template>
+                  <template if:true={isSavingPoll}>
+                    <span class="saving-indicator slds-text-color_weak">
+                      Saving draft...
+                    </span>
+                  </template>
+                  <template if:true={showCollapseOption}>
+                    <button
+                      type="button"
+                      class="slds-button collapse-trigger slds-text-color_weak"
+                      onclick={handleCollapsePublisher}
+                    >
+                      Cancel
+                    </button>
+                  </template>
+                </div>
+                <div class="button-container">
+                  <lightning-button
+                    variant="brand"
+                    label="Share"
+                    onclick={handlePostPoll}
+                    disabled={isPollShareDisabled}
+                  >
+                  </lightning-button>
+                </div>
               </div>
             </div>
-          </div>
+          </template>
         </template>
       </div>
     </div>

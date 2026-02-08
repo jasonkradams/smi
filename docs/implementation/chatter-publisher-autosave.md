@@ -325,7 +325,28 @@ sf apex get test --code-coverage --target-org staging
 3. Git repository cloned locally
 4. Feature branch created: `feature/chatter-autosave`
 
-### Step 1: Deploy to Staging
+### Quick Deploy (New Components Only)
+
+To deploy only the Chatter autosave components and run only their tests (faster than a full project deploy):
+
+```bash
+sf project deploy start \
+  --target-org staging \
+  --source-dir force-app/main/default/classes/ChatterPublisherController.cls \
+  --source-dir force-app/main/default/classes/ChatterPublisherControllerTest.cls \
+  --source-dir force-app/main/default/lwc/chatterPublisherWithAutosave \
+  --test-level RunSpecifiedTests \
+  --tests ChatterPublisherControllerTest \
+  --wait 10
+```
+
+- **--source-dir** (repeated): Deploys only these three items (each Apex class includes its `.cls-meta.xml`).
+- **--test-level RunSpecifiedTests**: Only `ChatterPublisherControllerTest` runs.
+- **--wait 10**: Wait up to 10 minutes for the deployment to finish.
+
+Use the same command for production by changing `--target-org` (e.g. `--target-org production`).
+
+### Step 1: Deploy to Staging (Full Project)
 
 ```bash
 # Deploy the component and Apex classes to staging
