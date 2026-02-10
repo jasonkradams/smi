@@ -83,6 +83,41 @@ private class ChatterPublisherControllerTest {
   }
 
   @IsTest
+  static void testPostToChatter_PreservesUnderlineAndLink() {
+    CollaborationGroup testGroup = getOrCreateTestGroup('TestGroup');
+    String content = '<p>Text with <u>underline</u> and <a href="https://example.com">hyperlink</a>.</p>';
+
+    Test.startTest();
+    String feedItemId = ChatterPublisherController.postToChatter(
+      testGroup.Id,
+      content
+    );
+    Test.stopTest();
+
+    System.assertNotEquals(null, feedItemId, 'Feed item ID should not be null');
+  }
+
+  @IsTest
+  static void testPostToChatter_WithInlineImage() {
+    CollaborationGroup testGroup = getOrCreateTestGroup('TestGroup');
+    // Minimal 1x1 PNG in base64
+    String base64Png = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+    String content =
+      '<p>Post with image: <img src="data:image/png;base64,' +
+      base64Png +
+      '" /> and text after.</p>';
+
+    Test.startTest();
+    String feedItemId = ChatterPublisherController.postToChatter(
+      testGroup.Id,
+      content
+    );
+    Test.stopTest();
+
+    System.assertNotEquals(null, feedItemId, 'Feed item ID should not be null');
+  }
+
+  @IsTest
   static void testPostToChatter_NullGroupId() {
     String content = '<p>Test content</p>';
 
@@ -357,5 +392,242 @@ private class ChatterPublisherControllerTest {
     );
     Test.stopTest();
     System.assertNotEquals(null, feedItemId, 'Feed item ID should not be null');
+  }
+
+  // --- postFeedElement tests ---
+
+  @IsTest
+  static void testPostFeedElement_TextOnlySegments() {
+    CollaborationGroup testGroup = getOrCreateTestGroup('TestGroup');
+    ChatterPublisherController.PostRequest req = new ChatterPublisherController.PostRequest();
+    req.subjectId = testGroup.Id;
+    req.segments = new List<ChatterPublisherController.MessageSegmentDto>();
+    ChatterPublisherController.MessageSegmentDto seg = new ChatterPublisherController.MessageSegmentDto();
+    seg.type = 'text';
+    seg.text = 'Hello from postFeedElement';
+    req.segments.add(seg);
+
+    Test.startTest();
+    ChatterPublisherController.PostResult res = ChatterPublisherController.postFeedElement(
+      req
+    );
+    Test.stopTest();
+
+    System.assertNotEquals(null, res, 'PostResult should not be null');
+    System.assertNotEquals(
+      null,
+      res.feedElementId,
+      'feedElementId should not be null'
+    );
+  }
+
+  @IsTest
+  static void testPostFeedElement_ContentLegacyPath() {
+    CollaborationGroup testGroup = getOrCreateTestGroup('TestGroup');
+    ChatterPublisherController.PostRequest req = new ChatterPublisherController.PostRequest();
+    req.subjectId = testGroup.Id;
+    req.content = '<p>Legacy HTML content</p>';
+
+    Test.startTest();
+    ChatterPublisherController.PostResult res = ChatterPublisherController.postFeedElement(
+      req
+    );
+    Test.stopTest();
+
+    System.assertNotEquals(
+      null,
+      res.feedElementId,
+      'feedElementId should not be null'
+    );
+  }
+
+  @IsTest
+  static void testPostFeedElement_WithMentionSegment() {
+    CollaborationGroup testGroup = getOrCreateTestGroup('TestGroup');
+    List<User> users = [SELECT Id FROM User WHERE IsActive = TRUE LIMIT 1];
+    if (users.isEmpty()) {
+      return; // skip if no active user
+    }
+    ChatterPublisherController.PostRequest req = new ChatterPublisherController.PostRequest();
+    req.subjectId = testGroup.Id;
+    req.segments = new List<ChatterPublisherController.MessageSegmentDto>();
+    ChatterPublisherController.MessageSegmentDto textSeg = new ChatterPublisherController.MessageSegmentDto();
+    textSeg.type = 'text';
+    textSeg.text = 'Hi ';
+    req.segments.add(textSeg);
+    ChatterPublisherController.MessageSegmentDto mentionSeg = new ChatterPublisherController.MessageSegmentDto();
+    mentionSeg.type = 'mention';
+    mentionSeg.refId = users[0].Id;
+    req.segments.add(mentionSeg);
+
+    Test.startTest();
+    ChatterPublisherController.PostResult res = ChatterPublisherController.postFeedElement(
+      req
+    );
+    Test.stopTest();
+
+    System.assertNotEquals(
+      null,
+      res.feedElementId,
+      'feedElementId should not be null'
+    );
+  }
+
+  @IsTest
+  static void testPostFeedElement_WithLinkSegment() {
+    CollaborationGroup testGroup = getOrCreateTestGroup('TestGroup');
+    ChatterPublisherController.PostRequest req = new ChatterPublisherController.PostRequest();
+    req.subjectId = testGroup.Id;
+    req.segments = new List<ChatterPublisherController.MessageSegmentDto>();
+    ChatterPublisherController.MessageSegmentDto textSeg = new ChatterPublisherController.MessageSegmentDto();
+    textSeg.type = 'text';
+    textSeg.text = 'Check this ';
+    req.segments.add(textSeg);
+    ChatterPublisherController.MessageSegmentDto linkSeg = new ChatterPublisherController.MessageSegmentDto();
+    linkSeg.type = 'link';
+    linkSeg.url = 'https://example.com';
+    req.segments.add(linkSeg);
+
+    Test.startTest();
+    ChatterPublisherController.PostResult res = ChatterPublisherController.postFeedElement(
+      req
+    );
+    Test.stopTest();
+
+    System.assertNotEquals(
+      null,
+      res.feedElementId,
+      'feedElementId should not be null'
+    );
+  }
+
+  @IsTest
+  static void testPostFeedElement_PollPath() {
+    CollaborationGroup testGroup = getOrCreateTestGroup('TestGroup');
+    ChatterPublisherController.PostRequest req = new ChatterPublisherController.PostRequest();
+    req.subjectId = testGroup.Id;
+    req.isPoll = true;
+    req.poll = new ChatterPublisherController.PollDto();
+    req.poll.question = 'Poll via postFeedElement?';
+    req.poll.choices = new List<String>{ 'Yes', 'No' };
+
+    Test.startTest();
+    ChatterPublisherController.PostResult res = ChatterPublisherController.postFeedElement(
+      req
+    );
+    Test.stopTest();
+
+    System.assertNotEquals(
+      null,
+      res.feedElementId,
+      'feedElementId should not be null'
+    );
+  }
+
+  @IsTest
+  static void testPostFeedElement_NullSubjectId() {
+    ChatterPublisherController.PostRequest req = new ChatterPublisherController.PostRequest();
+    req.content = '<p>Content</p>';
+
+    Test.startTest();
+    Boolean exceptionThrown = false;
+    try {
+      ChatterPublisherController.postFeedElement(req);
+    } catch (AuraHandledException e) {
+      exceptionThrown = true;
+    }
+    Test.stopTest();
+    System.assert(
+      exceptionThrown,
+      'Expected AuraHandledException for null subjectId'
+    );
+  }
+
+  @IsTest
+  static void testPostFeedElement_EmptyContentAndSegments() {
+    CollaborationGroup testGroup = getOrCreateTestGroup('TestGroup');
+    ChatterPublisherController.PostRequest req = new ChatterPublisherController.PostRequest();
+    req.subjectId = testGroup.Id;
+    // no segments, no content, no poll, no question
+
+    Test.startTest();
+    Boolean exceptionThrown = false;
+    try {
+      ChatterPublisherController.postFeedElement(req);
+    } catch (AuraHandledException e) {
+      exceptionThrown = true;
+    }
+    Test.stopTest();
+    System.assert(
+      exceptionThrown,
+      'Expected AuraHandledException when nothing provided'
+    );
+  }
+
+  @IsTest
+  static void testSearchMentionable() {
+    Test.startTest();
+    List<ChatterPublisherController.MentionOption> results = ChatterPublisherController.searchMentionable(
+      'Test',
+      10
+    );
+    Test.stopTest();
+    System.assertNotEquals(null, results, 'Results list should not be null');
+    // May be empty if no users/groups match
+  }
+
+  @IsTest
+  static void testSearchMentionable_ShortPrefix() {
+    Test.startTest();
+    List<ChatterPublisherController.MentionOption> results = ChatterPublisherController.searchMentionable(
+      'A',
+      10
+    );
+    Test.stopTest();
+    System.assertEquals(
+      0,
+      results.size(),
+      'Prefix length < 2 should return empty'
+    );
+  }
+
+  @IsTest
+  static void testAddComment() {
+    CollaborationGroup testGroup = getOrCreateTestGroup('TestGroup');
+    String feedItemId = ChatterPublisherController.postToChatter(
+      testGroup.Id,
+      '<p>Post for comment</p>'
+    );
+    ChatterPublisherController.CommentRequest req = new ChatterPublisherController.CommentRequest();
+    req.feedElementId = feedItemId;
+    req.body = 'A comment';
+
+    Test.startTest();
+    String commentId = ChatterPublisherController.addComment(req);
+    Test.stopTest();
+
+    System.assertNotEquals(null, commentId, 'Comment ID should not be null');
+  }
+
+  @IsTest
+  static void testCreateQuestion() {
+    CollaborationGroup testGroup = getOrCreateTestGroup('TestGroup');
+    ChatterPublisherController.QuestionRequest req = new ChatterPublisherController.QuestionRequest();
+    req.subjectId = testGroup.Id;
+    req.title = 'Test question title';
+    req.detail = 'Test question detail';
+
+    Test.startTest();
+    ChatterPublisherController.PostResult res = ChatterPublisherController.createQuestion(
+      req
+    );
+    Test.stopTest();
+
+    System.assertNotEquals(null, res, 'PostResult should not be null');
+    System.assertNotEquals(
+      null,
+      res.questionId,
+      'questionId should not be null'
+    );
   }
 }

@@ -56,6 +56,16 @@
           >
             Poll
           </button>
+          <button
+            type="button"
+            role="tab"
+            class="tab-item"
+            aria-selected={isQuestionTabActive}
+            data-tab="question"
+            onclick={handleTabClick}
+          >
+            Question
+          </button>
         </div>
 
         <!-- Post tab content -->
@@ -84,9 +94,36 @@
           </template>
           <template if:true={isExpanded}>
             <div class="publisher-expanded">
+              <div class="editor-toolbar-row slds-m-bottom_xx-small">
+                <lightning-button-icon
+                  icon-name="utility:emoji"
+                  alternative-text="Insert emoji"
+                  onclick={handleToggleEmojiPicker}
+                  class="emoji-trigger"
+                >
+                </lightning-button-icon>
+                <template if:true={showEmojiPicker}>
+                  <div class="emoji-picker-popover">
+                    <div class="emoji-grid">
+                      <template for:each={EMOJI_LIST} for:item="emoji">
+                        <button
+                          key={emoji}
+                          type="button"
+                          class="emoji-cell slds-button"
+                          data-emoji={emoji}
+                          onclick={handleEmojiSelect}
+                          aria-label="Insert emoji"
+                        >
+                          {emoji}
+                        </button>
+                      </template>
+                    </div>
+                  </div>
+                </template>
+              </div>
               <lightning-input-rich-text
                 value={draftContent}
-                placeholder="Share an update..."
+                placeholder="Share an update... Use @ to mention people or groups."
                 formats={formats}
                 onchange={handleTextChange}
                 disabled={isPosting}
@@ -94,6 +131,105 @@
                 data-editor
               >
               </lightning-input-rich-text>
+              <template if:true={showMentionDropdown}>
+                <div
+                  class="mention-dropdown slds-dropdown slds-dropdown_left"
+                  role="listbox"
+                >
+                  <template if:true={mentionLoading}>
+                    <span class="slds-p-around_small">Loading...</span>
+                  </template>
+                  <template if:false={mentionLoading}>
+                    <template if:true={mentionOptions.length}>
+                      <ul class="slds-dropdown__list" role="presentation">
+                        <template for:each={mentionOptions} for:item="opt">
+                          <li
+                            key={opt.id}
+                            role="option"
+                            class="slds-dropdown__item slds-item"
+                            data-id={opt.id}
+                            data-label={opt.label}
+                            onclick={handleMentionSelect}
+                          >
+                            <span class="slds-truncate" title={opt.label}>
+                              {opt.label}
+                              <template if:true={opt.type}>
+                                <span
+                                  class="slds-text-body_small slds-text-color_weak"
+                                >
+                                  ({opt.type})
+                                </span>
+                              </template>
+                            </span>
+                          </li>
+                        </template>
+                      </ul>
+                    </template>
+                    <template if:false={mentionOptions.length}>
+                      <span class="slds-p-around_small"
+                        >No people or groups found</span
+                      >
+                    </template>
+                  </template>
+                </div>
+              </template>
+              <div class="topic-chips-container slds-m-top_x-small">
+                <div class="slds-form-element">
+                  <label
+                    class="slds-form-element__label slds-text-body_small"
+                    for="topic-input"
+                  >
+                    Topics (optional)
+                  </label>
+                  <div
+                    class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right"
+                  >
+                    <input
+                      id="topic-input"
+                      type="text"
+                      class="slds-input topic-input"
+                      placeholder="Add a topic..."
+                      value={topicInputValue}
+                      onchange={handleTopicInputChange}
+                      onkeydown={handleTopicKeydown}
+                    />
+                    <lightning-button-icon
+                      icon-name="utility:add"
+                      alternative-text="Add topic"
+                      onclick={handleAddTopic}
+                      class="slds-input__icon topic-add-icon"
+                    >
+                    </lightning-button-icon>
+                  </div>
+                </div>
+                <template if:true={hasTopicChips}>
+                  <div class="topic-pills slds-m-top_xx-small">
+                    <template for:each={topicChipsList} for:item="topic">
+                      <span
+                        key={topic.key}
+                        class="slds-pill topic-pill"
+                        data-name={topic.name}
+                      >
+                        <span class="slds-pill__label">#{topic.name}</span>
+                        <button
+                          type="button"
+                          class="slds-button slds-button_icon slds-pill__remove"
+                          data-name={topic.name}
+                          onclick={handleRemoveTopic}
+                          aria-label="Remove topic"
+                        >
+                          <lightning-icon
+                            icon-name="utility:close"
+                            size="xx-small"
+                            alternative-text="Remove"
+                          >
+                          </lightning-icon>
+                        </button>
+                      </span>
+                    </template>
+                  </div>
+                </template>
+              </div>
               <div class="action-bar slds-m-top_small">
                 <div class="status-container">
                   <template if:true={lastSavedText}>
@@ -141,6 +277,31 @@
                   </lightning-button>
                 </div>
               </div>
+              <template if:true={showFileUploadAfterPost}>
+                <div
+                  class="file-upload-panel slds-m-top_medium slds-p-around_small slds-border_top"
+                >
+                  <p class="slds-text-body_small slds-m-bottom_small">
+                    Attach files to your post (optional).
+                  </p>
+                  <lightning-file-upload
+                    name="post-files"
+                    record-id={lastCreatedFeedElementId}
+                    accept="image/*,.pdf"
+                    multiple
+                    onuploadfinished={handleFileUploadDone}
+                  >
+                  </lightning-file-upload>
+                  <div class="slds-m-top_small">
+                    <lightning-button
+                      label="Done"
+                      variant="brand"
+                      onclick={handleFileUploadDone}
+                    >
+                    </lightning-button>
+                  </div>
+                </div>
+              </template>
             </div>
           </template>
         </template>
@@ -249,6 +410,75 @@
                     label="Share"
                     onclick={handlePostPoll}
                     disabled={isPollShareDisabled}
+                  >
+                  </lightning-button>
+                </div>
+              </div>
+            </div>
+          </template>
+        </template>
+
+        <!-- Question tab content -->
+        <template if:true={isQuestionTab}>
+          <template if:false={isExpanded}>
+            <div
+              class="publisher-collapsed slds-grid slds-grid_vertical-align-center"
+            >
+              <button
+                type="button"
+                class="slds-button slds-button_neutral publisher-trigger slds-grow"
+                onclick={handleExpandPublisher}
+                title="Ask a question..."
+                aria-label="Ask a question..."
+              >
+                <span class="publisher-trigger-label">Ask a question...</span>
+              </button>
+              <lightning-button
+                variant="brand"
+                label="Share"
+                disabled
+                class="publisher-share-collapsed"
+              >
+              </lightning-button>
+            </div>
+          </template>
+          <template if:true={isExpanded}>
+            <div class="publisher-expanded question-editor">
+              <lightning-input
+                label="Question title"
+                value={questionTitle}
+                placeholder="Enter a question title..."
+                onchange={handleQuestionTitleChange}
+                class="slds-m-bottom_small"
+                required
+              >
+              </lightning-input>
+              <lightning-textarea
+                label="Details (optional)"
+                value={questionDetail}
+                placeholder="Add more context..."
+                onchange={handleQuestionDetailChange}
+                class="slds-m-bottom_small"
+              >
+              </lightning-textarea>
+              <div class="action-bar slds-m-top_small">
+                <div class="status-container">
+                  <template if:true={showCollapseOption}>
+                    <button
+                      type="button"
+                      class="slds-button collapse-trigger slds-text-color_weak"
+                      onclick={handleCollapsePublisher}
+                    >
+                      Cancel
+                    </button>
+                  </template>
+                </div>
+                <div class="button-container">
+                  <lightning-button
+                    variant="brand"
+                    label="Post question"
+                    onclick={handlePostQuestion}
+                    disabled={isQuestionShareDisabled}
                   >
                   </lightning-button>
                 </div>

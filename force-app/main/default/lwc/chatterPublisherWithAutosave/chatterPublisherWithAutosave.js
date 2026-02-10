@@ -1,8 +1,10 @@
 import { LightningElement, api, wire } from "lwc";
 import { CurrentPageReference } from "lightning/navigation";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
-import postToChatter from "@salesforce/apex/ChatterPublisherController.postToChatter";
+import postFeedElement from "@salesforce/apex/ChatterPublisherController.postFeedElement";
 import postPollToChatter from "@salesforce/apex/ChatterPublisherController.postPollToChatter";
+import searchMentionable from "@salesforce/apex/ChatterPublisherController.searchMentionable";
+import createQuestion from "@salesforce/apex/ChatterPublisherController.createQuestion";
 
 // Constants
 const DRAFT_KEY_PREFIX = "chatterDraft_";
@@ -26,12 +28,53 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
   isExpanded = false;
   activeTab = "post";
   pollQuestion = "";
+  questionTitle = "";
+  questionDetail = "";
+  questionTopicChips = [];
   pollChoices = [
     { id: "1", value: "", canRemove: false },
     { id: "2", value: "", canRemove: false }
   ];
   _pollChoiceId = 3;
   MAX_POLL_CHOICES = 10;
+
+  // Segment model for @mentions, links (parallel to rich text)
+  postSegments = [];
+  // Topic chips for #topics
+  topicChips = [];
+  // Mention typeahead
+  showMentionDropdown = false;
+  mentionSearchTerm = "";
+  mentionOptions = [];
+  mentionLoading = false;
+  mentionDebounceTimeout = null;
+  MENTION_DEBOUNCE_MS = 250;
+  MENTION_MIN_LENGTH = 2;
+
+  // Post-attach file upload: after post, show upload with record-id = feed element
+  lastCreatedFeedElementId = null;
+  showFileUploadAfterPost = false;
+
+  // Emoji picker
+  showEmojiPicker = false;
+  EMOJI_LIST = [
+    "😀",
+    "😊",
+    "😂",
+    "❤️",
+    "👍",
+    "🎉",
+    "🔥",
+    "✨",
+    "🙏",
+    "💪",
+    "😍",
+    "🥳",
+    "✅",
+    "⭐",
+    "💯",
+    "🙌"
+  ];
 
   saveTimeout = null;
   pollSaveTimeout = null;
@@ -83,12 +126,20 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
     return this.activeTab === "poll";
   }
 
+  get isQuestionTab() {
+    return this.activeTab === "question";
+  }
+
   get isPostTabActive() {
     return this.activeTab === "post";
   }
 
   get isPollTabActive() {
     return this.activeTab === "poll";
+  }
+
+  get isQuestionTabActive() {
+    return this.activeTab === "question";
   }
 
   get canAddPollChoice() {
@@ -105,6 +156,14 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
       !this.pollQuestion ||
       this.pollQuestion.trim().length === 0 ||
       this.validPollChoicesCount < 2
+    );
+  }
+
+  get isQuestionShareDisabled() {
+    return (
+      this.isPosting ||
+      !this.questionTitle ||
+      this.questionTitle.trim().length === 0
     );
   }
 
@@ -182,6 +241,12 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
       ];
       this._pollChoiceId = 3;
       this.clearPollDraftFromLocalStorage();
+    }
+    if (this.activeTab === "question") {
+      this.isExpanded = false;
+      this.questionTitle = "";
+      this.questionDetail = "";
+      this.questionTopicChips = [];
     }
   }
 
@@ -351,16 +416,204 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
     this.hasUnsavedChanges = true;
     this.hasDraft = this.isContentNotEmpty(this.draftContent);
 
-    // Clear existing timeout
+    // Detect @ for mention typeahead (plain text after last @)
+    const plainText = this.getPlainTextFromHtml(this.draftContent);
+    const atIndex = plainText.lastIndexOf("@");
+    if (atIndex >= 0) {
+      const afterAt = plainText.substring(atIndex + 1);
+      const spaceIndex = afterAt.search(/\s/);
+      const word = spaceIndex >= 0 ? afterAt.substring(0, spaceIndex) : afterAt;
+      if (word.length >= this.MENTION_MIN_LENGTH) {
+        this.mentionSearchTerm = word;
+        this.scheduleMentionSearch();
+      } else if (word.length === 0) {
+        this.showMentionDropdown = false;
+      }
+    } else {
+      this.showMentionDropdown = false;
+    }
+
     if (this.saveTimeout) {
       clearTimeout(this.saveTimeout);
     }
-
-    // Use promise-based approach for autosave to avoid async operation restriction
     // eslint-disable-next-line @lwc/lwc/no-async-operation
     this.saveTimeout = setTimeout(() => {
       this.saveDraftToLocalStorage();
     }, AUTOSAVE_DELAY_MS);
+  }
+
+  getPlainTextFromHtml(html) {
+    if (!html) return "";
+    const div = document.createElement("div");
+    // eslint-disable-next-line @lwc/lwc/no-inner-html
+    div.innerHTML = html;
+    return (div.textContent || div.innerText || "").trim();
+  }
+
+  scheduleMentionSearch() {
+    if (this.mentionDebounceTimeout) {
+      clearTimeout(this.mentionDebounceTimeout);
+    }
+    // eslint-disable-next-line @lwc/lwc/no-async-operation
+    this.mentionDebounceTimeout = setTimeout(() => {
+      this.runMentionSearch();
+    }, this.MENTION_DEBOUNCE_MS);
+  }
+
+  async runMentionSearch() {
+    if (
+      !this.mentionSearchTerm ||
+      this.mentionSearchTerm.length < this.MENTION_MIN_LENGTH
+    ) {
+      this.showMentionDropdown = false;
+      return;
+    }
+    this.mentionLoading = true;
+    this.showMentionDropdown = true;
+    try {
+      const results = await searchMentionable({
+        prefix: this.mentionSearchTerm,
+        limitMax: 20
+      });
+      this.mentionOptions = Array.isArray(results) ? results : [];
+    } catch (e) {
+      console.error("Mention search failed:", e);
+      this.mentionOptions = [];
+    } finally {
+      this.mentionLoading = false;
+    }
+  }
+
+  handleMentionSelect(event) {
+    const id = event.currentTarget.dataset.id;
+    if (!id) return;
+    // Insert placeholder at end of content (editor doesn't expose cursor)
+    const placeholder = ` {mention:${id}} `;
+    this.draftContent = (this.draftContent || "") + placeholder;
+    this.showMentionDropdown = false;
+    this.mentionOptions = [];
+    this.mentionSearchTerm = "";
+    this.hasDraft = true;
+    this.hasUnsavedChanges = true;
+  }
+
+  handleCloseMentionDropdown() {
+    this.showMentionDropdown = false;
+  }
+
+  // Topic chips
+  topicInputValue = "";
+
+  handleTopicInputChange(event) {
+    this.topicInputValue = event.target.value || "";
+  }
+
+  handleAddTopic() {
+    const name = (this.topicInputValue || "").trim();
+    if (!name) return;
+    if (!this.topicChips) this.topicChips = [];
+    const exists = this.topicChips.some(
+      (t) => (typeof t === "string" ? t : t.name || t.label) === name
+    );
+    if (exists) return;
+    this.topicChips = [...this.topicChips, { name, label: name }];
+    this.topicInputValue = "";
+  }
+
+  handleRemoveTopic(event) {
+    const name = event.currentTarget.dataset.name;
+    if (!name) return;
+    this.topicChips = (this.topicChips || []).filter(
+      (t) => (typeof t === "string" ? t : t.name || t.label) !== name
+    );
+  }
+
+  handleTopicKeydown(event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      this.handleAddTopic();
+    }
+  }
+
+  get hasTopicChips() {
+    return this.topicChips && this.topicChips.length > 0;
+  }
+
+  get topicChipsList() {
+    if (!this.topicChips || !this.topicChips.length) return [];
+    return this.topicChips.map((t) => {
+      const name = typeof t === "string" ? t : t.name || t.label || "";
+      return { key: name, name };
+    });
+  }
+
+  handleFileUploadDone() {
+    this.lastCreatedFeedElementId = null;
+    this.showFileUploadAfterPost = false;
+    window.location.reload();
+  }
+
+  handleToggleEmojiPicker() {
+    this.showEmojiPicker = !this.showEmojiPicker;
+  }
+
+  handleEmojiSelect(event) {
+    const emoji = event.currentTarget.dataset.emoji;
+    if (emoji) {
+      this.draftContent = (this.draftContent || "") + emoji;
+      this.hasDraft = true;
+      this.hasUnsavedChanges = true;
+      this.showEmojiPicker = false;
+    }
+  }
+
+  handleQuestionTitleChange(event) {
+    this.questionTitle = event.target.value || "";
+  }
+
+  handleQuestionDetailChange(event) {
+    this.questionDetail = event.target.value || "";
+  }
+
+  async handlePostQuestion() {
+    if (this.isQuestionShareDisabled || !this.effectiveGroupId) return;
+    this.isPosting = true;
+    try {
+      const topicNames =
+        this.questionTopicChips && this.questionTopicChips.length > 0
+          ? this.questionTopicChips.map((t) => {
+              return typeof t === "string" ? t : t.name || t.label;
+            })
+          : null;
+      const res = await createQuestion({
+        subjectId: this.effectiveGroupId,
+        title: this.questionTitle.trim(),
+        detail: this.questionDetail ? this.questionDetail.trim() : null,
+        topicNames
+      });
+      this.showToast("Success", "Your question has been posted", "success");
+      this.questionTitle = "";
+      this.questionDetail = "";
+      this.questionTopicChips = [];
+      this.isExpanded = false;
+      this.dispatchEvent(
+        new CustomEvent("postpublished", {
+          detail: {
+            feedElementId: res.feedElementId,
+            questionId: res.questionId
+          }
+        })
+      );
+      window.location.reload();
+    } catch (error) {
+      const msg =
+        error.body?.message ||
+        error.message ||
+        "An error occurred while posting the question";
+      this.showToast("Error", msg, "error");
+    } finally {
+      this.isPosting = false;
+    }
   }
 
   saveDraftToLocalStorage() {
@@ -375,7 +628,13 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
       const draft = {
         content: this.draftContent,
         timestamp: new Date().toISOString(),
-        groupId: this.effectiveGroupId
+        groupId: this.effectiveGroupId,
+        topics:
+          this.topicChips && this.topicChips.length > 0
+            ? this.topicChips.map((t) =>
+                typeof t === "string" ? t : t.name || t.label
+              )
+            : []
       };
 
       localStorage.setItem(draftKey, JSON.stringify(draft));
@@ -434,6 +693,9 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
         this.lastPollSavedText = "Draft restored from " + this.draftTimestamp;
       } else {
         this.draftContent = this.savedDraft.content || "";
+        this.topicChips = Array.isArray(this.savedDraft.topics)
+          ? this.savedDraft.topics.map((name) => ({ name, label: name }))
+          : [];
         this.hasDraft = true;
         this.hasUnsavedChanges = false;
         this.lastSavedText = "Draft restored from " + this.draftTimestamp;
@@ -463,7 +725,10 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
   }
 
   async handlePost() {
-    if (!this.isContentNotEmpty(this.draftContent)) {
+    const segments = this.buildSegmentsForSubmit();
+    const hasSegments = segments && segments.length > 0;
+    const hasContent = this.isContentNotEmpty(this.draftContent);
+    if (!hasContent && !hasSegments) {
       this.showToast("Error", "Please enter some content to share", "error");
       return;
     }
@@ -476,26 +741,39 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
     this.isPosting = true;
 
     try {
-      await postToChatter({
-        groupId: this.effectiveGroupId,
-        content: this.draftContent
-      });
+      const req = {
+        subjectId: this.effectiveGroupId,
+        content: hasSegments ? null : hasContent ? this.draftContent : null,
+        segments: segments || null,
+        topics:
+          this.topicChips && this.topicChips.length > 0
+            ? this.topicChips.map((t) =>
+                typeof t === "string" ? t : t.name || t.label
+              )
+            : null
+      };
+      const res = await postFeedElement(req);
 
       this.showToast("Success", "Your post has been shared", "success");
 
-      // Clear draft after successful post and collapse
+      // Clear draft and segments
       this.draftContent = "";
+      this.postSegments = [];
+      this.topicChips = [];
       this.hasDraft = false;
       this.hasUnsavedChanges = false;
       this.lastSavedText = "";
-      this.isExpanded = false;
       this.clearDraftFromLocalStorage();
 
-      // Refresh the feed (dispatch event for parent components to listen)
-      this.dispatchEvent(new CustomEvent("postpublished"));
+      this.lastCreatedFeedElementId = res.feedElementId;
+      this.showFileUploadAfterPost = true;
+      this.isExpanded = false;
 
-      // Reload the page to show the new post
-      window.location.reload();
+      this.dispatchEvent(
+        new CustomEvent("postpublished", {
+          detail: { feedElementId: res.feedElementId }
+        })
+      );
     } catch (error) {
       console.error("Error posting to Chatter:", error);
       const errorMessage =
@@ -506,6 +784,85 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
     } finally {
       this.isPosting = false;
     }
+  }
+
+  /**
+   * Build segment DTOs for Apex (text, mention, link).
+   * If content contains {mention:id} placeholders, parse and return segments; else return null so Apex uses content (HTML) path.
+   */
+  buildSegmentsForSubmit() {
+    if (this.postSegments && this.postSegments.length > 0) {
+      return this.postSegments
+        .map((seg) => {
+          if (seg.type === "text") {
+            return { type: "text", text: seg.value || seg.text || "" };
+          }
+          if (seg.type === "mention") {
+            return { type: "mention", refId: seg.id || seg.refId };
+          }
+          if (seg.type === "link") {
+            return { type: "link", url: seg.url || "" };
+          }
+          return null;
+        })
+        .filter(Boolean);
+    }
+    // Parse content for {mention:userId} placeholders
+    const content = this.draftContent || "";
+    if (!content.includes("{mention:")) {
+      return null;
+    }
+    const mentionRegex = /\{mention:([^}]+)\}/g;
+    const segments = [];
+    let lastIndex = 0;
+    let match;
+    while ((match = mentionRegex.exec(content)) !== null) {
+      const textPart = content.substring(lastIndex, match.index);
+      const plainText = this.getPlainTextFromHtml(textPart);
+      if (plainText.length > 0) {
+        segments.push({ type: "text", text: plainText });
+      }
+      segments.push({ type: "mention", refId: match[1] });
+      lastIndex = match.index + match[0].length;
+    }
+    const trailing = content.substring(lastIndex);
+    const trailingPlain = this.getPlainTextFromHtml(trailing);
+    if (trailingPlain.length > 0) {
+      segments.push({ type: "text", text: trailingPlain });
+    }
+    if (segments.length > 0) return segments;
+    // Fall through: try link detection
+    const plain = this.getPlainTextFromHtml(content);
+    const linkSegments = this.buildSegmentsWithLinks(plain);
+    if (linkSegments && linkSegments.some((s) => s.type === "link")) {
+      return linkSegments;
+    }
+    return null;
+  }
+
+  /**
+   * Detect URLs in plain text and build segments (text + link) for link preview.
+   * Returns null if no URLs so Apex uses content path.
+   */
+  buildSegmentsWithLinks(plainText) {
+    if (!plainText || !plainText.trim()) return null;
+    const urlRegex = /https?:\/\/[^\s<>"']+/g;
+    const segments = [];
+    let lastIndex = 0;
+    let match;
+    while ((match = urlRegex.exec(plainText)) !== null) {
+      const before = plainText.substring(lastIndex, match.index);
+      if (before.length > 0) {
+        segments.push({ type: "text", text: before });
+      }
+      segments.push({ type: "link", url: match[0] });
+      lastIndex = match.index + match[0].length;
+    }
+    const after = plainText.substring(lastIndex);
+    if (after.length > 0) {
+      segments.push({ type: "text", text: after });
+    }
+    return segments.length > 0 ? segments : null;
   }
 
   clearDraftFromLocalStorage() {
@@ -604,10 +961,13 @@ export default class ChatterPublisherWithAutosave extends LightningElement {
   }
 
   get isPostDisabled() {
-    return this.isPosting || !this.isContentNotEmpty(this.draftContent);
+    const hasContent = this.isContentNotEmpty(this.draftContent);
+    const hasSegments = this.postSegments && this.postSegments.length > 0;
+    return this.isPosting || (!hasContent && !hasSegments);
   }
 
   get showCollapseOption() {
+    if (this.activeTab === "question" && this.isExpanded) return true;
     return this.isExpanded && !this.isContentNotEmpty(this.draftContent);
   }
 }

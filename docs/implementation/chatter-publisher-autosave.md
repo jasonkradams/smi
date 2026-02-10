@@ -30,13 +30,20 @@ The standard Salesforce Chatter publisher in Experience Cloud provides no draft 
 A custom Lightning Web Component (`chatterPublisherWithAutosave`) that provides:
 
 1. **Automatic Draft Saving** - Saves to browser localStorage after typing stops (configurable delay, default 3 seconds)
-2. **Post and Poll Tabs** - Post (rich text) and Poll (question + 2–10 choices) with separate drafts per tab
+2. **Post, Poll, and Question Tabs** - Post (rich text), Poll (question + 2–10 choices), and Question (title + detail) with separate drafts per tab where applicable
 3. **Rich Text Support** - Full formatting preservation for posts (bold, italic, lists, links, etc.)
-4. **Draft Restoration** - Prompts users to restore saved post or poll drafts when returning to pages
-5. **Navigation Warnings** - Warns users before leaving with unsaved changes
-6. **Visual Feedback** - Shows "Draft saved" briefly; message disappears after a short delay (configurable, default 3 seconds)
-7. **Draft Expiration** - Auto-expires drafts older than 7 days
-8. **Per-Group Drafts** - Each Chatter group maintains its own separate post and poll drafts
+4. **@Mentions** - Typeahead on "@" to mention users or groups; placeholders in content, sent as ConnectApi.MentionSegmentInput
+5. **#Topics** - Optional topic chips; sent via ConnectApi topic assignment after post
+6. **Link Previews** - URLs in post body detected and sent as ConnectApi.LinkSegmentInput for preview generation
+7. **File/Image Attachments** - Post-attach flow: after posting, user can attach files via lightning-file-upload to the new feed element
+8. **Emoji Picker** - Toolbar button to insert common emojis (unicode) into the post
+9. **Draft Restoration** - Prompts users to restore saved post or poll drafts (including topics) when returning to pages
+10. **Navigation Warnings** - Warns users before leaving with unsaved changes
+11. **Visual Feedback** - Shows "Draft saved" briefly; message disappears after a short delay (configurable, default 3 seconds)
+12. **Draft Expiration** - Auto-expires drafts older than 7 days
+13. **Per-Group Drafts** - Each Chatter group maintains its own separate post and poll drafts
+
+**Formatting preserved when posting**: Bold, italic, underline, strikethrough, hyperlinks, bullets, and inline images (paste or insert as data URI; uploaded as ContentVersion and posted via InlineImageSegmentInput). Text alignment (center/right) and list numbering/indentation are not supported by the Chatter API and render as plain paragraphs or bullets.
 
 ### Goals
 
@@ -266,10 +273,12 @@ Posts a text message to a Chatter group:
 
 1. Validates groupId and content are provided
 2. Verifies Chatter group exists and user has access
-3. Converts rich text HTML to plain text
+3. Converts rich text HTML to ConnectApi message segments (bold, italic, underline, strikethrough, links, paragraphs) so formatting is preserved on first post; falls back to plain text if conversion yields no segments
 4. Builds ConnectApi.FeedItemInput
 5. Posts via `ConnectApi.ChatterFeeds.postFeedElement`
 6. Returns feed item ID on success
+
+**Note:** Preserving rich text requires "Rich Text Posts" enabled in Chatter settings (Setup → Chatter → Chatter Settings). If disabled, posting may fail when using markup segments.
 
 ```apex
 @AuraEnabled
@@ -295,16 +304,37 @@ Gets the network ID for community context:
 3. Returns network ID or null
 
 ```apex
+@TestVisible
+private static List<ConnectApi.MessageSegmentInput> htmlToMessageSegmentInputs(String html)
+```
+
+Converts rich text HTML to ConnectApi message segments (paragraphs, bold, italic, underline, strikethrough, hyperlinks). Used when posting so that formatting is preserved on first save.
+
+```apex
 private static String stripHtmlTags(String html)
 ```
 
-Converts rich text HTML to plain text:
+Fallback: converts rich text HTML to plain text:
 
 1. Converts `<br>` and `</p>` tags to newlines
 2. Converts list items to bullet points
 3. Removes all other HTML tags
 4. Decodes HTML entities (&amp;, &lt;, etc.)
 5. Cleans up multiple consecutive newlines
+
+### Full parity API (postFeedElement, DTOs)
+
+The controller exposes a unified write API for full Feed Publisher parity:
+
+- **postFeedElement(PostRequest req)** – Creates a feed element from segments (text/mention/link), legacy HTML content, pre-attach file IDs (capabilities.files), poll, or question. Returns PostResult with feedElementId (and questionId when applicable). Validates subjectId and at least one of: segments, content, contentDocumentIds, poll, question. Topics are assigned via ConnectApi.ChatterFeeds.setFeedElementTopics when provided.
+- **postToChatter** / **postPollToChatter** – Legacy entry points; they build a minimal PostRequest and call postFeedElement.
+- **searchMentionable(prefix, limitMax)** – Returns users and groups for @mention typeahead (SOQL with WITH SECURITY_ENFORCED).
+- **createQuestion(QuestionRequest req)** – Creates a Chatter Question; returns PostResult with questionId (and feedElementId if the API returns it).
+- **addComment(CommentRequest req)** – Adds a comment to a feed element (segments or plain body).
+
+DTOs: MessageSegmentDto (type, text, refId, url), PostRequest (subjectId, segments, content, topics, contentDocumentIds, isPoll, poll, isQuestion, question), PostResult (feedElementId, questionId), PollDto, QuestionDto, CommentRequest, QuestionRequest, MentionOption.
+
+**File strategy**: Post-attach is used in the LWC: after a successful post, the user can attach files via lightning-file-upload with record-id set to the new feed element ID. Pre-attach (upload to group first, pass contentDocumentIds in PostRequest) is supported by postFeedElement via capabilities.files.
 
 ## Testing Strategy
 
@@ -487,6 +517,30 @@ Expected output:
     - Verify no restoration modal appears
     - Check localStorage to confirm draft was removed
 
+6. **Full parity – @mentions**:
+    - In Post tab, type "@" followed by at least 2 characters (e.g. a user or group name)
+    - Verify mention dropdown appears with matching users/groups
+    - Select one; verify placeholder is inserted and post succeeds with mention resolved in the feed
+
+7. **Full parity – Topics**:
+    - Add one or more topic chips in the optional "Topics" field
+    - Post; verify topics are associated with the feed element (if Topics are enabled in the org)
+
+8. **Full parity – Link previews**:
+    - Post content that includes a URL (e.g. https://example.com)
+    - Verify the feed shows a link preview (when supported by ConnectApi)
+
+9. **Full parity – File upload (post-attach)**:
+    - Post a message, then in the "Attach files to your post" panel upload a file and click Done
+    - Verify the file appears on the post and the page reloads
+
+10. **Full parity – Question tab**:
+    - Switch to Question tab, enter a title (and optional detail), click "Post question"
+    - Verify the question appears (when Chatter Questions is enabled for the site)
+
+11. **Error handling**:
+    - Attempt to post with invalid or inaccessible mention/topic if possible; verify a clear toast message and no stack trace
+
 ### Step 5: Deploy to Production
 
 After successful staging testing:
@@ -556,9 +610,11 @@ These catches prevented bugs from reaching production.
 - `@lwc/lwc/no-inner-html` - Can't use `innerHTML` for security
     - **Solution**: Added eslint-disable where needed for HTML parsing in helper method
 
-**ConnectApi HTML Limitations**: The Connect API doesn't support rich HTML posting directly. Initial implementation tried to post HTML but Chatter stripped formatting.
+**ConnectApi HTML Limitations**: The Connect API doesn't accept raw HTML; it expects message segments (TextSegmentInput, MarkupBeginSegmentInput, MarkupEndSegmentInput, etc.).
 
-- **Solution**: Built `stripHtmlTags` method to intelligently convert HTML to plain text while preserving structure (line breaks, lists)
+- **Solution**: Built `htmlToMessageSegmentInputs` to parse HTML from the rich text editor and produce ConnectApi segments (paragraphs, bold, italic, underline, strikethrough, hyperlinks). Formatting is now preserved on first post. Fallback to `stripHtmlTags` when conversion yields no segments. Requires "Rich Text Posts" enabled in Chatter settings.
+
+- **Preserved in published post**: Bold, italic, underline, strikethrough, hyperlinks, paragraphs, bullets, and inline images (from data-URI `<img>` in the editor: each is uploaded as ContentVersion and emitted as InlineImageSegmentInput). **Not preserved**: Text alignment (center, right, justify) and list style (numbered vs bullet, indentation) — ConnectApi feed body segments do not support these; aligned and numbered content is rendered as plain paragraphs/bullets.
 
 **beforeunload Event Handling**: The browser's `beforeunload` event requires returning a value, but ESLint flagged missing return in else branch.
 
@@ -583,17 +639,14 @@ These catches prevented bugs from reaching production.
 
 This could be implemented as an enhancement without changing the current localStorage-first approach.
 
-**Rich Text Posting**: Explore options for preserving rich text formatting in Chatter posts:
+**Rich Text Posting**: Current implementation preserves bold, italic, underline, strikethrough, links, and bullets. The following are not supported by ConnectApi message segments and render as plain text or bullets:
 
-- ConnectApi rich text segments (may support some formatting)
-- Markdown conversion for structured content
-- Image paste support
+- Text alignment (center, right, justify) — editor may emit `<p style="text-align: center;">`; we normalize to paragraph and the feed shows left-aligned text.
+- Numbered vs bullet list and indentation — all list items are normalized to a single bullet style; nested or numbered lists do not retain structure.
 
-**@Mention and #Hashtag Preservation**: Current implementation doesn't preserve Chatter-specific syntax. Future enhancement could:
+If the API gains alignment or list-style segment types in the future, the parser could be extended. Image paste and markdown conversion remain possible enhancements.
 
-- Parse @mentions from HTML
-- Convert to ConnectApi.MentionSegmentInput
-- Parse #hashtags and convert to ConnectApi.HashtagSegmentInput
+**@Mention and #Topics**: Implemented. Type "@" in the post composer to search users/groups (searchMentionable); add topic chips and pass as TopicsToAdd/topic assignment. Draft restoration includes topic chips.
 
 **Draft Versioning**: For long-form posts, users might appreciate:
 
