@@ -11,6 +11,7 @@
     <head>
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta name="apple-mobile-web-app-capable" content="yes" />
       <title>Spokane Mountaineers - Login</title>
       <link
         rel="icon"
@@ -454,6 +455,40 @@
                 button.setAttribute("aria-label", "Show password");
               }
             }
+          </script>
+
+          <script>
+            (function () {
+              function sendHeight() {
+                // Use the full document height
+                var h = Math.max(
+                  document.body.scrollHeight,
+                  document.documentElement.scrollHeight,
+                  document.body.offsetHeight,
+                  document.documentElement.offsetHeight,
+                  document.documentElement.clientHeight
+                );
+
+                parent.postMessage(
+                  { type: "vfResize", height: h },
+                  "*" // you can lock this down to your domain if you want
+                );
+              }
+
+              // initial + whenever layout changes
+              window.addEventListener("load", sendHeight);
+              window.addEventListener("resize", sendHeight);
+
+              // If your page content changes after load, this catches it.
+              new MutationObserver(sendHeight).observe(
+                document.documentElement,
+                {
+                  childList: true,
+                  subtree: true,
+                  attributes: true
+                }
+              );
+            })();
           </script>
 
           <!-- Login Button with Loading State -->
