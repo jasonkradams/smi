@@ -1,0 +1,9 @@
+<aura:component
+  implements="forceCommunity:themeLayout"
+  access="global"
+  description="Blank layout with content only"
+>
+  <aura:attribute name="content" type="Aura.Component[]" required="false" />
+
+  {!v.content}
+</aura:component>

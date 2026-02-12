@@ -1,0 +1,42 @@
+[
+  {
+    "Name": "Chalet",
+    "CollaborationType": "Public",
+    "Description": "Purpose: Manage and maintain the Spokane Mountaineer's chalet and property on Mt. Spokane"
+  },
+  {
+    "Name": "Clubwide",
+    "CollaborationType": "Public",
+    "Description": "This group contains Posts for Clubwide distribution as well as calendar views of Clubwide activities and All Upcoming events.    .  To view all events, select View All and change the calendar to All Upcoming events."
+  },
+  {
+    "Name": "Conservation",
+    "CollaborationType": "Public",
+    "Description": "To create greater public awareness of the intrinsic value of our wilderness, forests, waters, primitive parks, and monument lands and to seek the preservation of the natural beauty and scenic value of this national heritage; to preserve by the encouragement of protective legislation or otherwise the natural beauty of our great out-of-doors."
+  },
+  {
+    "Name": "Hiking",
+    "CollaborationType": "Public",
+    "Description": "Welcome to the Spokane Mountaineers Hiking Group. Trained volunteer hike leaders offer a variety of year-round events: day hikes, car camping trips, overnight to multi-day/high mileage backpacking trips, and snowshoe hikes in winter.  The schedule is updated frequently, so check back regularly. To promptly receive notifications about Hiking events, it is best to click the JOIN button and set the notifications to EVERY POST. During spring, summer and autumn, we offer a series of Wednesday Evening Hike that are close-by the Spokane area and offer a social setting. The Wednesday Evening series is open to all who wish to attend. We also offer our popular Backpack School every Spring. Registrations for this beginner's course typically open in February and usually fills up quickly."
+  },
+  {
+    "Name": "Mountain Biking",
+    "CollaborationType": "Public",
+    "Description": "Mountain Biking committee for the Spokane Mountaineers. Mountain biking activities including weekly rides on Thursdays in the spring and summer and some multi-day weekend outings. Please join us on GroupMe to be notified of ride locations each week: https://groupme.com/join_group/56964039/rrVmmaiO"
+  },
+  {
+    "Name": "Paddling",
+    "CollaborationType": "Public",
+    "Description": "Paddling events around Cheney, Post Falls, Coeur d'Alene and north Spokane. Kayaking, canoeing and other paddling events."
+  },
+  {
+    "Name": "Road Biking",
+    "CollaborationType": "Public",
+    "Description": "The core ride program for the Road Bike Committee are the Tuesday evening rides beginning in April into September. In addition, short weekend bicycle tours or a long tour may be planned and scheduled depending on rider interest during the cycling season. We normally ride on paved roads and trails and occasional on dirt or gravel roads with our Mountain or Hybrid bikes. All are welcome, \"no rider left behind\"."
+  },
+  {
+    "Name": "Skiing",
+    "CollaborationType": "Public",
+    "Description": "Here are activities to suit your ski preference whether it be cross-country, back-country or downhill (or all the above!), planned and led by the Skiing Committee."
+  }
+]
