@@ -1,0 +1,3482 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://jasonkradams.github.io/smi/implementation/chatter-publisher-autosave/">
+      
+      
+        <link rel="prev" href="../custom-login-page-implementation/">
+      
+      
+        <link rel="next" href="../../how-to-guides/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Chatter Publisher with Autosave - Spokane Mountaineers Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chatter-publisher-with-autosave-implementation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Spokane Mountaineers Docs" class="md-header__button md-logo" aria-label="Spokane Mountaineers Docs" data-md-component="logo">
+      
+  <img src="../../assets/images/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Spokane Mountaineers Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chatter Publisher with Autosave
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="green" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jasonkradams/smi" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../articles/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Articles
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Implementation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../how-to-guides/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  How-To Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../automation/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Automation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../proposals/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Proposals
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../google-workspace/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Google Workspace
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../about/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Spokane Mountaineers Docs" class="md-nav__button md-logo" aria-label="Spokane Mountaineers Docs" data-md-component="logo">
+      
+  <img src="../../assets/images/logo.png" alt="logo">
+
+    </a>
+    Spokane Mountaineers Docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jasonkradams/smi" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../articles/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Articles
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Articles
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/simplifying-custom-login-experience/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migrating to Email-Based Login
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/activity-group-event-notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Activity Group Event Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/fixing-approval-email-notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fixing Approval Email Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/experience-cloud-account-access-restriction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Restricting Account Access
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/enable-google-login/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enabling Google Login
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/event-participant-follow-handler-update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Participant Follow Handler Update
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/event-participant-privacy-solution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Participant Privacy (Overview)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/event-participant-redirect/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Participant Privacy (Technical)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Implementation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom-login-page-implementation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Login Page
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chatter Publisher with Autosave
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chatter Publisher with Autosave
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Problem
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Solution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Goals
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#component-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-design-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Design Decisions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation Details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#localstorage-key-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        localStorage Key Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#draft-data-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Draft Data Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#autosave-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autosave Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#navigation-warning-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Navigation Warning Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#draft-expiration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Draft Expiration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#component-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component Details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Component Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#chatterpublisherwithautosave-lwc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ChatterPublisherWithAutosave (LWC)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chatterpublishercontroller-apex" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ChatterPublisherController (Apex)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing Strategy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-coverage-goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Coverage Goals
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-data-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Data Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#running-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-instructions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deployment Instructions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deployment Instructions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quick-deploy-new-components-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Deploy (New Components Only)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-1-deploy-to-staging-full-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Deploy to Staging (Full Project)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-run-apex-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Run Apex Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-add-component-to-experience-cloud" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Add Component to Experience Cloud
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-test-in-staging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Test in Staging
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-deploy-to-production" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Deploy to Production
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-rollout-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Rollout Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lessons-learned" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lessons Learned
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lessons Learned">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-worked-well" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Worked Well
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#challenges-overcome" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Challenges Overcome
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#future-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Future Considerations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code References
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#issue-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue Reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../how-to-guides/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How-To Guides
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    How-To Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/configure-custom-login-page/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configure Custom Login Page
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/setup-staging-sandbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup Staging Sandbox
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/update-experience-cloud-favicon/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Customize Favicon
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/keepalive-sessions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Preventing Logout With KeepAlives
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/website-editing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Website Editing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/bulk-delete-events-in-salesforce/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bulk Delete Events in Salesforce
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/salesforce-development-console-cheatsheet/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Salesforce Development Console Cheatsheet
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../automation/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Automation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/event-approval-email-alerts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Approval Email Alerts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/event-chatter-batch-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Chatter Batch Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/event-chatter-batch-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Chatter Batch Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/event-chatter-batch-production-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Chatter Batch Production Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/google-login-automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Google Login Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/notify-leader-on-rsvp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notify Leader on RSVP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/notify-subscribers-new-event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notify Subscribers of New Event
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/scheduled-add-members-to-conservation-group/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scheduled Add Aembers to Conservation Group
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../proposals/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Proposals
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Proposals
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../proposals/automate-member-license-sorting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automate Member License Sorting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../google-workspace/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Google Workspace
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Google Workspace
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../google-workspace/querying-custom-user-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Querying Custom User Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Problem
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Solution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Goals
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#component-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-design-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Design Decisions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation Details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#localstorage-key-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        localStorage Key Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#draft-data-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Draft Data Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#autosave-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autosave Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#navigation-warning-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Navigation Warning Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#draft-expiration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Draft Expiration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#component-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component Details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Component Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#chatterpublisherwithautosave-lwc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ChatterPublisherWithAutosave (LWC)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chatterpublishercontroller-apex" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ChatterPublisherController (Apex)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing Strategy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-coverage-goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Coverage Goals
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-data-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Data Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#running-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-instructions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deployment Instructions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deployment Instructions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quick-deploy-new-components-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Deploy (New Components Only)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-1-deploy-to-staging-full-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Deploy to Staging (Full Project)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-run-apex-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Run Apex Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-add-component-to-experience-cloud" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Add Component to Experience Cloud
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-test-in-staging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Test in Staging
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-deploy-to-production" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Deploy to Production
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-rollout-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Rollout Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lessons-learned" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lessons Learned
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lessons Learned">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-worked-well" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Worked Well
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#challenges-overcome" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Challenges Overcome
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#future-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Future Considerations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code References
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#issue-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue Reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/jasonkradams/smi/edit/main/docs/implementation/chatter-publisher-autosave.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/jasonkradams/smi/raw/main/docs/implementation/chatter-publisher-autosave.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
+    </a>
+  
+
+
+<h1 id="chatter-publisher-with-autosave-implementation">Chatter Publisher with Autosave Implementation<a class="headerlink" href="#chatter-publisher-with-autosave-implementation" title="Permanent link">&para;</a></h1>
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#implementation-details">Implementation Details</a></li>
+<li><a href="#component-details">Component Details</a></li>
+<li><a href="#testing-strategy">Testing Strategy</a></li>
+<li><a href="#deployment-instructions">Deployment Instructions</a></li>
+<li><a href="#lessons-learned">Lessons Learned</a></li>
+</ul>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>This implementation provides a custom Lightning Web Component that replaces the standard Chatter publisher with autosave capabilities to prevent loss of drafted messages when composing updates to activity groups.</p>
+<h3 id="the-problem">The Problem<a class="headerlink" href="#the-problem" title="Permanent link">&para;</a></h3>
+<p>Members were losing composed Chatter posts when:</p>
+<ul>
+<li>Browser windows needed updates or crashed</li>
+<li>Users navigated away from the page accidentally</li>
+<li>Sessions timed out requiring re-login</li>
+<li>Browsers were closed without posting</li>
+</ul>
+<p>The standard Salesforce Chatter publisher in Experience Cloud provides no draft saving functionality, resulting in frustration and wasted time, especially for longer or more thoughtful messages to activity groups.</p>
+<h3 id="the-solution">The Solution<a class="headerlink" href="#the-solution" title="Permanent link">&para;</a></h3>
+<p>A custom Lightning Web Component (<code>chatterPublisherWithAutosave</code>) that provides:</p>
+<ol>
+<li><strong>Automatic Draft Saving</strong> - Saves to browser localStorage after typing stops (configurable delay, default 3 seconds)</li>
+<li><strong>Post and Poll Tabs</strong> - Post (rich text) and Poll (question + 2–10 choices) with separate drafts per tab</li>
+<li><strong>Rich Text Support</strong> - Full formatting preservation for posts (bold, italic, lists, links, etc.)</li>
+<li><strong>Draft Restoration</strong> - Prompts users to restore saved post or poll drafts when returning to pages</li>
+<li><strong>Navigation Warnings</strong> - Warns users before leaving with unsaved changes</li>
+<li><strong>Visual Feedback</strong> - Shows "Draft saved" briefly; message disappears after a short delay (configurable, default 3 seconds)</li>
+<li><strong>Draft Expiration</strong> - Auto-expires drafts older than 7 days</li>
+<li><strong>Per-Group Drafts</strong> - Each Chatter group maintains its own separate post and poll drafts</li>
+</ol>
+<h3 id="goals">Goals<a class="headerlink" href="#goals" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Prevent loss of composed messages across all user scenarios</li>
+<li>Support rich text formatting in drafts</li>
+<li>Provide seamless user experience with minimal friction</li>
+<li>Work reliably across browser sessions and crashes</li>
+<li>Ensure comprehensive test coverage for Apex controllers</li>
+</ol>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<h3 id="component-overview">Component Overview<a class="headerlink" href="#component-overview" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Chatter Autosave System
+│
+├── chatterPublisherWithAutosave (Lightning Web Component)
+│   ├── chatterPublisherWithAutosave.js (Component logic)
+│   ├── chatterPublisherWithAutosave.html (Template)
+│   ├── chatterPublisherWithAutosave.css (Styling)
+│   └── chatterPublisherWithAutosave.js-meta.xml (Metadata)
+│
+├── ChatterPublisherController.cls (Apex Controller)
+│   └── ChatterPublisherControllerTest.cls (Test Class)
+│
+└── Configuration
+    └── Experience Builder (Component Placement)
+</code></pre></div>
+<h3 id="key-design-decisions">Key Design Decisions<a class="headerlink" href="#key-design-decisions" title="Permanent link">&para;</a></h3>
+<p><strong>Lightning Web Component Over Aura</strong>: We chose LWC because:</p>
+<ul>
+<li>Modern framework with better performance</li>
+<li>Native support for localStorage and browser APIs</li>
+<li>Better developer experience and tooling</li>
+<li><code>lightning-input-rich-text</code> component provides robust formatting</li>
+<li>Easier to maintain and extend</li>
+</ul>
+<p><strong>localStorage for Draft Persistence</strong>: We chose browser localStorage over server-side storage because:</p>
+<ul>
+<li>Instant save with no network latency</li>
+<li>Works offline and survives browser restarts</li>
+<li>No additional database objects or storage limits needed</li>
+<li>Simpler implementation and faster user experience</li>
+<li>Drafts automatically scoped to device/browser (privacy benefit)</li>
+</ul>
+<p><strong>Debounced Autosave</strong>: Draft saving uses a configurable debounce (see <code>AUTOSAVE_DELAY_MS</code> in the LWC, default 3 seconds) to:</p>
+<ul>
+<li>Avoid excessive localStorage writes</li>
+<li>Balance responsiveness with performance</li>
+<li>Match user expectations from other editing tools</li>
+</ul>
+<p><strong>Rich Text HTML Storage</strong>: We store full HTML rather than plain text to:</p>
+<ul>
+<li>Preserve all formatting applied by users</li>
+<li>Support restoration of complex content</li>
+<li>Allow for future enhancement of formatting options</li>
+</ul>
+<h2 id="implementation-details">Implementation Details<a class="headerlink" href="#implementation-details" title="Permanent link">&para;</a></h2>
+<h3 id="localstorage-key-structure">localStorage Key Structure<a class="headerlink" href="#localstorage-key-structure" title="Permanent link">&para;</a></h3>
+<p>Drafts are stored with keys in the format:</p>
+<ul>
+<li><strong>Post drafts</strong>: <code>chatterDraft_&lt;groupId&gt;</code></li>
+<li><strong>Poll drafts</strong>: <code>chatterPollDraft_&lt;groupId&gt;</code></li>
+</ul>
+<p>Each Chatter group maintains its own separate post and poll drafts, allowing users to have in-progress posts and polls for multiple groups simultaneously.</p>
+<h3 id="draft-data-structure">Draft Data Structure<a class="headerlink" href="#draft-data-structure" title="Permanent link">&para;</a></h3>
+<p><strong>Post draft</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="s2">&quot;content&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&lt;p&gt;Draft message content with HTML&lt;/p&gt;&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;timestamp&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2026-02-08T10:30:00.000Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;groupId&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0F9xxxxxxxxxx&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Poll draft</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="s2">&quot;type&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;poll&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;question&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Poll question text&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;choices&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Choice 1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Choice 2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Choice 3&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="s2">&quot;timestamp&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2026-02-08T10:30:00.000Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;groupId&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0F9xxxxxxxxxx&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="autosave-flow">Autosave Flow<a class="headerlink" href="#autosave-flow" title="Permanent link">&para;</a></h3>
+<p><strong>Post tab</strong>:</p>
+<ol>
+<li>User types in rich text editor (or edits in Poll tab: question or choices)</li>
+<li>Component detects change via <code>onchange</code> event</li>
+<li>Debounce timer starts (duration from <code>AUTOSAVE_DELAY_MS</code>, default 3 seconds)</li>
+<li>If user stops typing, timer fires and saves to localStorage</li>
+<li>Visual indicator shows "Draft saved" briefly, then disappears after <code>DRAFT_SAVED_MESSAGE_DURATION_MS</code> (default 3 seconds)</li>
+<li>On page load, component checks for existing draft (post or poll)</li>
+<li>If found and not expired, shows restoration modal</li>
+<li>User can restore or discard draft</li>
+</ol>
+<p><strong>Poll tab</strong>: Same debounce and save flow; poll drafts use <code>chatterPollDraft_&lt;groupId&gt;</code> and include question and choices.</p>
+<h3 id="navigation-warning-flow">Navigation Warning Flow<a class="headerlink" href="#navigation-warning-flow" title="Permanent link">&para;</a></h3>
+<ol>
+<li>User starts typing (sets <code>hasUnsavedChanges = true</code>)</li>
+<li>On successful save to localStorage, flag cleared</li>
+<li><code>beforeunload</code> event listener checks flag</li>
+<li>If unsaved changes exist, browser shows native confirmation dialog</li>
+<li>User can choose to stay or leave page</li>
+</ol>
+<h3 id="draft-expiration">Draft Expiration<a class="headerlink" href="#draft-expiration" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Drafts expire after 7 days</li>
+<li>Cleanup runs on component initialization</li>
+<li>Expired drafts are automatically removed from localStorage</li>
+<li>Prevents storage bloat from abandoned drafts</li>
+</ul>
+<h2 id="component-details">Component Details<a class="headerlink" href="#component-details" title="Permanent link">&para;</a></h2>
+<h3 id="chatterpublisherwithautosave-lwc">ChatterPublisherWithAutosave (LWC)<a class="headerlink" href="#chatterpublisherwithautosave-lwc" title="Permanent link">&para;</a></h3>
+<p><strong>Purpose</strong>: Provides custom Chatter publisher with autosave functionality</p>
+<p><strong>Key constants</strong> (in component JS):</p>
+<ul>
+<li><code>AUTOSAVE_DELAY_MS</code> - Debounce delay before saving draft (default 3000 ms)</li>
+<li><code>DRAFT_SAVED_MESSAGE_DURATION_MS</code> - How long "Draft saved" stays visible (default 3000 ms)</li>
+<li><code>DRAFT_EXPIRATION_DAYS</code> - Drafts older than this are expired (7)</li>
+</ul>
+<p><strong>Key Properties</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="err">@</span><span class="nx">api</span><span class="w"> </span><span class="nx">groupId</span><span class="p">;</span><span class="w"> </span><span class="c1">// Can be set explicitly or auto-detected from page</span>
+<span class="nx">_internalGroupId</span><span class="p">;</span><span class="w"> </span><span class="c1">// Auto-detected from CurrentPageReference</span>
+<span class="nx">effectiveGroupId</span><span class="p">;</span><span class="w"> </span><span class="c1">// Computed property that returns groupId || _internalGroupId</span>
+<span class="nx">activeTab</span><span class="p">;</span><span class="w"> </span><span class="c1">// &quot;post&quot; | &quot;poll&quot;</span>
+</code></pre></div>
+<p><strong>Key Methods</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="nx">handleTextChange</span><span class="p">(</span><span class="nx">event</span><span class="p">);</span>
+</code></pre></div>
+<p>Responds to text changes in the rich text editor (Post tab):</p>
+<ol>
+<li>Updates <code>draftContent</code> with new value</li>
+<li>Sets <code>hasUnsavedChanges</code> flag</li>
+<li>Clears existing debounce timeout</li>
+<li>Sets new timeout for autosave (duration from <code>AUTOSAVE_DELAY_MS</code>)</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="nx">saveDraftToLocalStorage</span><span class="p">();</span>
+</code></pre></div>
+<p>Saves current post draft to browser localStorage:</p>
+<ol>
+<li>Validates content is not empty</li>
+<li>Creates draft object with content, timestamp, groupId</li>
+<li>Stores in localStorage with prefixed key</li>
+<li>Shows "Draft saved" briefly (cleared after <code>DRAFT_SAVED_MESSAGE_DURATION_MS</code>)</li>
+<li>Clears <code>hasUnsavedChanges</code> flag</li>
+</ol>
+<p>Poll drafts use <code>schedulePollDraftSave()</code> and <code>savePollDraftToLocalStorage()</code> with the same debounce and temporary message behavior.</p>
+<div class="highlight"><pre><span></span><code><span class="nx">loadDraftFromLocalStorage</span><span class="p">();</span>
+</code></pre></div>
+<p>Loads existing draft from localStorage (post and/or poll):</p>
+<ol>
+<li>Retrieves draft by groupId key (post: <code>chatterDraft_</code>, poll: <code>chatterPollDraft_</code>)</li>
+<li>Checks if draft is expired (&gt;7 days)</li>
+<li>If expired, deletes and returns</li>
+<li>If valid, shows restoration modal with relative timestamp (restore or discard)</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="nx">handlePost</span><span class="p">();</span>
+</code></pre></div>
+<p>Posts content to Chatter via Apex:</p>
+<ol>
+<li>Validates content is not empty</li>
+<li>Calls <code>ChatterPublisherController.postToChatter</code></li>
+<li>On success, clears draft and shows success toast</li>
+<li>Reloads page to show new post in feed</li>
+<li>On error, shows error toast and keeps draft</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="nx">beforeUnloadHandler</span><span class="p">(</span><span class="nx">event</span><span class="p">);</span>
+</code></pre></div>
+<p>Warns user before leaving with unsaved changes:</p>
+<ol>
+<li>Checks <code>hasUnsavedChanges</code> flag and content not empty</li>
+<li>If true, prevents default navigation</li>
+<li>Sets <code>returnValue</code> to trigger browser confirmation dialog</li>
+</ol>
+<p><strong>Helper Methods</strong>:</p>
+<ul>
+<li><code>cleanupExpiredDrafts()</code> - Removes expired post and poll drafts (checks both key prefixes)</li>
+<li><code>getDraftKey()</code> / <code>getPollDraftKey()</code> - Return localStorage keys for current group</li>
+<li><code>isContentNotEmpty()</code> - Strips HTML and checks for actual text</li>
+<li><code>isDraftExpired()</code> - Checks if draft is older than 7 days</li>
+<li><code>getRelativeTime()</code> - Formats timestamp as "just now", "X minutes ago", etc.</li>
+<li><code>showToast()</code> - Displays lightning toast messages</li>
+</ul>
+<h3 id="chatterpublishercontroller-apex">ChatterPublisherController (Apex)<a class="headerlink" href="#chatterpublishercontroller-apex" title="Permanent link">&para;</a></h3>
+<p><strong>Purpose</strong>: Handles posting messages to Chatter groups via ConnectApi</p>
+<p><strong>Key Methods</strong>:</p>
+<div class="highlight"><pre><span></span><code>@AuraEnabled
+public static String postToChatter(String groupId, String content)
+</code></pre></div>
+<p>Posts a text message to a Chatter group:</p>
+<ol>
+<li>Validates groupId and content are provided</li>
+<li>Verifies Chatter group exists and user has access</li>
+<li>Converts rich text HTML to plain text</li>
+<li>Builds ConnectApi.FeedItemInput</li>
+<li>Posts via <code>ConnectApi.ChatterFeeds.postFeedElement</code></li>
+<li>Returns feed item ID on success</li>
+</ol>
+<div class="highlight"><pre><span></span><code>@AuraEnabled
+public static String postPollToChatter(String groupId, String question, List&lt;String&gt; choices)
+</code></pre></div>
+<p>Posts a poll to a Chatter group:</p>
+<ol>
+<li>Validates groupId, question, and at least 2 non-empty choices (max 10)</li>
+<li>Verifies Chatter group exists and user has access</li>
+<li>Builds ConnectApi.FeedItemInput with body (question) and PollCapabilityInput (choices)</li>
+<li>Posts via <code>ConnectApi.ChatterFeeds.postFeedElement</code></li>
+<li>Returns feed element ID on success (or mock ID in test context)</li>
+</ol>
+<div class="highlight"><pre><span></span><code>private static Id getNetworkId()
+</code></pre></div>
+<p>Gets the network ID for community context:</p>
+<ol>
+<li>Tries <code>Network.getNetworkId()</code> first</li>
+<li>Falls back to querying for "Spokane Mountaineers" network</li>
+<li>Returns network ID or null</li>
+</ol>
+<div class="highlight"><pre><span></span><code>private static String stripHtmlTags(String html)
+</code></pre></div>
+<p>Converts rich text HTML to plain text:</p>
+<ol>
+<li>Converts <code>&lt;br&gt;</code> and <code>&lt;/p&gt;</code> tags to newlines</li>
+<li>Converts list items to bullet points</li>
+<li>Removes all other HTML tags</li>
+<li>Decodes HTML entities (&amp;, &lt;, etc.)</li>
+<li>Cleans up multiple consecutive newlines</li>
+</ol>
+<h2 id="testing-strategy">Testing Strategy<a class="headerlink" href="#testing-strategy" title="Permanent link">&para;</a></h2>
+<h3 id="test-coverage-goals">Test Coverage Goals<a class="headerlink" href="#test-coverage-goals" title="Permanent link">&para;</a></h3>
+<p><strong>ChatterPublisherController</strong>: Achieved 100% code coverage</p>
+<p><strong>Test Scenarios Covered</strong>:</p>
+<ol>
+<li>
+<p><strong>Successful post and poll posting</strong>:</p>
+<ul>
+<li>Plain text content</li>
+<li>Rich text with formatting</li>
+<li>Content with HTML entities</li>
+<li>Content with line breaks</li>
+<li>Content with lists</li>
+<li>Long content</li>
+<li>Content with special characters</li>
+<li>Poll: valid question and 2–10 choices; blank choices filtered out</li>
+</ul>
+</li>
+<li>
+<p><strong>Error Handling</strong>:</p>
+<ul>
+<li>Null group ID</li>
+<li>Empty group ID</li>
+<li>Null content</li>
+<li>Empty content</li>
+<li>Invalid/non-existent group ID</li>
+<li>Poll: null/blank groupId, blank question, too few choices, too many choices</li>
+</ul>
+</li>
+<li>
+<p><strong>Edge Cases</strong>:</p>
+<ul>
+<li>Group ID validation</li>
+<li>HTML to text conversion</li>
+<li>Entity decoding</li>
+<li>List formatting</li>
+</ul>
+</li>
+</ol>
+<h3 id="test-data-strategy">Test Data Strategy<a class="headerlink" href="#test-data-strategy" title="Permanent link">&para;</a></h3>
+<p>Tests use:</p>
+<ul>
+<li>Dynamic Chatter group creation with unique names (timestamp suffix)</li>
+<li>Query for existing Public Chatter groups when possible</li>
+<li>Proper use of <code>Test.startTest()</code> and <code>Test.stopTest()</code></li>
+<li>Comprehensive assertions for positive and negative cases</li>
+<li>Mock HTML content representing real-world usage</li>
+</ul>
+<h3 id="running-tests">Running Tests<a class="headerlink" href="#running-tests" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Run all tests for the controller</span>
+sf<span class="w"> </span>apex<span class="w"> </span>run<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--tests<span class="w"> </span>ChatterPublisherControllerTest<span class="w"> </span>--target-org<span class="w"> </span>staging<span class="w"> </span>--code-coverage<span class="w"> </span>--result-format<span class="w"> </span>human
+
+<span class="c1"># Check code coverage</span>
+sf<span class="w"> </span>apex<span class="w"> </span>get<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--code-coverage<span class="w"> </span>--target-org<span class="w"> </span>staging
+</code></pre></div>
+<h2 id="deployment-instructions">Deployment Instructions<a class="headerlink" href="#deployment-instructions" title="Permanent link">&para;</a></h2>
+<h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Salesforce CLI installed</li>
+<li>Access to staging and production orgs</li>
+<li>Git repository cloned locally</li>
+<li>Feature branch created: <code>feature/chatter-autosave</code></li>
+</ol>
+<h3 id="quick-deploy-new-components-only">Quick Deploy (New Components Only)<a class="headerlink" href="#quick-deploy-new-components-only" title="Permanent link">&para;</a></h3>
+<p>To deploy only the Chatter autosave components and run only their tests (faster than a full project deploy):</p>
+<div class="highlight"><pre><span></span><code>sf<span class="w"> </span>project<span class="w"> </span>deploy<span class="w"> </span>start<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--target-org<span class="w"> </span>staging<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--source-dir<span class="w"> </span>force-app/main/default/classes/ChatterPublisherController.cls<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--source-dir<span class="w"> </span>force-app/main/default/classes/ChatterPublisherControllerTest.cls<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--source-dir<span class="w"> </span>force-app/main/default/lwc/chatterPublisherWithAutosave<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--test-level<span class="w"> </span>RunSpecifiedTests<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--tests<span class="w"> </span>ChatterPublisherControllerTest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--wait<span class="w"> </span><span class="m">10</span>
+</code></pre></div>
+<ul>
+<li><strong>--source-dir</strong> (repeated): Deploys only these three items (each Apex class includes its <code>.cls-meta.xml</code>).</li>
+<li><strong>--test-level RunSpecifiedTests</strong>: Only <code>ChatterPublisherControllerTest</code> runs.</li>
+<li><strong>--wait 10</strong>: Wait up to 10 minutes for the deployment to finish.</li>
+</ul>
+<p>Use the same command for production by changing <code>--target-org</code> (e.g. <code>--target-org production</code>).</p>
+<h3 id="step-1-deploy-to-staging-full-project">Step 1: Deploy to Staging (Full Project)<a class="headerlink" href="#step-1-deploy-to-staging-full-project" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Deploy the component and Apex classes to staging</span>
+sf<span class="w"> </span>project<span class="w"> </span>deploy<span class="w"> </span>start<span class="w"> </span>--target-org<span class="w"> </span>staging
+
+<span class="c1"># Monitor deployment</span>
+sf<span class="w"> </span>project<span class="w"> </span>deploy<span class="w"> </span>report<span class="w"> </span>--target-org<span class="w"> </span>staging
+</code></pre></div>
+<h3 id="step-2-run-apex-tests">Step 2: Run Apex Tests<a class="headerlink" href="#step-2-run-apex-tests" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Run tests and verify &gt;75% coverage</span>
+sf<span class="w"> </span>apex<span class="w"> </span>run<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--tests<span class="w"> </span>ChatterPublisherControllerTest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--target-org<span class="w"> </span>staging<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--code-coverage<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--result-format<span class="w"> </span>human<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--wait<span class="w"> </span><span class="m">10</span>
+
+<span class="c1"># Get detailed coverage report</span>
+sf<span class="w"> </span>apex<span class="w"> </span>get<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--code-coverage<span class="w"> </span>--target-org<span class="w"> </span>staging
+</code></pre></div>
+<p>Expected output:</p>
+<ul>
+<li>All test methods passing</li>
+<li>Code coverage &gt;75% for ChatterPublisherController</li>
+<li>No test failures or errors</li>
+</ul>
+<h3 id="step-3-add-component-to-experience-cloud">Step 3: Add Component to Experience Cloud<a class="headerlink" href="#step-3-add-component-to-experience-cloud" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><strong>Open Experience Builder</strong>:</p>
+<ul>
+<li>Navigate to Digital Experiences &gt; All Sites</li>
+<li>Find "Spokane Mountaineers" site</li>
+<li>Click "Builder"</li>
+</ul>
+</li>
+<li>
+<p><strong>Navigate to Group Detail Page</strong>:</p>
+<ul>
+<li>In Experience Builder, go to any Chatter group page</li>
+<li>Or configure via Settings &gt; Theme &gt; Group Pages template</li>
+</ul>
+</li>
+<li>
+<p><strong>Add Component</strong>:</p>
+<ul>
+<li>In left sidebar, find "Custom Components"</li>
+<li>Drag "Chatter Publisher with Autosave" onto the page</li>
+<li>Position it above the standard Chatter feed</li>
+<li>Leave "Chatter Group ID" property blank (auto-detects from page)</li>
+</ul>
+</li>
+<li>
+<p><strong>Publish Changes</strong>:</p>
+<ul>
+<li>Click "Publish" button</li>
+<li>Confirm publication to make changes live</li>
+</ul>
+</li>
+</ol>
+<h3 id="step-4-test-in-staging">Step 4: Test in Staging<a class="headerlink" href="#step-4-test-in-staging" title="Permanent link">&para;</a></h3>
+<p><strong>Test Scenarios</strong>:</p>
+<ol>
+<li>
+<p><strong>Draft Saving</strong>:</p>
+<ul>
+<li>Navigate to a Chatter group page in staging</li>
+<li>Start typing a message with formatting (Post tab) or question/choices (Poll tab)</li>
+<li>Wait a few seconds (autosave delay, default 3 seconds)</li>
+<li>Verify "Draft saved" appears briefly, then disappears</li>
+<li>Check browser console: <code>localStorage.getItem('chatterDraft_&lt;groupId&gt;')</code> or <code>chatterPollDraft_&lt;groupId&gt;</code> for poll</li>
+</ul>
+</li>
+<li>
+<p><strong>Draft Restoration</strong>:</p>
+<ul>
+<li>With a saved post or poll draft, refresh the page</li>
+<li>Verify restoration modal appears (post or poll wording)</li>
+<li>Click "Restore Draft"</li>
+<li>Confirm content is restored (post formatting or poll question/choices intact)</li>
+</ul>
+</li>
+<li>
+<p><strong>Navigation Warning</strong>:</p>
+<ul>
+<li>Start typing without waiting for autosave</li>
+<li>Try to navigate away or close tab</li>
+<li>Verify browser shows confirmation dialog</li>
+</ul>
+</li>
+<li>
+<p><strong>Posting</strong>:</p>
+<ul>
+<li>Compose a message (Post) or poll (Poll tab), then click "Share"</li>
+<li>Verify post or poll appears in Chatter feed</li>
+<li>Confirm draft is cleared from localStorage</li>
+<li>"Draft saved" message is temporary and clears on its own after the configured duration</li>
+</ul>
+</li>
+<li>
+<p><strong>Draft Expiration</strong>:</p>
+<ul>
+<li>Manually create expired draft in console:
+    <div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">groupId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0F9...&quot;</span><span class="p">;</span><span class="w"> </span><span class="c1">// Current group ID</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">expiredDraft</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">content</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&lt;p&gt;Old draft&lt;/p&gt;&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">timestamp</span><span class="o">:</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">(</span>
+<span class="w">        </span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">8</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">24</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">60</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">60</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1000</span>
+<span class="w">    </span><span class="p">).</span><span class="nx">toISOString</span><span class="p">(),</span><span class="w"> </span><span class="c1">// 8 days ago</span>
+<span class="w">    </span><span class="nx">groupId</span><span class="o">:</span><span class="w"> </span><span class="nx">groupId</span>
+<span class="p">};</span>
+<span class="nx">localStorage</span><span class="p">.</span><span class="nx">setItem</span><span class="p">(</span>
+<span class="w">    </span><span class="sb">`chatterDraft_</span><span class="si">${</span><span class="nx">groupId</span><span class="si">}</span><span class="sb">`</span><span class="p">,</span>
+<span class="w">    </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">expiredDraft</span><span class="p">)</span>
+<span class="p">);</span>
+</code></pre></div></li>
+<li>Refresh page</li>
+<li>Verify no restoration modal appears</li>
+<li>Check localStorage to confirm draft was removed</li>
+</ul>
+</li>
+</ol>
+<h3 id="step-5-deploy-to-production">Step 5: Deploy to Production<a class="headerlink" href="#step-5-deploy-to-production" title="Permanent link">&para;</a></h3>
+<p>After successful staging testing:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Switch to production org</span>
+sf<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>target-org<span class="w"> </span>production
+
+<span class="c1"># Deploy</span>
+sf<span class="w"> </span>project<span class="w"> </span>deploy<span class="w"> </span>start<span class="w"> </span>--target-org<span class="w"> </span>production
+
+<span class="c1"># Run tests in production</span>
+sf<span class="w"> </span>apex<span class="w"> </span>run<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--tests<span class="w"> </span>ChatterPublisherControllerTest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--target-org<span class="w"> </span>production<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--code-coverage<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--result-format<span class="w"> </span>human<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--wait<span class="w"> </span><span class="m">10</span>
+</code></pre></div>
+<h3 id="step-6-rollout-strategy">Step 6: Rollout Strategy<a class="headerlink" href="#step-6-rollout-strategy" title="Permanent link">&para;</a></h3>
+<p><strong>Phased Approach</strong>:</p>
+<ol>
+<li>Deploy component to one test group (e.g., Ecomm) first</li>
+<li>Monitor for 1-2 days</li>
+<li>Roll out to all activity group pages</li>
+<li>Communicate to members about new autosave feature</li>
+</ol>
+<p><strong>Rollback Plan</strong>:</p>
+<p>If issues arise:</p>
+<ol>
+<li>Remove component from Experience Builder (immediate)</li>
+<li>Members revert to standard Chatter publisher</li>
+<li>No data loss (drafts remain in localStorage)</li>
+<li>Fix issues and redeploy</li>
+</ol>
+<h2 id="lessons-learned">Lessons Learned<a class="headerlink" href="#lessons-learned" title="Permanent link">&para;</a></h2>
+<h3 id="what-worked-well">What Worked Well<a class="headerlink" href="#what-worked-well" title="Permanent link">&para;</a></h3>
+<p><strong>localStorage for Persistence</strong>: Using browser localStorage provided instant saves with no network latency and survived browser crashes perfectly. The approach proved more reliable than we initially expected, with no storage quota issues even with rich HTML content.</p>
+<p><strong>Debounced Autosave</strong>: The configurable debounce (e.g. 3 seconds) strikes a balance between responsiveness and performance. Users see a brief "Draft saved" confirmation that disappears after a short delay, avoiding clutter.</p>
+<p><strong>Rich Text Component</strong>: The <code>lightning-input-rich-text</code> component provided robust formatting out of the box. The toolbar was familiar to users from other editing tools, reducing the learning curve.</p>
+<p><strong>ESLint Enforcement</strong>: Pre-commit hooks caught several issues early:</p>
+<ul>
+<li>Invalid <code>@api</code> property reassignment</li>
+<li>Missing return statements</li>
+<li>Async operation restrictions</li>
+<li>innerHTML security concerns</li>
+</ul>
+<p>These catches prevented bugs from reaching production.</p>
+<p><strong>Comprehensive Test Coverage</strong>: Achieving 100% coverage for the Apex controller gave us confidence to deploy. Edge cases like null values, empty strings, and invalid group IDs were all covered.</p>
+<h3 id="challenges-overcome">Challenges Overcome<a class="headerlink" href="#challenges-overcome" title="Permanent link">&para;</a></h3>
+<p><strong>LWC Platform Restrictions</strong>: Hit several ESLint rules specific to LWC:</p>
+<ul>
+<li><code>@lwc/lwc/no-api-reassignments</code> - Can't reassign <code>@api</code> properties<ul>
+<li><strong>Solution</strong>: Created <code>_internalGroupId</code> private property and <code>effectiveGroupId</code> getter</li>
+</ul>
+</li>
+<li><code>@lwc/lwc/no-async-operation</code> - Can't use <code>setTimeout</code> without eslint-disable<ul>
+<li><strong>Solution</strong>: Added inline eslint-disable comment with justification</li>
+</ul>
+</li>
+<li><code>@lwc/lwc/no-inner-html</code> - Can't use <code>innerHTML</code> for security<ul>
+<li><strong>Solution</strong>: Added eslint-disable where needed for HTML parsing in helper method</li>
+</ul>
+</li>
+</ul>
+<p><strong>ConnectApi HTML Limitations</strong>: The Connect API doesn't support rich HTML posting directly. Initial implementation tried to post HTML but Chatter stripped formatting.</p>
+<ul>
+<li><strong>Solution</strong>: Built <code>stripHtmlTags</code> method to intelligently convert HTML to plain text while preserving structure (line breaks, lists)</li>
+</ul>
+<p><strong>beforeunload Event Handling</strong>: The browser's <code>beforeunload</code> event requires returning a value, but ESLint flagged missing return in else branch.</p>
+<ul>
+<li><strong>Solution</strong>: Added explicit <code>return undefined</code> for consistency</li>
+</ul>
+<p><strong>Draft Restoration UX</strong>: Initial implementation restored drafts automatically, which was jarring if users didn't remember they had a draft.</p>
+<ul>
+<li><strong>Solution</strong>: Added modal dialog with "Restore" vs "Discard" options, showing timestamp so users can decide</li>
+</ul>
+<p><strong>Multiple Chatter Groups</strong>: Needed to handle users composing drafts for multiple groups simultaneously.</p>
+<ul>
+<li><strong>Solution</strong>: Keyed drafts by groupId, allowing independent drafts per group</li>
+</ul>
+<h3 id="future-considerations">Future Considerations<a class="headerlink" href="#future-considerations" title="Permanent link">&para;</a></h3>
+<p><strong>Server-Side Draft Backup</strong>: Consider adding optional server-side draft storage for:</p>
+<ul>
+<li>Cross-device access (draft on desktop, restore on mobile)</li>
+<li>Draft sharing/collaboration</li>
+<li>Audit trail of draft history</li>
+<li>Recovery if localStorage is cleared</li>
+</ul>
+<p>This could be implemented as an enhancement without changing the current localStorage-first approach.</p>
+<p><strong>Rich Text Posting</strong>: Explore options for preserving rich text formatting in Chatter posts:</p>
+<ul>
+<li>ConnectApi rich text segments (may support some formatting)</li>
+<li>Markdown conversion for structured content</li>
+<li>Image paste support</li>
+</ul>
+<p><strong>@Mention and #Hashtag Preservation</strong>: Current implementation doesn't preserve Chatter-specific syntax. Future enhancement could:</p>
+<ul>
+<li>Parse @mentions from HTML</li>
+<li>Convert to ConnectApi.MentionSegmentInput</li>
+<li>Parse #hashtags and convert to ConnectApi.HashtagSegmentInput</li>
+</ul>
+<p><strong>Draft Versioning</strong>: For long-form posts, users might appreciate:</p>
+<ul>
+<li>Multiple draft versions</li>
+<li>Undo/redo functionality</li>
+<li>Draft comparison view</li>
+</ul>
+<p><strong>Analytics Integration</strong>: Track usage metrics:</p>
+<ul>
+<li>How often drafts are saved</li>
+<li>How often drafts are restored vs discarded</li>
+<li>Average draft lifespan</li>
+<li>Most common draft content lengths</li>
+</ul>
+<p><strong>Mobile Optimization</strong>: While the component works on mobile, consider:</p>
+<ul>
+<li>Touch-optimized toolbar</li>
+<li>Simplified formatting options for small screens</li>
+<li>Better modal sizing for mobile viewports</li>
+</ul>
+<p><strong>Accessibility Improvements</strong>:</p>
+<ul>
+<li>ARIA labels for screen readers</li>
+<li>Keyboard shortcuts for common actions</li>
+<li>Focus management in restoration modal</li>
+<li>High contrast mode support</li>
+</ul>
+<h2 id="related-documentation">Related Documentation<a class="headerlink" href="#related-documentation" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../../articles/activity-group-event-notifications/">Activity Group Event Notifications</a> - Related Chatter automation</li>
+<li><a href="../../how-to-guides/setup-staging-sandbox/">Setup Staging Sandbox</a> - Staging environment setup</li>
+<li><a href="../../how-to-guides/salesforce-development-console-cheatsheet/">Salesforce Development Console Cheatsheet</a> - Debugging tools</li>
+</ul>
+<h2 id="code-references">Code References<a class="headerlink" href="#code-references" title="Permanent link">&para;</a></h2>
+<p><strong>Lightning Web Component</strong>:</p>
+<ul>
+<li><code>force-app/main/default/lwc/chatterPublisherWithAutosave/chatterPublisherWithAutosave.js</code></li>
+<li><code>force-app/main/default/lwc/chatterPublisherWithAutosave/chatterPublisherWithAutosave.html</code></li>
+<li><code>force-app/main/default/lwc/chatterPublisherWithAutosave/chatterPublisherWithAutosave.css</code></li>
+<li><code>force-app/main/default/lwc/chatterPublisherWithAutosave/chatterPublisherWithAutosave.js-meta.xml</code></li>
+</ul>
+<p><strong>Apex Classes</strong>:</p>
+<ul>
+<li><code>force-app/main/default/classes/ChatterPublisherController.cls</code></li>
+<li><code>force-app/main/default/classes/ChatterPublisherController.cls-meta.xml</code></li>
+<li><code>force-app/main/default/classes/ChatterPublisherControllerTest.cls</code></li>
+<li><code>force-app/main/default/classes/ChatterPublisherControllerTest.cls-meta.xml</code></li>
+</ul>
+<p><strong>Configuration</strong>:</p>
+<ul>
+<li><code>force-app/main/default/lwc/.eslintrc.json</code> - ESLint configuration for LWC</li>
+</ul>
+<h2 id="issue-reference">Issue Reference<a class="headerlink" href="#issue-reference" title="Permanent link">&para;</a></h2>
+<p>Addresses <a href="https://github.com/jasonkradams/smi/issues/10">Issue #10: No Autosave When Composing Messages</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../custom-login-page-implementation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Custom Login Page">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Custom Login Page
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../how-to-guides/" class="md-footer__link md-footer__link--next" aria-label="Next: How-To Guides">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                How-To Guides
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/jasonkradams/smi" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["announce.dismiss", "content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.tooltips", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

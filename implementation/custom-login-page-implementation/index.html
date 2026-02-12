@@ -1,0 +1,3144 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://jasonkradams.github.io/smi/implementation/custom-login-page-implementation/">
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../chatter-publisher-autosave/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Custom Login Page - Spokane Mountaineers Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#custom-login-page-implementation-details" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Spokane Mountaineers Docs" class="md-header__button md-logo" aria-label="Spokane Mountaineers Docs" data-md-component="logo">
+      
+  <img src="../../assets/images/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Spokane Mountaineers Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Custom Login Page
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="green" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jasonkradams/smi" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../articles/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Articles
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Implementation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../how-to-guides/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  How-To Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../automation/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Automation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../proposals/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Proposals
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../google-workspace/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Google Workspace
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../about/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Spokane Mountaineers Docs" class="md-nav__button md-logo" aria-label="Spokane Mountaineers Docs" data-md-component="logo">
+      
+  <img src="../../assets/images/logo.png" alt="logo">
+
+    </a>
+    Spokane Mountaineers Docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jasonkradams/smi" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../articles/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Articles
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Articles
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/simplifying-custom-login-experience/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migrating to Email-Based Login
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/activity-group-event-notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Activity Group Event Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/fixing-approval-email-notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fixing Approval Email Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/experience-cloud-account-access-restriction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Restricting Account Access
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/enable-google-login/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enabling Google Login
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/event-participant-follow-handler-update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Participant Follow Handler Update
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/event-participant-privacy-solution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Participant Privacy (Overview)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/event-participant-redirect/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Participant Privacy (Technical)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Implementation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Login Page
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Login Page
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#background-the-smi-username-requirement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Background: The .smi Username Requirement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-challenge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Challenge
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-solution-make-smi-transparent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Solution: Make .smi Transparent
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Goals
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#component-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-design-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Design Decisions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-timeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation Timeline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Timeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-initial-login-page-commits-4e86d22-80e16a6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1: Initial Login Page (Commits 4e86d22, 80e16a6)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-custom-labels-commit-5008e86" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2: Custom Labels (Commit 5008e86)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-feature-simplification-commit-8f6aa25" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3: Feature Simplification (Commit 8f6aa25)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-4-forgot-password-page-commit-5b9a504" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 4: Forgot Password Page (Commit 5b9a504)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-5-guest-profile-configuration-commit-fbc0ead" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 5: Guest Profile Configuration (Commit fbc0ead)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-6-documentation-updates-commit-896773a" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 6: Documentation Updates (Commit 896773a)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#component-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component Details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Component Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#communitieslogincontroller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CommunitiesLoginController
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#communitiesforgotpasswordcontroller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CommunitiesForgotPasswordController
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#visualforce-page-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visualforce Page Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing Strategy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-coverage-goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Coverage Goals
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-data-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Data Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#running-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Management
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-labels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Labels
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#guest-user-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Guest User Profile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#experience-cloud-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Experience Cloud Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lessons-learned" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lessons Learned
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lessons Learned">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-worked-well" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Worked Well
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#challenges-overcome" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Challenges Overcome
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#future-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Future Considerations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chatter-publisher-autosave/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chatter Publisher with Autosave
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../how-to-guides/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How-To Guides
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    How-To Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/configure-custom-login-page/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configure Custom Login Page
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/setup-staging-sandbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup Staging Sandbox
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/update-experience-cloud-favicon/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Customize Favicon
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/keepalive-sessions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Preventing Logout With KeepAlives
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/website-editing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Website Editing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/bulk-delete-events-in-salesforce/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bulk Delete Events in Salesforce
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/salesforce-development-console-cheatsheet/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Salesforce Development Console Cheatsheet
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../automation/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Automation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/event-approval-email-alerts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Approval Email Alerts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/event-chatter-batch-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Chatter Batch Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/event-chatter-batch-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Chatter Batch Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/event-chatter-batch-production-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Chatter Batch Production Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/google-login-automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Google Login Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/notify-leader-on-rsvp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notify Leader on RSVP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/notify-subscribers-new-event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notify Subscribers of New Event
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../automation/scheduled-add-members-to-conservation-group/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scheduled Add Aembers to Conservation Group
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../proposals/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Proposals
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Proposals
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../proposals/automate-member-license-sorting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automate Member License Sorting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../google-workspace/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Google Workspace
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Google Workspace
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../google-workspace/querying-custom-user-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Querying Custom User Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#background-the-smi-username-requirement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Background: The .smi Username Requirement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-challenge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Challenge
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-solution-make-smi-transparent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Solution: Make .smi Transparent
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Goals
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#component-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-design-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Design Decisions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-timeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation Timeline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Timeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-initial-login-page-commits-4e86d22-80e16a6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1: Initial Login Page (Commits 4e86d22, 80e16a6)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-custom-labels-commit-5008e86" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2: Custom Labels (Commit 5008e86)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-feature-simplification-commit-8f6aa25" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3: Feature Simplification (Commit 8f6aa25)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-4-forgot-password-page-commit-5b9a504" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 4: Forgot Password Page (Commit 5b9a504)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-5-guest-profile-configuration-commit-fbc0ead" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 5: Guest Profile Configuration (Commit fbc0ead)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-6-documentation-updates-commit-896773a" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 6: Documentation Updates (Commit 896773a)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#component-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component Details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Component Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#communitieslogincontroller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CommunitiesLoginController
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#communitiesforgotpasswordcontroller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CommunitiesForgotPasswordController
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#visualforce-page-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visualforce Page Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing Strategy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-coverage-goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Coverage Goals
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-data-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Data Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#running-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Management
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-labels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Labels
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#guest-user-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Guest User Profile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#experience-cloud-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Experience Cloud Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lessons-learned" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lessons Learned
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lessons Learned">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-worked-well" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Worked Well
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#challenges-overcome" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Challenges Overcome
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#future-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Future Considerations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/jasonkradams/smi/edit/main/docs/implementation/custom-login-page-implementation.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/jasonkradams/smi/raw/main/docs/implementation/custom-login-page-implementation.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
+    </a>
+  
+
+
+<h1 id="custom-login-page-implementation-details">Custom Login Page Implementation Details<a class="headerlink" href="#custom-login-page-implementation-details" title="Permanent link">&para;</a></h1>
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#implementation-timeline">Implementation Timeline</a></li>
+<li><a href="#component-details">Component Details</a></li>
+<li><a href="#testing-strategy">Testing Strategy</a></li>
+<li><a href="#configuration-management">Configuration Management</a></li>
+<li><a href="#lessons-learned">Lessons Learned</a></li>
+</ul>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>This document provides detailed technical information about the custom login page implementation for the Spokane Mountaineers Experience Cloud site. The primary goal of this implementation is to make the <code>.smi</code> username suffix transparent to members while maintaining Salesforce's global username uniqueness requirement.</p>
+<h3 id="background-the-smi-username-requirement">Background: The <code>.smi</code> Username Requirement<a class="headerlink" href="#background-the-smi-username-requirement" title="Permanent link">&para;</a></h3>
+<p>Salesforce requires usernames to be globally unique across all Salesforce organizations worldwide. This is a current platform constraint, not a historical one. To ensure our members had unique usernames in this global namespace, we append <code>.smi</code> to every member's email address (e.g., <code>jane.smith@gmail.com</code> becomes <code>jane.smith@gmail.com.smi</code>).</p>
+<p>This approach solves the uniqueness problem but creates member confusion—members don't understand why they need to add <code>.smi</code> when logging in.</p>
+<h3 id="the-challenge">The Challenge<a class="headerlink" href="#the-challenge" title="Permanent link">&para;</a></h3>
+<p>We cannot migrate away from <code>.smi</code> usernames because:</p>
+<ol>
+<li><strong>Global Uniqueness Constraint</strong>: Salesforce still requires globally unique usernames</li>
+<li><strong>Member Email Conflicts</strong>: Many members likely have their email addresses registered as usernames in other Salesforce organizations (work orgs, other communities, etc.)</li>
+<li><strong>Migration Would Fail</strong>: Attempting to change <code>jane@gmail.com.smi</code> to <code>jane@gmail.com</code> would fail if that username exists anywhere in Salesforce</li>
+</ol>
+<h3 id="the-solution-make-smi-transparent">The Solution: Make <code>.smi</code> Transparent<a class="headerlink" href="#the-solution-make-smi-transparent" title="Permanent link">&para;</a></h3>
+<p>Rather than trying to eliminate <code>.smi</code> (which isn't viable), we make it transparent to members. The standard Salesforce Experience Cloud login page doesn't allow custom scripting to transform input values, so we built custom authentication pages that automatically append <code>.smi</code> if members don't include it.</p>
+<h3 id="goals">Goals<a class="headerlink" href="#goals" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Allow members to enter just their email address (without <code>.smi</code>)</li>
+<li>Automatically append <code>.smi</code> before authentication if not present</li>
+<li>Support members who still type <code>.smi</code> out of habit (backward compatible)</li>
+<li>Work for both login and password reset flows</li>
+<li>Provide a modern, branded experience</li>
+<li>Ensure comprehensive test coverage</li>
+</ol>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<h3 id="component-overview">Component Overview<a class="headerlink" href="#component-overview" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Experience Cloud Authentication Flow
+│
+├── CommunitiesLogin (Visualforce Page)
+│   ├── CommunitiesLoginController.cls
+│   └── CommunitiesLoginControllerTest.cls
+│
+├── CommunitiesForgotPassword (Visualforce Page)
+│   ├── CommunitiesForgotPasswordController.cls
+│   └── CommunitiesForgotPasswordControllerTest.cls
+│
+└── Configuration
+    ├── Custom Labels (Community_Join_URL, etc.)
+    └── Guest User Profile (Page Access)
+</code></pre></div>
+<h3 id="key-design-decisions">Key Design Decisions<a class="headerlink" href="#key-design-decisions" title="Permanent link">&para;</a></h3>
+<p><strong>Visualforce Over Lightning Web Components</strong>: We chose Visualforce for the authentication pages because:</p>
+<ul>
+<li>Experience Cloud's authentication servlet routes work more reliably with Visualforce</li>
+<li>Simpler integration with <code>Site.login()</code> and <code>Site.forgotPassword()</code> methods</li>
+<li>Mature platform with well-documented authentication patterns</li>
+<li>Custom scripting not possible with standard Experience Cloud login pages</li>
+</ul>
+<p><strong>Username Normalization</strong>: Both login and forgot password flows automatically append the <code>.smi</code> suffix if members don't include it. This is the core functionality enabling email-based login:</p>
+<div class="highlight"><pre><span></span><code>// In CommunitiesLoginController and CommunitiesForgotPasswordController
+if (!username.endsWithIgnoreCase(&#39;.smi&#39;)) {
+  username = username + &#39;.smi&#39;;
+}
+</code></pre></div>
+<p>This approach means members can enter just their email address, and the system will authenticate them correctly. Members who still type <code>.smi</code> out of habit aren't affected—the check ensures we don't double-append the suffix.</p>
+<p><strong>Custom Labels for URLs</strong>: Rather than hardcoding URLs in Visualforce pages, we use custom labels. This allows non-technical administrators to update URLs through the Salesforce UI without code changes.</p>
+<h2 id="implementation-timeline">Implementation Timeline<a class="headerlink" href="#implementation-timeline" title="Permanent link">&para;</a></h2>
+<p>This implementation was completed in six atomic commits, each building on the previous work to create a complete email-based login solution.</p>
+<h3 id="phase-1-initial-login-page-commits-4e86d22-80e16a6">Phase 1: Initial Login Page (Commits 4e86d22, 80e16a6)<a class="headerlink" href="#phase-1-initial-login-page-commits-4e86d22-80e16a6" title="Permanent link">&para;</a></h3>
+<p><strong>Created</strong>: Custom login page with username normalization</p>
+<p><strong>Primary Goal</strong>: Enable automatic <code>.smi</code> appending to support email-based login</p>
+<p><strong>Features</strong>:
+- Username normalization (automatically appends <code>.smi</code> suffix if not present)
+- Modern, responsive design
+- Alpine.js for interactivity
+- Password visibility toggle
+- Google OAuth integration
+- Loading states during authentication</p>
+<p><strong>Why This Matters</strong>: The standard Experience Cloud login page cannot transform input values. This custom page gives us the ability to append <code>.smi</code> before authentication, allowing members to enter just their email address.</p>
+<p><strong>Components</strong>:
+- <code>CommunitiesLogin.page</code> - Visualforce page with custom styling
+- <code>CommunitiesLoginController.cls</code> - Controller with username normalization logic
+- <code>CommunitiesLoginControllerTest.cls</code> - Test class with comprehensive coverage</p>
+<h3 id="phase-2-custom-labels-commit-5008e86">Phase 2: Custom Labels (Commit 5008e86)<a class="headerlink" href="#phase-2-custom-labels-commit-5008e86" title="Permanent link">&para;</a></h3>
+<p><strong>Created</strong>: Custom labels for frequently-changed values</p>
+<p><strong>Labels Added</strong>:
+- <code>Community_Join_URL</code> - New member signup form URL
+- <code>Community_Renew_URL</code> - Membership renewal form URL
+- <code>Community_Support_Email</code> - Support contact email</p>
+<p><strong>Rationale</strong>: While not directly related to username migration, custom labels allow administrators to update URLs and contact information through Setup → Custom Labels without requiring code changes or deployments. This reduces maintenance burden as we evolve the authentication experience.</p>
+<h3 id="phase-3-feature-simplification-commit-8f6aa25">Phase 3: Feature Simplification (Commit 8f6aa25)<a class="headerlink" href="#phase-3-feature-simplification-commit-8f6aa25" title="Permanent link">&para;</a></h3>
+<p><strong>Removed</strong>: Unused features to focus on core username normalization functionality</p>
+<p><strong>Features Removed</strong>:
+- Remember me checkbox (redundant with Salesforce session settings)
+- Self-registration URL method (not used in current flow)
+- Unnecessary debug logging</p>
+<p><strong>Benefits</strong>:
+- Simpler codebase focused on username normalization
+- Reduced maintenance burden
+- Clearer code intention
+- Fewer test cases to maintain</p>
+<p><strong>Why This Matters</strong>: Removing features that weren't contributing to the email-based login goal simplified the codebase and made the core functionality more obvious. This refactoring made the code easier to understand and maintain.</p>
+<h3 id="phase-4-forgot-password-page-commit-5b9a504">Phase 4: Forgot Password Page (Commit 5b9a504)<a class="headerlink" href="#phase-4-forgot-password-page-commit-5b9a504" title="Permanent link">&para;</a></h3>
+<p><strong>Created</strong>: Custom forgot password page with username normalization</p>
+<p><strong>Primary Goal</strong>: Complete the authentication flow by supporting automatic <code>.smi</code> appending in password resets</p>
+<p><strong>Features</strong>:
+- Matching visual design with login page
+- Username normalization (appends <code>.smi</code> suffix if not present)
+- Same background image and styling
+- Responsive layout
+- Loading states and error handling</p>
+<p><strong>Why This Matters</strong>: Members who forget their password need the same username normalization support. Without this custom page, a member entering just their email address on the forgot password form would fail to receive a reset email.</p>
+<p><strong>Components</strong>:
+- <code>CommunitiesForgotPassword.page</code> - Visualforce page
+- <code>CommunitiesForgotPasswordController.cls</code> - Controller with password reset and normalization logic
+- <code>CommunitiesForgotPasswordControllerTest.cls</code> - Test class (100% coverage)</p>
+<h3 id="phase-5-guest-profile-configuration-commit-fbc0ead">Phase 5: Guest Profile Configuration (Commit fbc0ead)<a class="headerlink" href="#phase-5-guest-profile-configuration-commit-fbc0ead" title="Permanent link">&para;</a></h3>
+<p><strong>Created</strong>: Guest user profile with page access permissions</p>
+<p><strong>Configuration</strong>: Added Visualforce page access to guest user profile for:
+- <code>CommunitiesLogin</code>
+- <code>CommunitiesForgotPassword</code></p>
+<p><strong>Why This Matters</strong>: Unauthenticated users (those not logged in) need explicit permission to view Visualforce pages in Experience Cloud. Without this configuration, members attempting to access the custom login and forgot password pages would see an error.</p>
+<h3 id="phase-6-documentation-updates-commit-896773a">Phase 6: Documentation Updates (Commit 896773a)<a class="headerlink" href="#phase-6-documentation-updates-commit-896773a" title="Permanent link">&para;</a></h3>
+<p><strong>Updated</strong>: Configuration guide to reflect current implementation</p>
+<p><strong>Changes</strong>:
+- Removed documentation for removed features (remember me, self-registration)
+- Added custom labels documentation
+- Updated test scenarios to match actual functionality
+- Simplified troubleshooting sections
+- Clarified the email-based login approach (appending <code>.smi</code>, not removing it)</p>
+<p><strong>Why This Matters</strong>: Documentation that doesn't match implementation creates confusion and wastes time. This update ensures the configuration guide accurately reflects the system's current state and the email-based login goal.</p>
+<h2 id="component-details">Component Details<a class="headerlink" href="#component-details" title="Permanent link">&para;</a></h2>
+<h3 id="communitieslogincontroller">CommunitiesLoginController<a class="headerlink" href="#communitieslogincontroller" title="Permanent link">&para;</a></h3>
+<p><strong>Purpose</strong>: Handles login authentication and URL generation for the community</p>
+<p><strong>Key Methods</strong>:</p>
+<p><div class="highlight"><pre><span></span><code>public PageReference login()
+</code></pre></div>
+Main login method that:
+1. Normalizes username by appending <code>.smi</code> suffix if not present
+2. Calls <code>Site.login()</code> with credentials and startURL
+3. Handles errors with user-friendly messages
+4. Returns null on error to stay on page, or PageReference on success</p>
+<p><div class="highlight"><pre><span></span><code>public String getForgotPasswordUrl()
+</code></pre></div>
+Returns the URL to the custom forgot password page based on the current site's base URL.</p>
+<p><div class="highlight"><pre><span></span><code>public String getGoogleLoginUrl()
+</code></pre></div>
+Generates the Google OAuth login URL with proper redirect handling and startURL preservation.</p>
+<p><strong>Properties</strong>:
+- <code>username</code> - User-entered username
+- <code>password</code> - User-entered password
+- <code>startUrl</code> - URL to redirect to after successful login
+- <code>hasError</code> - Boolean flag for error state</p>
+<h3 id="communitiesforgotpasswordcontroller">CommunitiesForgotPasswordController<a class="headerlink" href="#communitiesforgotpasswordcontroller" title="Permanent link">&para;</a></h3>
+<p><strong>Purpose</strong>: Handles password reset requests with username normalization</p>
+<p><strong>Key Methods</strong>:</p>
+<p><div class="highlight"><pre><span></span><code>public PageReference forgotPassword()
+</code></pre></div>
+Main password reset method that:
+1. Validates username is provided
+2. Normalizes username by appending <code>.smi</code> suffix if not present
+3. Calls <code>Site.forgotPassword()</code> to send reset email
+4. Returns user to login page with confirmation message
+5. Handles errors gracefully</p>
+<p><div class="highlight"><pre><span></span><code>public String getLoginUrl()
+</code></pre></div>
+Returns the URL to the custom login page for easy navigation back.</p>
+<p><strong>Properties</strong>:
+- <code>username</code> - User-entered username
+- <code>hasError</code> - Boolean flag for error state</p>
+<h3 id="visualforce-page-structure">Visualforce Page Structure<a class="headerlink" href="#visualforce-page-structure" title="Permanent link">&para;</a></h3>
+<p>Both pages share a common structure:</p>
+<p><strong>Head Section</strong>:
+- Alpine.js CDN for interactivity
+- Tailwind CSS CDN for styling
+- Custom inline styles for branding
+- Favicon reference</p>
+<p><strong>Body Structure</strong>:
+<div class="highlight"><pre><span></span><code><span class="p">&lt;</span><span class="nt">body</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;min-h-screen bg-cover bg-center&quot;</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;background-overlay&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;container mx-auto&quot;</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;form-container&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">apex:form</span><span class="p">&gt;</span>
+          <span class="cm">&lt;!-- Logo, heading, form fields --&gt;</span>
+          <span class="cm">&lt;!-- Error messages --&gt;</span>
+          <span class="cm">&lt;!-- Submit button with loading state --&gt;</span>
+          <span class="cm">&lt;!-- Helper links --&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">apex:form</span><span class="p">&gt;</span>
+      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;info-container&quot;</span><span class="p">&gt;</span>
+        <span class="cm">&lt;!-- Helpful information panel --&gt;</span>
+      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</code></pre></div></p>
+<p><strong>Alpine.js Data</strong>:
+- <code>loading</code> - Boolean for button/spinner state
+- <code>showPassword</code> - Boolean for password visibility toggle (login only)</p>
+<h2 id="testing-strategy">Testing Strategy<a class="headerlink" href="#testing-strategy" title="Permanent link">&para;</a></h2>
+<h3 id="test-coverage-goals">Test Coverage Goals<a class="headerlink" href="#test-coverage-goals" title="Permanent link">&para;</a></h3>
+<p>All controllers achieve 100% code coverage with comprehensive test scenarios:</p>
+<p><strong>CommunitiesLoginControllerTest</strong>:
+- Constructor initialization
+- Successful login
+- Login with empty username
+- Login with empty password
+- Login with invalid credentials
+- Forgot password URL generation
+- Google login URL generation
+- Google login URL with startURL parameter</p>
+<p><strong>CommunitiesForgotPasswordControllerTest</strong>:
+- Constructor initialization
+- Successful password reset
+- Password reset with empty username
+- Password reset with invalid username
+- Username normalization (appends <code>.smi</code> suffix when not present)
+- Login URL generation</p>
+<h3 id="test-data-strategy">Test Data Strategy<a class="headerlink" href="#test-data-strategy" title="Permanent link">&para;</a></h3>
+<p>Tests use:
+- Standard test users where possible
+- Mock page parameters for startURL testing
+- <code>Test.startTest()</code> and <code>Test.stopTest()</code> for governor limit isolation
+- Proper assertions for both positive and negative test cases</p>
+<h3 id="running-tests">Running Tests<a class="headerlink" href="#running-tests" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Run all login-related tests</span>
+sf<span class="w"> </span>apex<span class="w"> </span>run<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--tests<span class="w"> </span>CommunitiesLoginControllerTest<span class="w"> </span>--tests<span class="w"> </span>CommunitiesForgotPasswordControllerTest<span class="w"> </span>--target-org<span class="w"> </span>production<span class="w"> </span>--code-coverage<span class="w"> </span>--result-format<span class="w"> </span>human
+
+<span class="c1"># Run individual test class</span>
+sf<span class="w"> </span>apex<span class="w"> </span>run<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--tests<span class="w"> </span>CommunitiesLoginControllerTest<span class="w"> </span>--target-org<span class="w"> </span>production<span class="w"> </span>--code-coverage<span class="w"> </span>--result-format<span class="w"> </span>human
+</code></pre></div>
+<h2 id="configuration-management">Configuration Management<a class="headerlink" href="#configuration-management" title="Permanent link">&para;</a></h2>
+<h3 id="custom-labels">Custom Labels<a class="headerlink" href="#custom-labels" title="Permanent link">&para;</a></h3>
+<p>Custom labels enable easy configuration updates without code deployment.</p>
+<p><strong>Creating a Custom Label</strong>:</p>
+<ol>
+<li>Setup → Custom Labels → New Custom Label</li>
+<li>Fill in required fields:</li>
+<li><strong>Name</strong>: <code>Community_Join_URL</code></li>
+<li><strong>Value</strong>: <code>https://donorbox.org/spokane-mountaineers-membership-2</code></li>
+<li><strong>Description</strong>: URL for new member signup</li>
+<li><strong>Category</strong>: Community</li>
+<li><strong>Protected</strong>: No (unchecked)</li>
+<li>Save</li>
+</ol>
+<p><strong>Using in Visualforce</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{!$Label.Community_Join_URL}&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;link&quot;</span><span class="p">&gt;</span>
+  Sign up for membership
+<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+</code></pre></div>
+<p><strong>Current Custom Labels</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Label Name</th>
+<th>Value</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Community_Join_URL</code></td>
+<td><code>https://donorbox.org/spokane-mountaineers-membership-2</code></td>
+<td>New member signup form</td>
+</tr>
+<tr>
+<td><code>Community_Renew_URL</code></td>
+<td><code>https://donorbox.org/spokane-mountaineers-membership</code></td>
+<td>Membership renewal form</td>
+</tr>
+<tr>
+<td><code>Community_Support_Email</code></td>
+<td><code>membership@spokanemountaineers.org</code></td>
+<td>Support contact email</td>
+</tr>
+</tbody>
+</table>
+<h3 id="guest-user-profile">Guest User Profile<a class="headerlink" href="#guest-user-profile" title="Permanent link">&para;</a></h3>
+<p>The guest user profile must have access to both Visualforce pages for unauthenticated access.</p>
+<p><strong>Verifying Profile Access</strong>:</p>
+<ol>
+<li>Setup → Profiles → [Guest User Profile]</li>
+<li>Scroll to "Enabled Apex Page Access"</li>
+<li>Verify both pages are listed:</li>
+<li><code>CommunitiesLogin</code></li>
+<li><code>CommunitiesForgotPassword</code></li>
+<li>If missing, click "Edit" and add them</li>
+</ol>
+<h3 id="experience-cloud-configuration">Experience Cloud Configuration<a class="headerlink" href="#experience-cloud-configuration" title="Permanent link">&para;</a></h3>
+<p><strong>Setting Custom Login Page</strong>:</p>
+<ol>
+<li>Experience Builder → Settings → Login &amp; Registration</li>
+<li>Login Page: Select "CommunitiesLogin"</li>
+<li>Forgot Password Page: Select "CommunitiesForgotPassword"</li>
+<li>Save and publish</li>
+</ol>
+<h2 id="lessons-learned">Lessons Learned<a class="headerlink" href="#lessons-learned" title="Permanent link">&para;</a></h2>
+<h3 id="what-worked-well">What Worked Well<a class="headerlink" href="#what-worked-well" title="Permanent link">&para;</a></h3>
+<p><strong>Username Normalization Strategy</strong>: Automatically appending the <code>.smi</code> suffix has been completely transparent to members. Members can now enter just their email address without thinking about <code>.smi</code>, while those who still type the full username out of habit aren't affected. This approach eliminates member confusion without requiring database changes.</p>
+<p><strong>Verifying Platform Constraints Early</strong>: Initial research suggested Salesforce had removed the global username uniqueness requirement. Deeper investigation revealed this constraint still exists, which fundamentally changed our approach. <strong>Lesson: Always verify platform constraints before planning data migrations.</strong> We pivoted from "migrate away from <code>.smi</code>" to "make <code>.smi</code> transparent," which proved to be a better solution anyway.</p>
+<p><strong>Atomic, Test-Driven Implementation</strong>: Building the solution in small, well-tested commits gave us confidence that each piece worked correctly. The comprehensive test coverage (100% for all controllers) meant we could refactor and remove features without fear of breaking authentication.</p>
+<p><strong>Custom Labels</strong>: Having URLs managed through custom labels has proven valuable for ongoing maintenance. When membership URLs change, administrators can update them immediately without waiting for a code deployment.</p>
+<p><strong>Consistent Design</strong>: Using the same background image, color scheme, and layout across both login and forgot password pages creates a cohesive user experience. Members don't experience visual discontinuity when navigating between authentication flows.</p>
+<h3 id="challenges-overcome">Challenges Overcome<a class="headerlink" href="#challenges-overcome" title="Permanent link">&para;</a></h3>
+<p><strong>Platform Constraints</strong>: The standard Experience Cloud login page doesn't support custom scripting or input transformation. This forced us to build custom Visualforce pages, which initially seemed like extra work but ultimately gave us complete control over the authentication experience.</p>
+<p><strong>Pivot from Migration to Transparency</strong>: Discovering that Salesforce still requires globally unique usernames meant we couldn't migrate away from <code>.smi</code>. Rather than abandoning the project, we pivoted to making <code>.smi</code> transparent. This actually resulted in a simpler solution—no database migration needed, just improved UX.</p>
+<p><strong>Visualforce vs Lightning Decision</strong>: We initially considered Lightning Web Components for a more modern approach, but discovered that Visualforce integrates more smoothly with Experience Cloud authentication routes. The platform's authentication servlets (<code>/login</code>, <code>/ForgotPassword</code>) work more reliably with Visualforce pages.</p>
+<p><strong>Feature Creep</strong>: Early implementations included features like "remember me" that seemed useful but weren't actually contributing to the email-based login goal. Recognizing and removing these features simplified the codebase and made the core functionality more obvious.</p>
+<p><strong>Guest Profile Permissions</strong>: Discovering that guest users need explicit Visualforce page access wasn't immediately obvious. This caused initial access issues that were resolved by properly configuring the guest user profile with page access permissions.</p>
+<h3 id="future-considerations">Future Considerations<a class="headerlink" href="#future-considerations" title="Permanent link">&para;</a></h3>
+<p><strong>Member Communication</strong>: Consider whether to proactively communicate to members that they can now use just their email address to log in. Some members may still be typing <code>.smi</code> unnecessarily, even though it works fine. A help article or tooltip could improve awareness.</p>
+<p><strong>Analytics Integration</strong>: Adding analytics tracking to understand:
+- How many members use just email vs. full username with <code>.smi</code>
+- Common login errors
+- Whether members are discovering the simplified login naturally</p>
+<p><strong>New Member Onboarding</strong>: Update the member creation process documentation to clarify that usernames include <code>.smi</code> but members don't need to enter it when logging in. This ensures support staff and documentation are aligned.</p>
+<p><strong>Migration to Lightning Web Components</strong>: As Salesforce continues to evolve, we may eventually migrate to LWC-based authentication flows if platform support improves. The current Visualforce implementation provides a stable foundation that can be incrementally enhanced.</p>
+<p><strong>Consider Other TLDs</strong>: If <code>.smi</code> continues to cause confusion, we could potentially use a different suffix (like <code>.smorg</code> for "Spokane Mountaineers Organization"). However, this would require a true username migration, which has the same global uniqueness challenges.</p>
+<h2 id="related-documentation">Related Documentation<a class="headerlink" href="#related-documentation" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../../how-to-guides/configure-custom-login-page/">Configure Custom Login Page</a> - User guide for setup</li>
+<li><a href="../../articles/simplifying-custom-login-experience/">Simplifying Custom Login Experience</a> - Blog-style overview</li>
+<li><a href="../../articles/enable-google-login/">Enable Google Login</a> - Google OAuth setup</li>
+</ul>
+<h2 id="code-references">Code References<a class="headerlink" href="#code-references" title="Permanent link">&para;</a></h2>
+<p><strong>Main Components</strong>:
+- <code>force-app/main/default/pages/CommunitiesLogin.page</code>
+- <code>force-app/main/default/classes/CommunitiesLoginController.cls</code>
+- <code>force-app/main/default/classes/CommunitiesLoginControllerTest.cls</code>
+- <code>force-app/main/default/pages/CommunitiesForgotPassword.page</code>
+- <code>force-app/main/default/classes/CommunitiesForgotPasswordController.cls</code>
+- <code>force-app/main/default/classes/CommunitiesForgotPasswordControllerTest.cls</code></p>
+<p><strong>Configuration</strong>:
+- <code>force-app/main/default/labels/CustomLabels.labels-meta.xml</code>
+- <code>force-app/main/default/profiles/Spokane Mountaineers Profile.profile-meta.xml</code></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Implementation Details">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Implementation Details
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../chatter-publisher-autosave/" class="md-footer__link md-footer__link--next" aria-label="Next: Chatter Publisher with Autosave">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Chatter Publisher with Autosave
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/jasonkradams/smi" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["announce.dismiss", "content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.tooltips", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

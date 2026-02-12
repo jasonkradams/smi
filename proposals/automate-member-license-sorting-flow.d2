@@ -1,0 +1,39 @@
+# direction: right
+vars {
+    d2-config {
+        sketch: true
+        center: true
+    }
+}
+
+DailySchedule: "Daily Scheduler\n(LoginHistorySyncScheduler)" {
+    SyncBatch: "LoginHistorySyncBatch\nSync LoginHistory to\nFiscal_Year_Login_History__c"
+    DailySchedule -> SyncBatch: runs daily
+}
+
+SyncBatch -> BatchStart: "Trigger LicenseShuffleBatch\nin finish() method"
+
+BatchStart: "Batch Start Method" {
+    QueryUsers: "Query Active Users:\n- Customer Community Plus\n- Customer Community Plus Login\n- Include Profile, CreatedDate"
+    BatchStart -> QueryUsers
+}
+
+QueryUsers -> ExecuteBatch: "Batch Execute Method\n(Process in chunks)"
+
+ExecuteBatch: {
+    CountLogins: "For Each User:\nQuery Fiscal_Year_Login_History__c\nCount logins (fiscal year)"
+    IdentifyCandidates: "Identify Candidates:\n- Users with >5 logins qualify for Premium\n- Protected users always Premium"
+    FilterProtected: "Filter Protected Users:\n- Chairs (SM Community Plus Chair)\n- Users <90 days old\n(Always get Premium)"
+    CalculateTarget: "Calculate Target:\nAssign Premium to:\n- All protected users\n- Users with >5 logins\n- Max 475 total (sort by login count)"
+    
+    CountLogins -> IdentifyCandidates
+    IdentifyCandidates -> FilterProtected
+    FilterProtected -> CalculateTarget
+}
+
+CalculateTarget -> UpdateLicenses: "Update User Records:\n- License Type\n- Profile\n- Batch update"
+UpdateLicenses -> LogChanges: "Create License Change Logs:\n- User, Old/New License\n- Old/New Profile\n- Login Count, Reason"
+LogChanges -> BatchFinish: "Batch Finish Method\n(Log Summary)"
+
+BatchFinish -> End2: "Complete"
+
