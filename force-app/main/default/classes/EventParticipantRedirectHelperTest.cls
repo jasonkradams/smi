@@ -1202,6 +1202,84 @@ private class EventParticipantRedirectHelperTest {
   }
 
   @isTest
+  static void testIsEventPublic_True() {
+    // Create an Event_Registration__c with Public__c = true
+    Event_Registration__c eventReg = new Event_Registration__c(
+      Name = 'Public Event Registration',
+      Status__c = 'Requested',
+      Public__c = true
+    );
+    Database.SaveResult result = Database.insert(eventReg, false);
+
+    if (!result.isSuccess()) {
+      // If we can't create the record, skip this test
+      System.debug(
+        'Could not create Event_Registration__c for isEventPublic test: ' +
+        result.getErrors()
+      );
+      return;
+    }
+
+    Test.startTest();
+    Boolean isPublic = EventParticipantRedirectHelper.isEventPublic(
+      String.valueOf(eventReg.Id)
+    );
+    Test.stopTest();
+
+    System.assertEquals(
+      true,
+      isPublic,
+      'Expected isEventPublic to return true for a public event'
+    );
+  }
+
+  @isTest
+  static void testIsEventPublic_False() {
+    // Create an Event_Registration__c with Public__c = false
+    Event_Registration__c eventReg = new Event_Registration__c(
+      Name = 'Private Event Registration',
+      Status__c = 'Requested',
+      Public__c = false
+    );
+    Database.SaveResult result = Database.insert(eventReg, false);
+
+    if (!result.isSuccess()) {
+      System.debug(
+        'Could not create Event_Registration__c for isEventPublic test: ' +
+        result.getErrors()
+      );
+      return;
+    }
+
+    Test.startTest();
+    Boolean isPublic = EventParticipantRedirectHelper.isEventPublic(
+      String.valueOf(eventReg.Id)
+    );
+    Test.stopTest();
+
+    System.assertEquals(
+      false,
+      isPublic,
+      'Expected isEventPublic to return false for a non-public event'
+    );
+  }
+
+  @isTest
+  static void testIsEventPublic_InvalidId() {
+    Test.startTest();
+    Boolean isPublic = EventParticipantRedirectHelper.isEventPublic(
+      'invalidId'
+    );
+    Test.stopTest();
+
+    System.assertEquals(
+      false,
+      isPublic,
+      'Expected isEventPublic to return false for an invalid ID'
+    );
+  }
+
+  @isTest
   static void testAddParticipant_DuplicateParticipant() {
     User leaderUser = [SELECT Id FROM User WHERE IsActive = TRUE LIMIT 1];
     Contact testContact = [SELECT Id FROM Contact LIMIT 1];

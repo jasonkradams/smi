@@ -1,4 +1,8 @@
-public class EventParticipantRedirectHelper {
+// without sharing: this class is called from Experience Cloud (community) pages.
+// Guest users have no sharing access to Event_Registration__c or Event_Participant__c,
+// so all methods must bypass sharing rules. Security is enforced programmatically
+// (isEventLeader checks) for any write operations.
+public without sharing class EventParticipantRedirectHelper {
   @testVisible
   static Boolean TEST_SIMULATE_EVENT_REG = false;
   @testVisible
@@ -259,6 +263,25 @@ public class EventParticipantRedirectHelper {
       throw new AuraHandledException(
         'Unable to update participant response: ' + e.getMessage()
       );
+    }
+  }
+
+  @AuraEnabled(cacheable=true)
+  public static Boolean isEventPublic(String eventRegistrationId) {
+    try {
+      List<Event_Registration__c> regs = [
+        SELECT Id, Public__c
+        FROM Event_Registration__c
+        WHERE Id = :eventRegistrationId
+        LIMIT 1
+      ];
+      if (regs.isEmpty()) {
+        return false;
+      }
+      return regs[0].Public__c == true;
+    } catch (Exception e) {
+      System.debug('Error checking event public status: ' + e.getMessage());
+      return false;
     }
   }
 

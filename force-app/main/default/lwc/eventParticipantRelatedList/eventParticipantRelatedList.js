@@ -2,6 +2,7 @@ import { LightningElement, api, wire } from "lwc";
 import { NavigationMixin } from "lightning/navigation";
 import getEventParticipants from "@salesforce/apex/EventParticipantRedirectHelper.getEventParticipants";
 import isEventLeader from "@salesforce/apex/EventParticipantRedirectHelper.isEventLeader";
+import isEventPublic from "@salesforce/apex/EventPublicStatusHelper.isEventPublic";
 import addParticipant from "@salesforce/apex/EventParticipantRedirectHelper.addParticipant";
 import removeParticipant from "@salesforce/apex/EventParticipantRedirectHelper.removeParticipant";
 import updateParticipantResponse from "@salesforce/apex/EventParticipantRedirectHelper.updateParticipantResponse";
@@ -24,6 +25,8 @@ export default class EventParticipantRelatedList extends NavigationMixin(
   isEventLeader = false;
   eventRegistrationId = null;
   showAddParticipant = false;
+  isPublicEvent = false;
+  _publicStatusChecked = false; // Hidden until public status is confirmed
   selectedContactId = null;
   selectedResponse = "Attending";
   responseOptions = [
@@ -80,6 +83,10 @@ export default class EventParticipantRelatedList extends NavigationMixin(
 
     // Set the eventId for the new event
     this._eventIdFromUrl = recordId;
+
+    // Eagerly check public status so the component stays hidden until we know
+    // it's safe to show. This prevents a flash of content on public events.
+    this.checkPublicStatus(recordId);
 
     // Don't manually load here - let the @wire(getEventParticipants) handle it
     // The wire service will react to this.recordId being set
@@ -171,6 +178,12 @@ export default class EventParticipantRelatedList extends NavigationMixin(
       return;
     }
 
+    // Eagerly check public status as soon as we have an ID so the component
+    // stays hidden until confirmed non-public (prevents flash of content).
+    if (eventId && !this._publicStatusChecked) {
+      this.checkPublicStatus(eventId);
+    }
+
     // Try to decode/translate the ID if it looks like an Experience Cloud ID
     if (eventId && eventId.startsWith("a1") && !this._isLoadingParticipants) {
       await this.tryIdVariations(eventId);
@@ -243,6 +256,14 @@ export default class EventParticipantRelatedList extends NavigationMixin(
   async loadParticipants(eventId) {
     // Validate eventId
     if (!eventId) {
+      return;
+    }
+
+    // Check public status before loading — hide component entirely for public events
+    const isPublic = await this.checkPublicStatus(eventId);
+    if (isPublic) {
+      this.isLoading = false;
+      this._isLoadingParticipants = false;
       return;
     }
 
@@ -336,6 +357,8 @@ export default class EventParticipantRelatedList extends NavigationMixin(
   }
 
   async wiredParticipantsHandler({ error, data }) {
+    if (this.isPublicEvent) return;
+
     // If we already have participants from another source, don't overwrite
     // But allow updates if this is the same recordId (wire service refresh)
     if (
@@ -406,6 +429,25 @@ export default class EventParticipantRelatedList extends NavigationMixin(
         },
         false
       );
+    }
+  }
+
+  get showComponent() {
+    return this._publicStatusChecked && !this.isPublicEvent;
+  }
+
+  async checkPublicStatus(eventId) {
+    if (!eventId) return false;
+    try {
+      const isPublic = await isEventPublic({ eventRegistrationId: eventId });
+      this.isPublicEvent = isPublic === true;
+      this._publicStatusChecked = true;
+      return this.isPublicEvent;
+    } catch (e) {
+      // On error, assume not public — fail open so participants still load
+      this.isPublicEvent = false;
+      this._publicStatusChecked = true;
+      return false;
     }
   }
 
