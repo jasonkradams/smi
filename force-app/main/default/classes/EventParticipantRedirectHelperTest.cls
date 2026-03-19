@@ -840,6 +840,129 @@ private class EventParticipantRedirectHelperTest {
   }
 
   @isTest
+  static void testAddParticipant_syncsContactToUser_whenMatchingUserExists() {
+    // When addParticipant is called for a contact that has a matching User by email,
+    // the returned wrapper should have hasUser = true (sync happens inside addParticipant).
+    String uniqueSuffix = String.valueOf(System.currentTimeMillis())
+      .substring(8);
+    String contactEmail = 'syncadd' + uniqueSuffix + '@example.com';
+
+    User leaderUser = [SELECT Id FROM User WHERE IsActive = TRUE LIMIT 1];
+
+    // Create a User whose email matches the contact we will add
+    User matchingUser = new User(
+      Username = contactEmail + '.smi',
+      Email = contactEmail,
+      LastName = 'SyncAddUser',
+      FirstName = 'Test',
+      Alias = 'synca' + uniqueSuffix.substring(0, 2),
+      CommunityNickname = 'syncadd' + uniqueSuffix,
+      ProfileId = getStandardUserProfileId(),
+      TimeZoneSidKey = 'America/Los_Angeles',
+      LocaleSidKey = 'en_US',
+      EmailEncodingKey = 'UTF-8',
+      LanguageLocaleKey = 'en_US'
+    );
+    insert matchingUser;
+
+    // Create contact with null User_Lookup__c but a matching email
+    Contact testContact = new Contact(
+      FirstName = 'SyncAdd',
+      LastName = 'Contact',
+      Email = contactEmail
+    );
+    insert testContact;
+
+    String eventRegId = createEventRegistrationWithFallback(
+      leaderUser.Id,
+      'Test SyncAdd Registration'
+    );
+
+    if (eventRegId == null) {
+      // Cannot test without a real Event_Registration__c
+      return;
+    }
+
+    Test.startTest();
+    System.runAs(leaderUser) {
+      EventParticipantRedirectHelper.ParticipantWrapper result = EventParticipantRedirectHelper.addParticipant(
+        eventRegId,
+        String.valueOf(testContact.Id),
+        'Attending'
+      );
+
+      System.assertNotEquals(null, result);
+      System.assertEquals(testContact.Id, result.contactId);
+      // The sync inside addParticipant should have linked the contact to the matching user
+      System.assertEquals(
+        true,
+        result.hasUser,
+        'hasUser should be true after sync'
+      );
+      System.assertEquals(
+        matchingUser.Id,
+        result.userId,
+        'userId should be the matching User Id'
+      );
+    }
+    Test.stopTest();
+  }
+
+  @isTest
+  static void testAddParticipant_succeeds_whenNoMatchingUser() {
+    // When addParticipant is called for a contact with no matching User,
+    // the add should still succeed and hasUser should be false.
+    String uniqueSuffix = String.valueOf(System.currentTimeMillis())
+      .substring(8);
+
+    User leaderUser = [SELECT Id FROM User WHERE IsActive = TRUE LIMIT 1];
+
+    // Create contact with an email that has no matching User
+    Contact testContact = new Contact(
+      FirstName = 'NoMatch',
+      LastName = 'AddContact',
+      Email = 'nomatchadd' + uniqueSuffix + '@nowhere.example.com'
+    );
+    insert testContact;
+
+    String eventRegId = createEventRegistrationWithFallback(
+      leaderUser.Id,
+      'Test NoMatch Add Registration'
+    );
+
+    if (eventRegId == null) {
+      return;
+    }
+
+    Test.startTest();
+    System.runAs(leaderUser) {
+      EventParticipantRedirectHelper.ParticipantWrapper result = EventParticipantRedirectHelper.addParticipant(
+        eventRegId,
+        String.valueOf(testContact.Id),
+        'Attending'
+      );
+
+      System.assertNotEquals(
+        null,
+        result,
+        'Participant should be added even without matching User'
+      );
+      System.assertEquals(testContact.Id, result.contactId);
+      System.assertEquals(
+        false,
+        result.hasUser,
+        'hasUser should be false when no User matches'
+      );
+      System.assertEquals(
+        null,
+        result.userId,
+        'userId should be null when no User matches'
+      );
+    }
+    Test.stopTest();
+  }
+
+  @isTest
   static void testAddParticipant_NotLeader() {
     String uniqueSuffix = String.valueOf(System.currentTimeMillis())
       .substring(8);

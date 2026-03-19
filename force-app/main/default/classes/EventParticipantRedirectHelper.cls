@@ -113,6 +113,16 @@ public without sharing class EventParticipantRedirectHelper {
 
       insert newParticipant;
 
+      // Attempt to sync Contact→User mapping so the returned wrapper has hasUser = true
+      // when a matching User exists. Best-effort — failure does not prevent the add.
+      try {
+        syncContactToUser(contactId);
+      } catch (Exception syncEx) {
+        System.debug(
+          'Contact→User sync failed (non-critical): ' + syncEx.getMessage()
+        );
+      }
+
       // Query the new participant with related data to return
       List<Event_Participant__c> participants = [
         SELECT
