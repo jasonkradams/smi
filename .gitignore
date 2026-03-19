@@ -49,3 +49,7 @@ site/
 
 # Temporary
 tmp/
+
+# AI Workflows
+thoughts/
+settings.local.json
