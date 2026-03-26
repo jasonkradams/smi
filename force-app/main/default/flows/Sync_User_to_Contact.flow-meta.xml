@@ -8,6 +8,13 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <assignmentItems>
+            <assignToReference>ContactToUpdate.Id</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Contact_Record.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
             <assignToReference
       >ContactToUpdate.User_Lookup__c</assignToReference>
             <operator>Assign</operator>
@@ -19,6 +26,28 @@
             <targetReference>Update_Contact_Record</targetReference>
         </connector>
     </assignments>
+    <decisions>
+        <name>Contact_Found</name>
+        <label>Contact Found?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>No Contact Found</defaultConnectorLabel>
+        <rules>
+            <name>Contact_Exists</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Contact_Record</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_User_Record</targetReference>
+            </connector>
+            <label>Contact Exists</label>
+        </rules>
+    </decisions>
     <decisions>
         <name>User_Found</name>
         <label>User Found?</label>
@@ -72,7 +101,7 @@
         <assignNullValuesIfNoRecordsFound
     >false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Get_User_Record</targetReference>
+            <targetReference>Contact_Found</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
