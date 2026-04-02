@@ -410,6 +410,5 @@ For questions or issues:
 
 ## Related Documentation
 
-- [Username Migration Plan](../proposals/remove-smi-from-usernames.md)
 - [Google OAuth Setup](../articles/enable-google-login.md)
 - [Experience Cloud Configuration](./setup-staging-sandbox.md)

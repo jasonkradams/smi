@@ -27,6 +27,7 @@ nav:
       - Website Editing: how-to-guides/website-editing.md
       - Bulk Delete Events in Salesforce: how-to-guides/bulk-delete-events-in-salesforce.md
       - Salesforce Development Console Cheatsheet: how-to-guides/salesforce-development-console-cheatsheet.md
+      - Send as Org Email from Hotmail: how-to-guides/send-as-gmail-from-hotmail.md
   - Automation:
       - automation/index.md
       - Event Approval Email Alerts: automation/event-approval-email-alerts.md
@@ -43,6 +44,9 @@ nav:
   - Google Workspace:
       - google-workspace/index.md
       - Querying Custom User Schema: google-workspace/querying-custom-user-schema.md
+  - Plans:
+      - Fix Event Participant Contact/User Mapping: plans/2026-03-18-fix-event-participant-contact-user-mapping.md
+      - Hide Event Participant List for Public Events: plans/2026-03-18-hide-event-participant-list-for-public-events.md
   - About: about.md # We'll add this page later.
 
 # Custom branding
