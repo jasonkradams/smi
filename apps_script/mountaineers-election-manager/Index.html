@@ -1,0 +1,1409 @@
+<!doctype html>
+<html>
+  <head>
+    <base target="_top" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
+    <style>
+      body {
+        padding: 20px;
+        background-color: #f8f9fa;
+        font-family: sans-serif;
+      }
+      .card {
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border: none;
+        margin-bottom: 20px;
+      }
+      .section-header {
+        color: #0d6efd;
+        border-bottom: 2px solid #f1f1f1;
+        padding-bottom: 10px;
+        margin-bottom: 16px;
+      }
+      .instr {
+        font-size: 0.85rem;
+        color: #6c757d;
+      }
+      .role-config {
+        display: none;
+        padding-left: 25px;
+        border-left: 3px solid #dee2e6;
+        margin-top: 10px;
+        margin-bottom: 15px;
+      }
+      .form-check-input:checked ~ .role-config {
+        display: block;
+      }
+
+      /* Chip / tag input for candidates */
+      .chip-input {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        align-items: center;
+        padding: 6px 8px;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        background: #fff;
+        min-height: 38px;
+        cursor: text;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
+      }
+      .chip-input:focus-within {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.2);
+      }
+      .chip-input.is-disabled {
+        background: #e9ecef;
+        cursor: default;
+      }
+      .chip-input.is-disabled .chip-text-input {
+        display: none;
+      }
+      .chip-input.is-disabled .chip-remove {
+        display: none;
+      }
+      .chip-input.is-disabled .chip {
+        background: #dee2e6;
+        border-color: #ced4da;
+        color: #495057;
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #dbeafe;
+        border: 1px solid #93c5fd;
+        border-radius: 20px;
+        padding: 2px 6px 2px 10px;
+        font-size: 0.8rem;
+        color: #1e40af;
+        white-space: nowrap;
+      }
+      .chip-remove {
+        background: none;
+        border: none;
+        padding: 0 2px;
+        line-height: 1;
+        font-size: 0.9rem;
+        color: #1e40af;
+        opacity: 0.55;
+        cursor: pointer;
+      }
+      .chip-remove:hover {
+        opacity: 1;
+      }
+      .chip-text-input {
+        border: none;
+        outline: none;
+        flex: 1;
+        min-width: 180px;
+        font-size: 0.875rem;
+        background: transparent;
+        padding: 2px 2px;
+        color: #212529;
+      }
+
+      /* Gateway mode-selection buttons */
+      .mode-btn {
+        background: #fff;
+        border: 2px solid #dee2e6;
+        border-radius: 10px;
+        cursor: pointer;
+        text-align: left;
+        padding: 20px;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
+        width: 100%;
+      }
+      .mode-btn:hover {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.12);
+      }
+      .mode-btn.selected {
+        border-color: #0d6efd;
+        background-color: #f0f5ff;
+      }
+      .mode-btn .mode-title {
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 4px;
+      }
+      .mode-btn .mode-desc {
+        font-size: 0.82rem;
+        color: #6c757d;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" style="max-width: 700px">
+      <!-- ───────────────────────────────────────────
+           GATEWAY
+      ─────────────────────────────────────────── -->
+      <div id="gatewayCard" class="card p-4">
+        <h1 class="h5 fw-bold mb-1">Spokane Mountaineers Election Manager</h1>
+        <p class="instr mb-4">
+          This tool creates and manages Spokane Mountaineers elections. Select
+          what you'd like to do to get started.
+        </p>
+
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <button
+              id="btnCreate"
+              class="mode-btn"
+              onclick="selectMode('create')"
+            >
+              <div class="mode-title">Create New Election</div>
+              <div class="mode-desc">
+                Set up a new ballot, dates, and member list from scratch.
+              </div>
+            </button>
+          </div>
+          <div class="col-sm-6">
+            <button
+              id="btnManage"
+              class="mode-btn"
+              onclick="selectMode('manage')"
+            >
+              <div class="mode-title">Manage Existing Election</div>
+              <div class="mode-desc">
+                Load a past election to review, update members, or re-send
+                tokens.
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Appears when Manage is selected -->
+        <div id="manageForm" style="display: none" class="mt-4">
+          <hr class="mt-0" />
+          <div class="mb-3">
+            <label class="form-label fw-bold">Select an Election</label>
+            <p class="instr">
+              Choose from the elections below. These are sorted newest first.
+            </p>
+            <select id="electionSelect" class="form-select">
+              <option disabled>Loading elections...</option>
+            </select>
+          </div>
+          <button
+            id="loadBtn"
+            class="btn btn-secondary w-100"
+            onclick="runLoad()"
+          >
+            Load Election
+          </button>
+          <div id="loadStatus" class="mt-3"></div>
+        </div>
+      </div>
+
+      <!-- ───────────────────────────────────────────
+           ELECTION CONFIGURATION (hidden until mode selected)
+      ─────────────────────────────────────────── -->
+      <div id="configCard" class="card p-4" style="display: none">
+        <div class="d-flex justify-content-between align-items-start mb-1">
+          <h2
+            id="configTitle"
+            class="section-header mb-0 pb-0 border-0 flex-grow-1 me-3"
+          ></h2>
+          <button
+            class="btn btn-sm btn-link text-secondary p-0 mt-1 flex-shrink-0"
+            onclick="resetToGateway()"
+            style="font-size: 0.82rem"
+          >
+            ← Start Over
+          </button>
+        </div>
+        <div
+          style="height: 2px; background: #f1f1f1; margin-bottom: 16px"
+        ></div>
+        <p id="configSubtext" class="instr mb-4"></p>
+
+        <!-- Lock banner — shown in manage mode when election is in progress or closed -->
+        <div
+          id="lockSection"
+          style="display: none"
+          class="mb-4 p-3 rounded border"
+        >
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <span id="lockBadge" class="badge me-2"></span>
+              <span id="lockMessage" class="instr"></span>
+            </div>
+            <div class="form-check form-switch mb-0 ms-3 flex-shrink-0">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="lockCheckbox"
+                onchange="handleLockToggle(this)"
+              />
+              <label class="form-check-label instr fw-bold" for="lockCheckbox"
+                >Locked</label
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Title and dates -->
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Election Title</label>
+            <input
+              type="text"
+              id="title"
+              class="form-control"
+              placeholder="e.g. 2026 Annual Election"
+              oninput="clearTitleError()"
+            />
+            <div class="invalid-feedback" id="titleFeedback"></div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label class="form-label fw-bold">Start Date</label>
+            <input type="date" id="startDate" class="form-control" />
+          </div>
+          <div class="col-md-3 mb-3">
+            <label class="form-label fw-bold">Close Date</label>
+            <input type="date" id="closeDate" class="form-control" />
+          </div>
+        </div>
+
+        <!-- Folder — create mode only -->
+        <div id="folderSection" class="mb-3" style="display: none">
+          <label class="form-label fw-bold">Save To Folder</label>
+          <p class="instr">
+            Choose the year folder this election belongs to, or create a new
+            one.
+          </p>
+          <div class="d-flex gap-2">
+            <select
+              id="folderSelect"
+              class="form-select"
+              onchange="toggleNewFolder()"
+            >
+              <option>Loading folders...</option>
+            </select>
+            <input
+              type="text"
+              id="newFolderName"
+              class="form-control d-none"
+              placeholder="New Folder Name"
+            />
+          </div>
+        </div>
+
+        <hr />
+
+        <!-- Ballot questions -->
+        <h5 class="fw-bold">Ballot Questions</h5>
+        <p id="questionsInstr" class="instr"></p>
+
+        <div id="position-list" class="mb-2">
+          <div class="form-check mb-2">
+            <input
+              class="form-check-input role-toggle"
+              type="checkbox"
+              id="check-pres"
+              data-role="President"
+              data-type="multiple_choice"
+            />
+            <label class="form-check-label fw-bold" for="check-pres"
+              >President (Multiple Choice)</label
+            >
+            <div class="role-config">
+              <div
+                class="chip-input"
+                onclick="
+                  if (!this.classList.contains('is-disabled'))
+                    this.querySelector('.chip-text-input').focus();
+                "
+              >
+                <input
+                  type="text"
+                  class="chip-text-input"
+                  placeholder="Type a name, press Enter — or paste a comma-separated list"
+                  onkeydown="handleChipKey(event, this)"
+                  oninput="handleChipInput(event, this)"
+                  onpaste="handleChipPaste(event, this)"
+                  onblur="commitChipInput(this)"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="form-check mb-2">
+            <input
+              class="form-check-input role-toggle"
+              type="checkbox"
+              id="check-vp"
+              data-role="Vice President"
+              data-type="multiple_choice"
+            />
+            <label class="form-check-label fw-bold" for="check-vp"
+              >Vice President (Multiple Choice)</label
+            >
+            <div class="role-config">
+              <div
+                class="chip-input"
+                onclick="
+                  if (!this.classList.contains('is-disabled'))
+                    this.querySelector('.chip-text-input').focus();
+                "
+              >
+                <input
+                  type="text"
+                  class="chip-text-input"
+                  placeholder="Type a name, press Enter — or paste a comma-separated list"
+                  onkeydown="handleChipKey(event, this)"
+                  oninput="handleChipInput(event, this)"
+                  onpaste="handleChipPaste(event, this)"
+                  onblur="commitChipInput(this)"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="form-check mb-2">
+            <input
+              class="form-check-input role-toggle"
+              type="checkbox"
+              id="check-treas"
+              data-role="Treasurer"
+              data-type="multiple_choice"
+            />
+            <label class="form-check-label fw-bold" for="check-treas"
+              >Treasurer (Multiple Choice)</label
+            >
+            <div class="role-config">
+              <div
+                class="chip-input"
+                onclick="
+                  if (!this.classList.contains('is-disabled'))
+                    this.querySelector('.chip-text-input').focus();
+                "
+              >
+                <input
+                  type="text"
+                  class="chip-text-input"
+                  placeholder="Type a name, press Enter — or paste a comma-separated list"
+                  onkeydown="handleChipKey(event, this)"
+                  oninput="handleChipInput(event, this)"
+                  onpaste="handleChipPaste(event, this)"
+                  onblur="commitChipInput(this)"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="form-check mb-2">
+            <input
+              class="form-check-input role-toggle"
+              type="checkbox"
+              id="check-sec"
+              data-role="Secretary"
+              data-type="multiple_choice"
+            />
+            <label class="form-check-label fw-bold" for="check-sec"
+              >Secretary (Multiple Choice)</label
+            >
+            <div class="role-config">
+              <div
+                class="chip-input"
+                onclick="
+                  if (!this.classList.contains('is-disabled'))
+                    this.querySelector('.chip-text-input').focus();
+                "
+              >
+                <input
+                  type="text"
+                  class="chip-text-input"
+                  placeholder="Type a name, press Enter — or paste a comma-separated list"
+                  onkeydown="handleChipKey(event, this)"
+                  oninput="handleChipInput(event, this)"
+                  onpaste="handleChipPaste(event, this)"
+                  onblur="commitChipInput(this)"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="form-check mb-2">
+            <input
+              class="form-check-input role-toggle"
+              type="checkbox"
+              id="check-board"
+              data-role="Board of Directors"
+              data-type="checkbox"
+            />
+            <label class="form-check-label fw-bold" for="check-board"
+              >Board of Directors (Checkboxes — select all that apply)</label
+            >
+            <div class="role-config">
+              <div
+                class="chip-input"
+                onclick="
+                  if (!this.classList.contains('is-disabled'))
+                    this.querySelector('.chip-text-input').focus();
+                "
+              >
+                <input
+                  type="text"
+                  class="chip-text-input"
+                  placeholder="Type a name, press Enter — or paste a comma-separated list"
+                  onkeydown="handleChipKey(event, this)"
+                  oninput="handleChipInput(event, this)"
+                  onpaste="handleChipPaste(event, this)"
+                  onblur="commitChipInput(this)"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          id="ballotConflictAlert"
+          class="alert alert-danger mt-2 mb-2 py-2"
+          style="display: none"
+          role="alert"
+        ></div>
+
+        <div id="ballotSaveWrap" style="display: none" class="mt-3">
+          <button
+            id="saveBallotBtn"
+            class="btn btn-outline-primary w-100"
+            onclick="runSaveBallot()"
+          >
+            Save Ballot Changes
+          </button>
+          <div id="saveBallotStatus" class="mt-2"></div>
+        </div>
+
+        <hr />
+
+        <!-- Email list -->
+        <div class="mb-3">
+          <div class="d-flex justify-content-between align-items-baseline mb-1">
+            <label class="form-label fw-bold mb-0">Member Email List</label>
+            <span id="emailCounter" class="instr fw-bold"></span>
+          </div>
+          <p id="emailsInstr" class="instr"></p>
+          <textarea
+            id="emails"
+            class="form-control"
+            rows="5"
+            placeholder="Paste emails here..."
+            oninput="updateEmailCount()"
+            onblur="cleanAndValidateEmails()"
+            onpaste="setTimeout(cleanAndValidateEmails, 0)"
+          ></textarea>
+          <div
+            id="emailSummary"
+            class="instr mt-1"
+            style="min-height: 1.2em"
+          ></div>
+        </div>
+
+        <!-- Create mode action -->
+        <div id="createActions" style="display: none">
+          <button
+            id="setupBtn"
+            class="btn btn-primary w-100"
+            onclick="runSetup()"
+          >
+            Initialize Election &amp; Create Form
+          </button>
+          <div id="setupStatus" class="mt-3"></div>
+        </div>
+
+        <!-- Manage mode action -->
+        <div id="manageActions" style="display: none">
+          <button
+            id="updateEmailsBtn"
+            class="btn btn-outline-secondary w-100"
+            onclick="runUpdateEmails()"
+          >
+            Save Updated Email List
+          </button>
+          <div id="updateEmailsStatus" class="mt-2"></div>
+        </div>
+      </div>
+
+      <!-- ───────────────────────────────────────────
+           DISTRIBUTION (hidden until an election is active)
+      ─────────────────────────────────────────── -->
+      <div id="distCard" class="card p-4 border-warning" style="display: none">
+        <h2 class="section-header text-warning">Send Voting Tokens</h2>
+        <p id="distSubtext" class="instr"></p>
+
+        <div class="border rounded p-3 mb-3 bg-white" style="font-size: 0.9rem">
+          <div class="fw-bold mb-1" id="activeElectionName"></div>
+          <a id="activeFormLink" href="#" target="_blank">View Ballot Form</a>
+          <span class="mx-2 text-muted">|</span>
+          <a id="activeSheetLink" href="#" target="_blank"
+            >View Response Sheet</a
+          >
+        </div>
+
+        <button
+          id="distBtn"
+          class="btn btn-warning w-100"
+          onclick="runDistribute()"
+          disabled
+        >
+          Send Tokens via Email
+        </button>
+        <div id="distStatus" class="mt-2"></div>
+      </div>
+    </div>
+
+    <script>
+      let activeElectionId = null;
+      let currentMode = null;
+      let loadedElections = [];
+
+      // ── Startup ──────────────────────────────────────────────────────────
+
+      document.addEventListener("DOMContentLoaded", () => {
+        google.script.run
+          .withSuccessHandler((folders) => {
+            const opts = folders
+              .map((f) => `<option value="${f.id}">${f.name}</option>`)
+              .join("");
+            document.getElementById("folderSelect").innerHTML =
+              opts + '<option value="NEW">+ Create New Folder...</option>';
+            toggleNewFolder();
+          })
+          .getElectionFolders();
+
+        google.script.run
+          .withSuccessHandler((elections) => {
+            loadedElections = elections;
+            const sel = document.getElementById("electionSelect");
+            sel.innerHTML = elections.length
+              ? elections
+                  .map((e) => `<option value="${e.ssId}">${e.name}</option>`)
+                  .join("")
+              : "<option disabled>No elections found</option>";
+          })
+          .withFailureHandler(() => {
+            document.getElementById("electionSelect").innerHTML =
+              "<option disabled>Error loading elections</option>";
+          })
+          .getElections();
+      });
+
+      // ── Chip input helpers ────────────────────────────────────────────────
+
+      function toTitleCase(str) {
+        return str
+          .trim()
+          .replace(
+            /\S+/g,
+            (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()
+          );
+      }
+
+      function chipAdd(container, text) {
+        const val = toTitleCase(text);
+        if (!val) return;
+        // Case-insensitive within-container duplicate guard
+        const existing = Array.from(
+          container.querySelectorAll(".chip-label")
+        ).map((el) => el.textContent.toLowerCase());
+        if (existing.includes(val.toLowerCase())) return;
+
+        // Cross-position duplicate guard: reject if this name is already in another position
+        const allContainers = document.querySelectorAll(
+          ".role-config .chip-input"
+        );
+        for (const other of allContainers) {
+          if (other === container) continue;
+          const otherNames = Array.from(
+            other.querySelectorAll(".chip-label")
+          ).map((el) => el.textContent.toLowerCase());
+          if (otherNames.includes(val.toLowerCase())) {
+            const labelEl = other
+              .closest(".form-check")
+              .querySelector(".form-check-label");
+            const posLabel = labelEl
+              ? labelEl.textContent.trim()
+              : "another position";
+            showBallotConflict(
+              "\u201c" +
+                val +
+                "\u201d is already listed under " +
+                posLabel +
+                ". " +
+                "A candidate may only appear on one position."
+            );
+            return;
+          }
+        }
+
+        const chip = document.createElement("span");
+        chip.className = "chip";
+        chip.innerHTML =
+          `<span class="chip-label">${val.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</span>` +
+          `<button type="button" class="chip-remove" title="Remove">&times;</button>`;
+        chip
+          .querySelector(".chip-remove")
+          .addEventListener("click", () => chip.remove());
+        container.insertBefore(
+          chip,
+          container.querySelector(".chip-text-input")
+        );
+      }
+
+      function chipGetValues(container) {
+        return Array.from(container.querySelectorAll(".chip-label")).map((el) =>
+          el.textContent.trim()
+        );
+      }
+
+      function chipClear(container) {
+        container.querySelectorAll(".chip").forEach((c) => c.remove());
+        const input = container.querySelector(".chip-text-input");
+        if (input) input.value = "";
+      }
+
+      function chipSetValues(container, values) {
+        chipClear(container);
+        values.forEach((v) => chipAdd(container, v));
+      }
+
+      function chipSetEnabled(container, enabled) {
+        container.classList.toggle("is-disabled", !enabled);
+        const input = container.querySelector(".chip-text-input");
+        if (input) input.disabled = !enabled;
+        container
+          .querySelectorAll(".chip-remove")
+          .forEach((b) => (b.disabled = !enabled));
+      }
+
+      // Event handlers attached inline to each chip input field
+      function handleChipKey(event, input) {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          input.value
+            .split(",")
+            .forEach((p) => chipAdd(input.parentElement, p));
+          input.value = "";
+        } else if (event.key === "Backspace" && input.value === "") {
+          const chips = input.parentElement.querySelectorAll(".chip");
+          if (chips.length) chips[chips.length - 1].remove();
+        }
+      }
+
+      function handleChipInput(event, input) {
+        if (input.value.includes(",")) {
+          const parts = input.value.split(",");
+          input.value = parts.pop(); // keep text after last comma in input
+          parts.forEach((p) => chipAdd(input.parentElement, p));
+        }
+      }
+
+      function handleChipPaste(event, input) {
+        event.preventDefault();
+        const pasted = (event.clipboardData || window.clipboardData).getData(
+          "text"
+        );
+        const parts = pasted.split(/[\n,]+/);
+        if (input.value.trim()) {
+          parts.unshift(input.value);
+          input.value = "";
+        }
+        parts.forEach((p) => chipAdd(input.parentElement, p));
+      }
+
+      function commitChipInput(input) {
+        if (input.value.trim()) {
+          chipAdd(input.parentElement, input.value);
+          input.value = "";
+        }
+      }
+
+      function showBallotConflict(msg) {
+        const el = document.getElementById("ballotConflictAlert");
+        el.textContent = msg;
+        el.style.display = "block";
+        clearTimeout(el._hideTimer);
+        el._hideTimer = setTimeout(() => {
+          el.style.display = "none";
+        }, 6000);
+      }
+
+      // Returns an array of conflict objects { display, positions[] } for any
+      // candidate name that appears under more than one checked position.
+      function validateBallotConflicts() {
+        const nameMap = {};
+        document.querySelectorAll(".role-toggle:checked").forEach((cb) => {
+          const position = cb.dataset.role;
+          const container = cb.parentElement.querySelector(".chip-input");
+          chipGetValues(container).forEach((name) => {
+            const key = name.toLowerCase();
+            if (!nameMap[key]) nameMap[key] = { display: name, positions: [] };
+            nameMap[key].positions.push(position);
+          });
+        });
+        return Object.values(nameMap).filter((v) => v.positions.length > 1);
+      }
+
+      // ── Mode selection ────────────────────────────────────────────────────
+
+      function selectMode(mode) {
+        currentMode = mode;
+        document
+          .getElementById("btnCreate")
+          .classList.toggle("selected", mode === "create");
+        document
+          .getElementById("btnManage")
+          .classList.toggle("selected", mode === "manage");
+        document.getElementById("manageForm").style.display =
+          mode === "manage" ? "block" : "none";
+
+        if (mode === "create") {
+          applyCreateContext();
+          show("configCard");
+          scrollTo("configCard");
+        } else {
+          // Wait for an election to be loaded before showing configuration
+          hide("configCard");
+          hide("distCard");
+        }
+      }
+
+      function applyCreateContext() {
+        resetConfigFields();
+
+        document.getElementById("configTitle").textContent =
+          "New Election Setup";
+        document.getElementById("configSubtext").textContent =
+          "Fill in the details below to build the ballot. When you're ready, click Initialize to create the Google Form and tracking spreadsheet automatically.";
+        document.getElementById("questionsInstr").textContent =
+          "Check each position on the ballot this year, then add candidates below it. " +
+          "Type a name and press Enter, or paste a comma-separated list — each name will be captured as a tag. " +
+          "Multiple Choice lets a voter pick one; Board of Directors lets them select several.";
+        document.getElementById("emailsInstr").textContent =
+          "Paste all eligible member emails here, one per line or comma-separated. " +
+          "Each member will receive a unique single-use voting token.";
+
+        show("folderSection");
+        show("createActions");
+        hide("manageActions");
+        hide("ballotSaveWrap");
+        hide("lockSection");
+        hide("distCard");
+      }
+
+      // ── Configuration helpers ─────────────────────────────────────────────
+
+      function toggleNewFolder() {
+        const isNew = document.getElementById("folderSelect").value === "NEW";
+        document
+          .getElementById("newFolderName")
+          .classList.toggle("d-none", !isNew);
+      }
+
+      function resetConfigFields() {
+        ["title", "startDate", "closeDate", "emails"].forEach((id) => {
+          const el = document.getElementById(id);
+          el.value = "";
+          el.disabled = false;
+        });
+        clearTitleError();
+        ["folderSelect", "newFolderName"].forEach((id) => {
+          document.getElementById(id).disabled = false;
+        });
+        document.querySelectorAll(".role-toggle").forEach((cb) => {
+          cb.checked = false;
+          cb.disabled = false;
+          const container = cb.parentElement.querySelector(".chip-input");
+          if (container) {
+            chipClear(container);
+            chipSetEnabled(container, true);
+          }
+        });
+
+        const btn = document.getElementById("setupBtn");
+        btn.disabled = false;
+        btn.textContent = "Initialize Election & Create Form";
+        document.getElementById("setupStatus").innerHTML = "";
+        document.getElementById("updateEmailsStatus").innerHTML = "";
+        document.getElementById("saveBallotStatus").innerHTML = "";
+        document.getElementById("emailCounter").textContent = "";
+        document.getElementById("emailSummary").innerHTML = "";
+        hide("ballotSaveWrap");
+
+        const lockCb = document.getElementById("lockCheckbox");
+        lockCb.checked = false;
+        lockCb.disabled = false;
+      }
+
+      function resetToGateway() {
+        activeElectionId = null;
+        currentMode = null;
+        document.getElementById("btnCreate").classList.remove("selected");
+        document.getElementById("btnManage").classList.remove("selected");
+        hide("manageForm");
+        hide("configCard");
+        hide("distCard");
+        document.getElementById("loadStatus").innerHTML = "";
+        document.getElementById("distStatus").innerHTML = "";
+        resetConfigFields();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      // ── Create election ───────────────────────────────────────────────────
+
+      function runSetup() {
+        const btn = document.getElementById("setupBtn");
+        const status = document.getElementById("setupStatus");
+        const questions = [];
+
+        document.querySelectorAll(".role-toggle:checked").forEach((cb) => {
+          const candidates = chipGetValues(
+            cb.parentElement.querySelector(".chip-input")
+          );
+          if (candidates.length)
+            questions.push({
+              role: cb.dataset.role,
+              type: cb.dataset.type,
+              candidates
+            });
+        });
+
+        const title = document.getElementById("title").value.trim();
+        const startDate = document.getElementById("startDate").value;
+        const closeDate = document.getElementById("closeDate").value;
+        const emailArray = document
+          .getElementById("emails")
+          .value.split(/[\n,]+/)
+          .map((e) => e.trim())
+          .filter(Boolean);
+
+        if (
+          !title ||
+          !startDate ||
+          !closeDate ||
+          !questions.length ||
+          !emailArray.length
+        ) {
+          alert(
+            "Please fill in all fields: Title, Start Date, Close Date, at least one ballot question with candidates, and the email list."
+          );
+          return;
+        }
+
+        // Duplicate election name check — compare against the elections list already in memory
+        const folderSel = document.getElementById("folderSelect");
+        const folderIsNew = folderSel.value === "NEW";
+        if (!folderIsNew) {
+          const folderName = folderSel.options[folderSel.selectedIndex].text;
+          const qualifiedName = (folderName + "/" + title).toLowerCase();
+          const duplicate = loadedElections.find(
+            (e) => e.name.toLowerCase() === qualifiedName
+          );
+          if (duplicate) {
+            const titleEl = document.getElementById("title");
+            titleEl.classList.add("is-invalid");
+            document.getElementById("titleFeedback").textContent =
+              'An election named "' +
+              title +
+              '" already exists in the ' +
+              folderName +
+              " folder. " +
+              "Choose a different title, or use Manage Existing Election to update it.";
+            titleEl.focus();
+            titleEl.select();
+            return;
+          }
+        }
+
+        const conflicts = validateBallotConflicts();
+        if (conflicts.length) {
+          const lines = conflicts.map(
+            (c) => "\u2022 " + c.display + " \u2192 " + c.positions.join(", ")
+          );
+          alert(
+            "A candidate may only appear on one position. Please fix the following before continuing:\n\n" +
+              lines.join("\n")
+          );
+          return;
+        }
+
+        const payload = {
+          title,
+          startDate,
+          closeDate,
+          questions,
+          emails: emailArray,
+          targetFolder: {
+            isNew: document.getElementById("folderSelect").value === "NEW",
+            id: document.getElementById("folderSelect").value,
+            newName: document.getElementById("newFolderName").value.trim()
+          }
+        };
+
+        btn.disabled = true;
+        status.innerHTML =
+          '<div class="spinner-border text-primary spinner-border-sm" role="status"></div> Creating election files…';
+
+        google.script.run
+          .withSuccessHandler((res) => {
+            btn.textContent = "Election Initialized";
+            btn.disabled = true;
+            status.innerHTML = `<div class="alert alert-success mb-0">
+              Election created successfully.<br>
+              <a href="${res.url}" target="_blank">View Ballot Form</a> &nbsp;|&nbsp;
+              <a href="${res.ssUrl}" target="_blank">View Response Sheet</a>
+            </div>`;
+            setActiveElection(res.ssId, res.title, res.url, res.ssUrl, false);
+          })
+          .withFailureHandler((err) => {
+            btn.disabled = false;
+            btn.textContent = "Initialize Election & Create Form";
+            status.innerHTML = `<div class="alert alert-danger mb-0">${err.message}</div>`;
+          })
+          .handleGuiSetup(payload);
+      }
+
+      // ── Load existing election ────────────────────────────────────────────
+
+      function runLoad() {
+        const ssId = document.getElementById("electionSelect").value;
+        if (!ssId) {
+          alert("Please select an election first.");
+          return;
+        }
+
+        const btn = document.getElementById("loadBtn");
+        const status = document.getElementById("loadStatus");
+        btn.disabled = true;
+        status.innerHTML =
+          '<div class="spinner-border text-secondary spinner-border-sm" role="status"></div> Loading…';
+
+        google.script.run
+          .withSuccessHandler((res) => {
+            btn.disabled = false;
+            status.innerHTML = `<div class="alert alert-success mb-0">
+              <strong>${res.title}</strong> loaded successfully.<br>
+              <a href="${res.formUrl}" target="_blank">View Ballot Form</a> &nbsp;|&nbsp;
+              <a href="${res.ssUrl}" target="_blank">View Response Sheet</a>
+            </div>`;
+            applyManageContext(res);
+            setActiveElection(
+              res.ssId,
+              res.title,
+              res.formUrl,
+              res.ssUrl,
+              res.isClosed
+            );
+          })
+          .withFailureHandler((err) => {
+            btn.disabled = false;
+            status.innerHTML = `<div class="alert alert-danger mb-0">${err.message}</div>`;
+          })
+          .loadElection(ssId);
+      }
+
+      function applyManageContext(res) {
+        // Populate field values
+        document.getElementById("title").value = res.title || "";
+        document.getElementById("startDate").value = res.startDate || "";
+        document.getElementById("closeDate").value = res.closeDate || "";
+        document.getElementById("emails").value = res.emails || "";
+        updateEmailCount();
+
+        // Context-sensitive copy
+        document.getElementById("configTitle").textContent =
+          res.title || "Loaded Election";
+
+        if (res.isClosed) {
+          document.getElementById("configSubtext").textContent =
+            "This election has closed and is now read-only. You can review the configuration and links below.";
+        } else if (res.isLocked) {
+          document.getElementById("configSubtext").textContent =
+            "This election is currently open for voting. The configuration is locked to prevent accidental changes. " +
+            "You can still update the member list below, or unlock the election if a correction is needed.";
+        } else {
+          document.getElementById("configSubtext").textContent =
+            "This election hasn't started yet. Review or update the configuration below, then use Send Voting Tokens when you're ready.";
+        }
+
+        document.getElementById("questionsInstr").textContent =
+          "Candidates are shown as tags below. Add or remove tags to update the ballot, then click Save Ballot Changes.";
+        document.getElementById("emailsInstr").textContent =
+          "This is the current member list for this election. Edit it and click Save to update before re-sending tokens.";
+
+        // Show/hide mode-specific sections
+        hide("folderSection");
+        hide("createActions");
+        show("manageActions");
+        show("ballotSaveWrap");
+
+        // Populate ballot questions
+        document.querySelectorAll(".role-toggle").forEach((cb) => {
+          cb.checked = false;
+          cb.disabled = false;
+          const container = cb.parentElement.querySelector(".chip-input");
+          if (container) {
+            chipClear(container);
+            chipSetEnabled(container, true);
+          }
+        });
+        (res.questions || []).forEach((q) => {
+          const cb = document.querySelector(
+            `.role-toggle[data-role="${q.role}"]`
+          );
+          if (!cb) return;
+          cb.checked = true;
+          const container = cb.parentElement.querySelector(".chip-input");
+          if (container) chipSetValues(container, q.candidates);
+        });
+
+        applyLockState(res.isLocked, res.isClosed);
+
+        show("configCard");
+        scrollTo("configCard");
+      }
+
+      // ── Lock / unlock ─────────────────────────────────────────────────────
+
+      function applyLockState(isLocked, isClosed) {
+        const locked = isLocked || isClosed;
+
+        [
+          "title",
+          "startDate",
+          "closeDate",
+          "folderSelect",
+          "newFolderName"
+        ].forEach((id) => {
+          document.getElementById(id).disabled = locked;
+        });
+        document.querySelectorAll(".role-toggle").forEach((el) => {
+          el.disabled = locked;
+        });
+        document
+          .querySelectorAll(".role-config .chip-input")
+          .forEach((c) => chipSetEnabled(c, !locked));
+        document.getElementById("setupBtn").disabled = locked;
+
+        // Close date has the extra restriction that it can never be changed after closing
+        // (isClosed disables the lock toggle too, so this is belt-and-suspenders)
+        if (isClosed) document.getElementById("closeDate").disabled = true;
+
+        const section = document.getElementById("lockSection");
+        const badge = document.getElementById("lockBadge");
+        const msg = document.getElementById("lockMessage");
+        const cb = document.getElementById("lockCheckbox");
+
+        if (isClosed) {
+          section.style.display = "block";
+          section.className =
+            "mb-4 p-3 rounded border border-danger bg-danger bg-opacity-10";
+          badge.className = "badge bg-danger me-2";
+          badge.textContent = "Closed";
+          msg.textContent =
+            "This election has closed. No further changes are permitted.";
+          cb.checked = true;
+          cb.disabled = true;
+        } else if (isLocked) {
+          section.style.display = "block";
+          section.className =
+            "mb-4 p-3 rounded border border-warning bg-warning bg-opacity-10";
+          badge.className = "badge bg-warning text-dark me-2";
+          badge.textContent = "In Progress";
+          msg.textContent =
+            "Voting is currently open. Fields are locked to prevent accidental changes. Unlock here if a correction is needed.";
+          cb.checked = true;
+          cb.disabled = false;
+        } else {
+          section.style.display = "none";
+          cb.checked = false;
+          cb.disabled = false;
+        }
+      }
+
+      function handleLockToggle(cb) {
+        if (cb.checked) {
+          applyLockState(true, false);
+          return;
+        }
+        const confirmed = confirm(
+          "Warning: This election is currently open for voting.\n\n" +
+            "Unlocking it will allow configuration changes. An email will be sent to " +
+            "webdev@spokanemountaineers.org to log this action.\n\n" +
+            "Are you sure you want to unlock this election for editing?"
+        );
+        if (!confirmed) {
+          cb.checked = true;
+          return;
+        }
+
+        cb.disabled = true;
+        google.script.run
+          .withSuccessHandler(() => {
+            cb.disabled = false;
+            applyLockState(false, false);
+          })
+          .withFailureHandler((err) => {
+            cb.checked = true;
+            cb.disabled = false;
+            alert(
+              "Could not send unlock notification: " +
+                err.message +
+                "\nUnlock aborted."
+            );
+          })
+          .sendUnlockNotification(activeElectionId);
+      }
+
+      // ── Email list helpers ────────────────────────────────────────────────
+
+      function parseEmailField() {
+        return document
+          .getElementById("emails")
+          .value.split(/[\n,]+/)
+          .map((e) => e.trim())
+          .filter(Boolean);
+      }
+
+      function updateEmailCount() {
+        const count = parseEmailField().length;
+        document.getElementById("emailCounter").textContent = count
+          ? count.toLocaleString() + " email" + (count !== 1 ? "s" : "")
+          : "";
+      }
+
+      function cleanAndValidateEmails() {
+        const entries = parseEmailField();
+        if (!entries.length) {
+          document.getElementById("emailCounter").textContent = "";
+          document.getElementById("emailSummary").innerHTML = "";
+          return;
+        }
+
+        const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+        const seen = new Set();
+        const valid = [];
+        let dupes = 0,
+          invalid = 0;
+
+        entries.forEach((e) => {
+          if (!emailRe.test(e)) {
+            invalid++;
+            return;
+          }
+          const key = e.toLowerCase();
+          if (seen.has(key)) {
+            dupes++;
+            return;
+          }
+          seen.add(key);
+          valid.push(e);
+        });
+
+        // Replace textarea content with the cleaned list
+        document.getElementById("emails").value = valid.join("\n");
+
+        // Update counter
+        const n = valid.length;
+        document.getElementById("emailCounter").textContent = n
+          ? n.toLocaleString() + " email" + (n !== 1 ? "s" : "")
+          : "";
+
+        // Build summary line
+        const notes = [];
+        if (dupes)
+          notes.push(
+            dupes + " duplicate" + (dupes !== 1 ? "s" : "") + " removed"
+          );
+        if (invalid)
+          notes.push(
+            invalid +
+              " invalid entr" +
+              (invalid !== 1 ? "ies" : "y") +
+              " skipped"
+          );
+
+        const summary = document.getElementById("emailSummary");
+        if (!n) {
+          summary.innerHTML =
+            '<span class="text-danger">No valid emails found.</span>';
+        } else if (!notes.length) {
+          summary.innerHTML = `<span class="text-success">${n.toLocaleString()} emails ready.</span>`;
+        } else {
+          summary.innerHTML =
+            `<span class="text-success">${n.toLocaleString()} ready</span>` +
+            `<span class="text-muted"> &middot; ${notes.join(" &middot; ")}</span>`;
+        }
+      }
+
+      // ── Update emails ─────────────────────────────────────────────────────
+
+      function runUpdateEmails() {
+        const emailArray = document
+          .getElementById("emails")
+          .value.split(/[\n,]+/)
+          .map((e) => e.trim())
+          .filter(Boolean);
+        const btn = document.getElementById("updateEmailsBtn");
+        const status = document.getElementById("updateEmailsStatus");
+
+        btn.disabled = true;
+        status.innerHTML =
+          '<div class="spinner-border text-secondary spinner-border-sm" role="status"></div> Saving…';
+
+        google.script.run
+          .withSuccessHandler(() => {
+            btn.disabled = false;
+            status.innerHTML = `<div class="alert alert-success mb-0">${emailArray.length} emails saved successfully.</div>`;
+          })
+          .withFailureHandler((err) => {
+            btn.disabled = false;
+            status.innerHTML = `<div class="alert alert-danger mb-0">${err.message}</div>`;
+          })
+          .updateMemberEmails(activeElectionId, emailArray);
+      }
+
+      // ── Save ballot questions ─────────────────────────────────────────────
+
+      function runSaveBallot() {
+        const questions = [];
+        document.querySelectorAll(".role-toggle:checked").forEach((cb) => {
+          const candidates = chipGetValues(
+            cb.parentElement.querySelector(".chip-input")
+          );
+          if (candidates.length)
+            questions.push({
+              role: cb.dataset.role,
+              type: cb.dataset.type,
+              candidates
+            });
+        });
+
+        if (!questions.length) {
+          alert(
+            "Check at least one ballot position with candidates before saving."
+          );
+          return;
+        }
+
+        const conflicts = validateBallotConflicts();
+        if (conflicts.length) {
+          const lines = conflicts.map(
+            (c) => "\u2022 " + c.display + " \u2192 " + c.positions.join(", ")
+          );
+          alert(
+            "A candidate may only appear on one position. Please fix the following before saving:\n\n" +
+              lines.join("\n")
+          );
+          return;
+        }
+
+        const btn = document.getElementById("saveBallotBtn");
+        const status = document.getElementById("saveBallotStatus");
+        btn.disabled = true;
+        status.innerHTML =
+          '<div class="spinner-border text-primary spinner-border-sm" role="status"></div> Saving…';
+
+        google.script.run
+          .withSuccessHandler(() => {
+            btn.disabled = false;
+            status.innerHTML =
+              '<div class="alert alert-success mb-0">Ballot questions updated on the form.</div>';
+          })
+          .withFailureHandler((err) => {
+            btn.disabled = false;
+            status.innerHTML = `<div class="alert alert-danger mb-0">${err.message}</div>`;
+          })
+          .updateElectionBallot(activeElectionId, questions);
+      }
+
+      // ── Distribution ──────────────────────────────────────────────────────
+
+      function setActiveElection(ssId, title, formUrl, ssUrl, isClosed) {
+        activeElectionId = ssId;
+        document.getElementById("activeElectionName").textContent = title;
+        document.getElementById("activeFormLink").href = formUrl;
+        document.getElementById("activeSheetLink").href = ssUrl;
+
+        const distBtn = document.getElementById("distBtn");
+        if (isClosed) {
+          document.getElementById("distSubtext").textContent =
+            "This election has closed and is no longer accepting votes. Tokens cannot be sent.";
+          distBtn.disabled = true;
+        } else if (currentMode === "create") {
+          document.getElementById("distSubtext").textContent =
+            "Your election is ready. Review the ballot form using the link above, then send each eligible member " +
+            "a unique voting token. Tokens are single-use and cannot be revoked once sent.";
+          distBtn.disabled = false;
+        } else {
+          document.getElementById("distSubtext").textContent =
+            "You can re-send voting tokens to the current member list, or update the list using the form above first. " +
+            "Tokens are single-use — members who have already voted will not be able to vote again.";
+          distBtn.disabled = false;
+        }
+
+        show("distCard");
+        // For create mode, guide the user down to distribution after initialization
+        if (currentMode === "create") {
+          setTimeout(() => scrollTo("distCard"), 400);
+        }
+      }
+
+      function runDistribute() {
+        if (
+          !confirm(
+            "Send voting tokens to all members on the email list?\n\nThis cannot be undone."
+          )
+        )
+          return;
+
+        const btn = document.getElementById("distBtn");
+        const status = document.getElementById("distStatus");
+        btn.disabled = true;
+        status.innerHTML =
+          '<div class="spinner-border text-warning spinner-border-sm" role="status"></div> Sending…';
+
+        google.script.run
+          .withSuccessHandler(() => {
+            // Keep the button disabled — tokens were sent, do not allow a second send
+            btn.textContent = "Tokens Sent";
+            btn.disabled = true;
+            status.innerHTML =
+              '<div class="alert alert-success mb-0">All tokens sent successfully. Members will receive their email shortly.</div>';
+          })
+          .withFailureHandler((err) => {
+            btn.disabled = false;
+            status.innerHTML = `<div class="alert alert-danger mb-0">${err.message}</div>`;
+          })
+          .distributeTokens(activeElectionId);
+      }
+
+      // ── Utilities ─────────────────────────────────────────────────────────
+
+      function clearTitleError() {
+        document.getElementById("title").classList.remove("is-invalid");
+        document.getElementById("titleFeedback").textContent = "";
+      }
+
+      function show(id) {
+        document.getElementById(id).style.display = "block";
+      }
+      function hide(id) {
+        document.getElementById(id).style.display = "none";
+      }
+      function scrollTo(id) {
+        document
+          .getElementById(id)
+          .scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    </script>
+  </body>
+</html>
