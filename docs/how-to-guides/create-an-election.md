@@ -4,7 +4,7 @@ This guide walks through creating and distributing a Spokane Mountaineers secret
 
 You will need:
 
-- Access to the Election Manager (contact [webdev@spokanemountaineers.org](mailto:webdev@spokanemountaineers.org) if you need the link)
+- Access to the [Election Manager](https://script.google.com/a/macros/spokanemountaineers.org/s/AKfycbxKvex6OsXOa-QdXvNpJYn5KfjTdHVb1t6RB3FTieeOlbS5JlMcXxULkWM95hl6EkAB/exec) (requires a spokanemountaineers.org Google account)
 - The list of candidate names for each position on the ballot
 - A list of member email addresses to receive ballots
 
@@ -12,7 +12,7 @@ You will need:
 
 ## Step 1 — Open the Election Manager
 
-Open the Election Manager web app. You will see two options:
+Open the [Election Manager](https://script.google.com/a/macros/spokanemountaineers.org/s/AKfycbxKvex6OsXOa-QdXvNpJYn5KfjTdHVb1t6RB3FTieeOlbS5JlMcXxULkWM95hl6EkAB/exec). You will see two options:
 
 - **Create New Election** — set up a new ballot from scratch
 - **Manage Existing Election** — load a previously created election
@@ -95,7 +95,7 @@ Once the close date has passed, the election is permanently read-only. Vote resu
 
 ## Editing an election before voting opens
 
-If you need to correct the ballot or update the member list before the start date, open the Election Manager, click **Manage Existing Election**, select the election from the dropdown, and click **Load Election**. Make your changes and use **Save Ballot Changes** or **Save Updated Email List** as appropriate.
+If you need to correct the ballot or update the member list before the start date, open the [Election Manager](https://script.google.com/a/macros/spokanemountaineers.org/s/AKfycbxKvex6OsXOa-QdXvNpJYn5KfjTdHVb1t6RB3FTieeOlbS5JlMcXxULkWM95hl6EkAB/exec), click **Manage Existing Election**, select the election from the dropdown, and click **Load Election**. Make your changes and use **Save Ballot Changes** or **Save Updated Email List** as appropriate.
 
 Once the start date is reached, fields are locked. A yellow banner will appear if you need to make a correction to a live election — check the **Locked** toggle and confirm the dialog to unlock it temporarily. An audit notification will be sent to the tech team when an in-progress election is unlocked.
 
