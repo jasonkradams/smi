@@ -20,6 +20,7 @@ nav:
       - Chatter Publisher with Autosave: implementation/chatter-publisher-autosave.md
   - How-To Guides:
       - how-to-guides/index.md
+      - Create an Election: how-to-guides/create-an-election.md
       - Configure Custom Login Page: how-to-guides/configure-custom-login-page.md
       - Setup Staging Sandbox: how-to-guides/setup-staging-sandbox.md
       - Customize Favicon: how-to-guides/update-experience-cloud-favicon.md
