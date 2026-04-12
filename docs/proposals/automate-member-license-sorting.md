@@ -1,6 +1,6 @@
 # Automating Member License Sorting
 
-**Status**: Ready for Deployment  
+**Status**: Live — Active bug under remediation (see [fix plan](../plans/2026-04-12-fix-license-shuffle-batch.md))
 **Created**: 2025-12-08  
 **Author**: Jason Adams  
 **Related Issue**: [#42](https://github.com/jasonkradams/smi/issues/42)
@@ -242,18 +242,24 @@ All license changes are logged to `License_Change_Log__c` with:
 - [x] Create FLS grant script for field-level security setup
 - [x] Run FLS grant script to set permissions
 - [x] Run initial data migration (LoginHistoryMigrationBatch) to backfill last 6 months
-- [ ] Schedule `LoginHistorySyncScheduler` to run daily
-- [ ] Schedule `LoginHistoryCleanupScheduler` to run annually on May 1st
-- [ ] Monitor initial runs and verify functionality
-- [ ] Deploy to production after testing complete
+- [x] Schedule `LoginHistorySyncScheduler` to run daily (running since ~Dec 2025, 120+ triggers)
+- [x] Deploy to production
 
 ### Phase 5: Documentation
 
 - [x] Document system architecture and components
 - [x] Document Queueable class and MIXED_DML workaround
 - [x] Document setup scripts and deployment steps
-- [ ] Create admin guide for monitoring
-- [ ] Document troubleshooting procedures
+
+### Phase 6: Bug Fix (active)
+
+See [fix plan](../plans/2026-04-12-fix-license-shuffle-batch.md).
+
+- [ ] Emergency script: downgrade bottom 30 Premium users to relieve license cap
+- [ ] Rewrite `LicenseShuffleBatch` with two-pass design (collect in execute, act in finish)
+- [ ] Fix `LoginHistoryCleanupBatch`: add `Database.Stateful`
+- [ ] Update test classes for new batch structure
+- [ ] Deploy fixes and verify steady state
 
 ## Implementation Notes
 
@@ -325,4 +331,8 @@ All license changes are logged to `License_Change_Log__c` with:
 
 ## Status
 
-System is implemented and ready for production deployment. All components have been deployed to staging and tested. Initial data migration has been completed. System awaits scheduling of daily sync and annual cleanup jobs, followed by production deployment after final testing verification.
+System is live in production. As of 2026-04-12:
+
+- `Login History Sync - Daily` scheduler has been running since ~Dec 2025 (120+ triggers)
+- `Fiscal_Year_Login_History__c` has 25,069 records
+- **Active issue**: `LicenseShuffleBatch` has a two-pass correctness bug causing it to make license decisions per-chunk before all users are visible. As a result, 171 non-protected Premium users with ≤5 logins remain on Premium licenses and the hard cap of 505 has been reached. An emergency downgrade script and batch rewrite are underway — see [fix plan](../plans/2026-04-12-fix-license-shuffle-batch.md).
