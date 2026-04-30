@@ -270,4 +270,47 @@ private class CommunitiesLoginControllerTest {
       'Google login URL should include startURL parameter when provided'
     );
   }
+
+  /**
+   * Test Microsoft OAuth login URL generation
+   */
+  @IsTest
+  static void testGetMicrosoftLoginUrl() {
+    CommunitiesLoginController controller = new CommunitiesLoginController();
+
+    Test.startTest();
+    String microsoftLoginUrl = controller.getMicrosoftLoginUrl();
+    Test.stopTest();
+
+    System.assertNotEquals(
+      null,
+      microsoftLoginUrl,
+      'Microsoft login URL should not be null'
+    );
+    System.assert(
+      microsoftLoginUrl.contains('/services/auth/sso/Microsoft'),
+      'Microsoft login URL should contain auth path with Microsoft URL suffix'
+    );
+  }
+
+  /**
+   * Test Microsoft OAuth login URL with startURL parameter
+   */
+  @IsTest
+  static void testGetMicrosoftLoginUrlWithStartUrl() {
+    PageReference pageRef = Page.CommunitiesLogin;
+    pageRef.getParameters().put('startURL', '/s/events');
+    Test.setCurrentPage(pageRef);
+
+    CommunitiesLoginController controller = new CommunitiesLoginController();
+
+    Test.startTest();
+    String microsoftLoginUrl = controller.getMicrosoftLoginUrl();
+    Test.stopTest();
+
+    System.assert(
+      microsoftLoginUrl.contains('startURL='),
+      'Microsoft login URL should include startURL parameter when provided'
+    );
+  }
 }

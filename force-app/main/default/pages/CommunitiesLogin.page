@@ -245,7 +245,8 @@
           padding: 0 16px;
         }
 
-        .btn-google {
+        .btn-google,
+        .btn-microsoft {
           width: 100%;
           padding: 14px;
           background: white;
@@ -263,10 +264,15 @@
           text-decoration: none;
         }
 
-        .btn-google:hover {
+        .btn-google:hover,
+        .btn-microsoft:hover {
           background: #f9f9f9;
           border-color: #d0d0d0;
           transform: translateY(-1px);
+        }
+
+        .btn-microsoft {
+          margin-top: 12px;
         }
 
         .links-container {
@@ -535,6 +541,17 @@
               />
             </svg>
             Continue with Google
+          </a>
+
+          <!-- Microsoft Sign In Button -->
+          <a href="{!microsoftLoginUrl}" class="btn-microsoft">
+            <svg width="20" height="20" viewBox="0 0 20 20">
+              <rect x="1" y="1" width="8.5" height="8.5" fill="#F25022" />
+              <rect x="10.5" y="1" width="8.5" height="8.5" fill="#7FBA00" />
+              <rect x="1" y="10.5" width="8.5" height="8.5" fill="#00A4EF" />
+              <rect x="10.5" y="10.5" width="8.5" height="8.5" fill="#FFB900" />
+            </svg>
+            Continue with Microsoft
           </a>
         </apex:form>
 

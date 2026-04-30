@@ -142,6 +142,27 @@ public without sharing class CommunitiesLoginController {
   }
 
   /**
+   * Get the Microsoft OAuth login URL
+   * This is configured in Setup > Auth Providers > Microsoft (URL Suffix: Microsoft)
+   * Backed by the Microsoft Entra App Registration managed in the
+   * Spokane-Mountaineers/infrastructure repository.
+   *
+   * @return URL to initiate Microsoft OAuth flow
+   */
+  public String getMicrosoftLoginUrl() {
+    String communityUrl = Site.getBaseUrl();
+
+    // Format: /services/auth/sso/Microsoft?startURL={startUrl}
+    String microsoftUrl = communityUrl + '/services/auth/sso/Microsoft';
+
+    if (String.isNotBlank(startUrl)) {
+      microsoftUrl += '?startURL=' + EncodingUtil.urlEncode(startUrl, 'UTF-8');
+    }
+
+    return microsoftUrl;
+  }
+
+  /**
    * Get the admin/internal Salesforce login URL
    * This allows system admins to access the internal org from the community login page
    *
