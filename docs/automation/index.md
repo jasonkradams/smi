@@ -12,6 +12,8 @@ Each automation is designed to reduce manual work, ensure consistency, and suppo
   Email alerts that notify activity group committee chairs when new events are submitted for approval. Covers all 9 activity groups with explicit email alert configuration.
 - **[Google Login Automation](google-login-automation.md)**  
   Technical implementation of Google OAuth authentication for Experience Cloud, including user matching strategy, account creation prevention, and error handling.
+- **[Microsoft Login Automation](microsoft-login-automation.md)**  
+  Technical implementation of Sign in with Microsoft (Microsoft Identity Platform / OpenID Connect) for Experience Cloud, mirroring the Google flow plus a UPN fallback for Entra accounts without a verified email claim. Backed by Terraform/OpenTofu-managed Entra App Registrations in the infrastructure repo.
 - **[Scheduled: Add Members To Conservation Group](scheduled-add-members-to-conservation-group.md)**  
   Ensures all active site users are part of the Conservation Group and logs changes for audit.
 - **[Notify Leader on RSVP](notify-leader-on-rsvp.md)**  
